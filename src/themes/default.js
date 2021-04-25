@@ -10,52 +10,34 @@ const lightenRate = 7.5;
 const darkenRate = 15;
 
 const defaultTheme = {
+  direction: "rtl",
+
   palette: {
     primary: {
       main: primary,
-      light: tinycolor(primary)
-        .lighten(lightenRate)
-        .toHexString(),
-      dark: tinycolor(primary)
-        .darken(darkenRate)
-        .toHexString(),
+      light: tinycolor(primary).lighten(lightenRate).toHexString(),
+      dark: tinycolor(primary).darken(darkenRate).toHexString(),
     },
     secondary: {
       main: secondary,
-      light: tinycolor(secondary)
-        .lighten(lightenRate)
-        .toHexString(),
-      dark: tinycolor(secondary)
-        .darken(darkenRate)
-        .toHexString(),
+      light: tinycolor(secondary).lighten(lightenRate).toHexString(),
+      dark: tinycolor(secondary).darken(darkenRate).toHexString(),
       contrastText: "#FFFFFF",
     },
     warning: {
       main: warning,
-      light: tinycolor(warning)
-        .lighten(lightenRate)
-        .toHexString(),
-      dark: tinycolor(warning)
-        .darken(darkenRate)
-        .toHexString(),
+      light: tinycolor(warning).lighten(lightenRate).toHexString(),
+      dark: tinycolor(warning).darken(darkenRate).toHexString(),
     },
     success: {
       main: success,
-      light: tinycolor(success)
-        .lighten(lightenRate)
-        .toHexString(),
-      dark: tinycolor(success)
-        .darken(darkenRate)
-        .toHexString(),
+      light: tinycolor(success).lighten(lightenRate).toHexString(),
+      dark: tinycolor(success).darken(darkenRate).toHexString(),
     },
     info: {
       main: info,
-      light: tinycolor(info)
-        .lighten(lightenRate)
-        .toHexString(),
-      dark: tinycolor(info)
-        .darken(darkenRate)
-        .toHexString(),
+      light: tinycolor(info).lighten(lightenRate).toHexString(),
+      dark: tinycolor(info).darken(darkenRate).toHexString(),
     },
     text: {
       primary: "#4A4A4A",
@@ -120,7 +102,7 @@ const defaultTheme = {
     MuiTableCell: {
       root: {
         borderBottom: "1px solid rgba(224, 224, 224, .5)",
-        paddingLeft: 24
+        paddingLeft: 24,
       },
       head: {
         fontSize: "0.95rem",
@@ -131,9 +113,9 @@ const defaultTheme = {
     },
     PrivateSwitchBase: {
       root: {
-        marginLeft: 10
-      }
-    }
+        marginLeft: 10,
+      },
+    },
   },
 };
 

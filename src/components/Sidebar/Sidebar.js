@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Drawer, IconButton, List } from "@material-ui/core";
 import {
   Home as HomeIcon,
-  NotificationsNone as NotificationsIcon,
+  Group,
   FormatSize as TypographyIcon,
   FilterNone as UIElementsIcon,
   BorderAll as TableIcon,
@@ -20,7 +20,6 @@ import useStyles from "./styles";
 
 // components
 import SidebarLink from "./components/SidebarLink/SidebarLink";
-import Dot from "./components/Dot";
 
 // context
 import {
@@ -30,56 +29,47 @@ import {
 } from "../../context/LayoutContext";
 
 const structure = [
-  { id: 0, label: "Dashboard", link: "/app/dashboard", icon: <HomeIcon /> },
+  { id: 0, label: "داشبورد", link: "/app/dashboard", icon: <HomeIcon /> },
   {
     id: 1,
-    label: "Typography",
-    link: "/app/typography",
+    label: "کالاها",
+    link: "/app/products",
     icon: <TypographyIcon />,
   },
-  { id: 2, label: "Tables", link: "/app/tables", icon: <TableIcon /> },
+  {
+    id: 2,
+    label: "خرید",
+    link: "/app/sells",
+    icon: <LibraryIcon />,
+  },
   {
     id: 3,
-    label: "Notifications",
-    link: "/app/notifications",
-    icon: <NotificationsIcon />,
+    label: "فروش",
+    link: "/app/buys",
+    icon: <SupportIcon />,
   },
   {
     id: 4,
-    label: "UI Elements",
-    link: "/app/ui",
+    label: "گردش مالی",
     icon: <UIElementsIcon />,
     children: [
-      { label: "Icons", link: "/app/ui/icons" },
-      { label: "Charts", link: "/app/ui/charts" },
-      { label: "Maps", link: "/app/ui/maps" },
+      { label: "گردش کلی", link: "/app/ui/icond" },
+      { label: "لیست دریافتی ها", link: "/app/ui/icons" },
+      { label: "لیست پرداختی ها", link: "/app/ui/charts" },
+      { label: "لیست چک ها", link: "/app/ui/maps" },
     ],
   },
   { id: 5, type: "divider" },
-  { id: 6, type: "title", label: "HELP" },
-  { id: 7, label: "Library", link: "https://flatlogic.com/templates", icon: <LibraryIcon /> },
-  { id: 8, label: "Support", link: "https://flatlogic.com/forum", icon: <SupportIcon /> },
-  { id: 9, label: "FAQ", link: "https://flatlogic.com/forum", icon: <FAQIcon /> },
-  { id: 10, type: "divider" },
-  { id: 11, type: "title", label: "PROJECTS" },
+  { id: 6, label: "کاربران", link: "/app/users", icon: <TableIcon /> },
+  { id: 7, label: "مشتریان", link: "/app/customers", icon: <TableIcon /> },
   {
-    id: 12,
-    label: "My recent",
-    link: "",
-    icon: <Dot size="small" color="warning" />,
+    id: 8,
+    label: "کارگران",
+    link: "/app/employee",
+    icon: <Group />,
   },
-  {
-    id: 13,
-    label: "Starred",
-    link: "",
-    icon: <Dot size="small" color="primary" />,
-  },
-  {
-    id: 14,
-    label: "Background",
-    link: "",
-    icon: <Dot size="small" color="secondary" />,
-  },
+  { id: 9, type: "divider" },
+  { id: 10, label: "تنظیمات ", link: "/app/Settings", icon: <TableIcon /> },
 ];
 
 function Sidebar({ location }) {
@@ -93,7 +83,7 @@ function Sidebar({ location }) {
   // local
   var [isPermanent, setPermanent] = useState(true);
 
-  useEffect(function() {
+  useEffect(function () {
     window.addEventListener("resize", handleWindowWidthChange);
     handleWindowWidthChange();
     return function cleanup() {
@@ -127,7 +117,7 @@ function Sidebar({ location }) {
         </IconButton>
       </div>
       <List className={classes.sidebarList}>
-        {structure.map(link => (
+        {structure.map((link) => (
           <SidebarLink
             key={link.id}
             location={location}

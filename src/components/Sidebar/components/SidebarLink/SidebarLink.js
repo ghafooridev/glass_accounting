@@ -48,7 +48,7 @@ export default function SidebarLink({
     );
 
   if (type === "divider") return <Divider className={classes.divider} />;
-  if (link && link.includes('http')) {
+  if (link && link.includes("http")) {
     return (
       <ListItem
         button
@@ -62,25 +62,25 @@ export default function SidebarLink({
         disableRipple
       >
         <a className={classes.externalLink} href={link}>
-        <ListItemIcon
-          className={classnames(classes.linkIcon, {
-            [classes.linkIconActive]: isLinkActive,
-          })}
-        >
-          {nested ? <Dot color={isLinkActive && "primary"} /> : icon}
-        </ListItemIcon>
-        <ListItemText
-          classes={{
-            primary: classnames(classes.linkText, {
-              [classes.linkTextActive]: isLinkActive,
-              [classes.linkTextHidden]: !isSidebarOpened,
-            }),
-          }}
-          primary={label}
-        />
+          <ListItemIcon
+            className={classnames(classes.linkIcon, {
+              [classes.linkIconActive]: isLinkActive,
+            })}
+          >
+            {nested ? <Dot color={isLinkActive && "primary"} /> : icon}
+          </ListItemIcon>
+          <ListItemText
+            classes={{
+              primary: classnames(classes.linkText, {
+                [classes.linkTextActive]: isLinkActive,
+                [classes.linkTextHidden]: !isSidebarOpened,
+              }),
+            }}
+            primary={label}
+          />
         </a>
       </ListItem>
-    )
+    );
   }
   if (!children)
     return (
@@ -97,22 +97,24 @@ export default function SidebarLink({
         }}
         disableRipple
       >
-        <ListItemIcon
-          className={classnames(classes.linkIcon, {
-            [classes.linkIconActive]: isLinkActive,
-          })}
-        >
-          {nested ? <Dot color={isLinkActive && "primary"} /> : icon}
-        </ListItemIcon>
-        <ListItemText
-          classes={{
-            primary: classnames(classes.linkText, {
-              [classes.linkTextActive]: isLinkActive,
-              [classes.linkTextHidden]: !isSidebarOpened,
-            }),
-          }}
-          primary={label}
-        />
+        <span className={classes.externalLink}>
+          <ListItemIcon
+            className={classnames(classes.linkIcon, {
+              [classes.linkIconActive]: isLinkActive,
+            })}
+          >
+            {nested ? <Dot color={isLinkActive && "primary"} /> : icon}
+          </ListItemIcon>
+          <ListItemText
+            classes={{
+              primary: classnames(classes.linkText, {
+                [classes.linkTextActive]: isLinkActive,
+                [classes.linkTextHidden]: !isSidebarOpened,
+              }),
+            }}
+            primary={label}
+          />
+        </span>
       </ListItem>
     );
 
@@ -126,22 +128,24 @@ export default function SidebarLink({
         to={link}
         disableRipple
       >
-        <ListItemIcon
-          className={classnames(classes.linkIcon, {
-            [classes.linkIconActive]: isLinkActive,
-          })}
-        >
-          {icon ? icon : <InboxIcon />}
-        </ListItemIcon>
-        <ListItemText
-          classes={{
-            primary: classnames(classes.linkText, {
-              [classes.linkTextActive]: isLinkActive,
-              [classes.linkTextHidden]: !isSidebarOpened,
-            }),
-          }}
-          primary={label}
-        />
+        <span className={classes.externalLink}>
+          <ListItemIcon
+            className={classnames(classes.linkIcon, {
+              [classes.linkIconActive]: isLinkActive,
+            })}
+          >
+            {icon ? icon : <InboxIcon />}
+          </ListItemIcon>
+          <ListItemText
+            classes={{
+              primary: classnames(classes.linkText, {
+                [classes.linkTextActive]: isLinkActive,
+                [classes.linkTextHidden]: !isSidebarOpened,
+              }),
+            }}
+            primary={label}
+          />
+        </span>
       </ListItem>
       {children && (
         <Collapse
@@ -151,7 +155,7 @@ export default function SidebarLink({
           className={classes.nestedList}
         >
           <List component="div" disablePadding>
-            {children.map(childrenLink => (
+            {children.map((childrenLink) => (
               <SidebarLink
                 key={childrenLink && childrenLink.link}
                 location={location}
