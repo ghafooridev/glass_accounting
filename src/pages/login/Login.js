@@ -82,7 +82,7 @@ function Login(props) {
                   },
                 }}
                 value={loginValue}
-                onChange={e => setLoginValue(e.target.value)}
+                onChange={(e) => setLoginValue(e.target.value)}
                 margin="normal"
                 placeholder="Email Adress"
                 type="email"
@@ -97,7 +97,7 @@ function Login(props) {
                   },
                 }}
                 value={passwordValue}
-                onChange={e => setPasswordValue(e.target.value)}
+                onChange={(e) => setPasswordValue(e.target.value)}
                 margin="normal"
                 placeholder="Password"
                 type="password"
@@ -160,7 +160,7 @@ function Login(props) {
                   },
                 }}
                 value={nameValue}
-                onChange={e => setNameValue(e.target.value)}
+                onChange={(e) => setNameValue(e.target.value)}
                 margin="normal"
                 placeholder="Full Name"
                 type="text"
@@ -175,7 +175,7 @@ function Login(props) {
                   },
                 }}
                 value={loginValue}
-                onChange={e => setLoginValue(e.target.value)}
+                onChange={(e) => setLoginValue(e.target.value)}
                 margin="normal"
                 placeholder="Email Adress"
                 type="email"
@@ -190,7 +190,7 @@ function Login(props) {
                   },
                 }}
                 value={passwordValue}
-                onChange={e => setPasswordValue(e.target.value)}
+                onChange={(e) => setPasswordValue(e.target.value)}
                 margin="normal"
                 placeholder="Password"
                 type="password"
@@ -245,7 +245,7 @@ function Login(props) {
           )}
         </div>
         <Typography color="primary" className={classes.copyright}>
-        © 2014-{new Date().getFullYear()} <a style={{ textDecoration: 'none', color: 'inherit' }} href="https://flatlogic.com" rel="noopener noreferrer" target="_blank">Flatlogic</a>, LLC. All rights reserved.
+          تمامی حقوق مادی و معنوی این اثر متعلق به شرکت المان می باشد
         </Typography>
       </div>
     </Grid>

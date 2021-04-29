@@ -1,11 +1,11 @@
 import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
 import {
   Grid,
   LinearProgress,
   Select,
   OutlinedInput,
   MenuItem,
-  Button
 } from "@material-ui/core";
 import { useTheme } from "@material-ui/styles";
 import {
@@ -22,17 +22,14 @@ import {
   XAxis,
 } from "recharts";
 
-// styles
 import useStyles from "./styles";
-
-// components
 import mock from "./mock";
 import Widget from "../../components/Widget";
-import PageTitle from "../../components/PageTitle";
 import { Typography } from "../../components/Wrappers";
 import Dot from "../../components/Sidebar/components/Dot";
 import Table from "./components/Table/Table";
 import BigStat from "./components/BigStat/BigStat";
+import Paper from "../../components/Paper";
 
 const mainChartData = getMainChartData();
 const PieChartData = [
@@ -45,19 +42,124 @@ const PieChartData = [
 export default function Dashboard(props) {
   var classes = useStyles();
   var theme = useTheme();
+  const history = useHistory();
 
-  // local
   var [mainChartState, setMainChartState] = useState("monthly");
 
+  const onClickPaper = (type) => {
+    const types = {
+      buy: "buy-list",
+      buy: "buy-list",
+    };
+    history.push("/app/user-list");
+  };
   return (
     <>
-      <PageTitle title="Dashboard" button={<Button
-      variant="contained"
-      size="medium"
-      color="secondary"
-    >
-        Latest Reports
-    </Button>} />
+      <Grid container spacing={4}>
+        <Grid item lg={2} md={4} sm={6} xs={12}>
+          <Paper
+            icon="shopping_basket"
+            onClick={() => {
+              onClickPaper("buy");
+            }}
+          >
+            <div className={classes.paperTitle}>
+              <Typography variant="h3">ثبت خرید</Typography>
+            </div>
+          </Paper>
+        </Grid>
+        <Grid item lg={2} md={4} sm={6} xs={12}>
+          <Paper
+            icon="sell"
+            onClick={() => {
+              onClickPaper("sell");
+            }}
+          >
+            <div className={classes.paperTitle}>
+              <Typography variant="h3">ثبت فروش</Typography>
+            </div>
+          </Paper>
+        </Grid>
+        <Grid item lg={2} md={4} sm={6} xs={12}>
+          <Paper
+            icon="payments"
+            onClick={() => {
+              onClickPaper("chek");
+            }}
+          >
+            <div className={classes.paperTitle}>
+              <Typography variant="h3">گزارش چک ها</Typography>
+            </div>
+          </Paper>
+        </Grid>
+        <Grid item lg={2} md={4} sm={6} xs={12}>
+          <Paper
+            icon="monetization_on"
+            onClick={() => {
+              onClickPaper("cash");
+            }}
+          >
+            <div className={classes.paperTitle}>
+              <Typography variant="h3">صندوق</Typography>
+            </div>
+          </Paper>
+        </Grid>
+      </Grid>
+      <Grid container spacing={4}>
+        <Grid item lg={3} md={4} sm={6} xs={12}>
+          <Paper
+            icon="receipt_long"
+            onClick={() => {
+              onClickPaper("worklog");
+            }}
+          >
+            <div className={classes.paperTitle}>
+              <Typography color="text-s" variant="h3">
+                حضور و غیاب
+              </Typography>
+            </div>
+          </Paper>
+        </Grid>
+        <Grid item lg={3} md={4} sm={6} xs={12}>
+          <Paper
+            icon="manage_accounts"
+            onClick={() => {
+              onClickPaper("users");
+            }}
+          >
+            <div className={classes.paperTitle}>
+              <Typography variant="h3">کاربران</Typography>
+            </div>
+          </Paper>
+        </Grid>
+        <Grid item lg={3} md={4} sm={6} xs={12}>
+          <Paper
+            icon="supervisor_account"
+            onClick={() => {
+              onClickPaper("personel");
+            }}
+          >
+            <div className={classes.paperTitle}>
+              <Typography variant="h3">پرسنل</Typography>
+            </div>
+          </Paper>
+        </Grid>
+        <Grid item lg={3} md={4} sm={6} xs={12}>
+          <Paper
+            icon="record_voice_over"
+            onClick={() => {
+              onClickPaper("customer");
+            }}
+          >
+            <div className={classes.paperTitle}>
+              <Typography color="textSecondary" variant="h3">
+                مشتریان
+              </Typography>
+            </div>
+          </Paper>
+        </Grid>
+      </Grid>
+
       <Grid container spacing={4}>
         <Grid item lg={3} md={4} sm={6} xs={12}>
           <Widget
@@ -69,30 +171,30 @@ export default function Dashboard(props) {
             <div className={classes.visitsNumberContainer}>
               <Grid container item alignItems={"center"}>
                 <Grid item xs={6}>
-              <Typography size="xl" weight="medium" noWrap>
-                12, 678
-              </Typography>
+                  <Typography size="xl" weight="medium" noWrap>
+                    12, 678
+                  </Typography>
                 </Grid>
                 <Grid item xs={6}>
-              <LineChart
-                width={100}
-                height={30}
-                data={[
-                  { value: 10 },
-                  { value: 15 },
-                  { value: 10 },
-                  { value: 17 },
-                  { value: 18 },
-                ]}
-              >
-                <Line
-                  type="natural"
-                  dataKey="value"
-                  stroke={theme.palette.success.main}
-                  strokeWidth={2}
-                  dot={false}
-                />
-              </LineChart>
+                  <LineChart
+                    width={100}
+                    height={30}
+                    data={[
+                      { value: 10 },
+                      { value: 15 },
+                      { value: 10 },
+                      { value: 17 },
+                      { value: 18 },
+                    ]}
+                  >
+                    <Line
+                      type="natural"
+                      dataKey="value"
+                      stroke={theme.palette.success.main}
+                      strokeWidth={2}
+                      dot={false}
+                    />
+                  </LineChart>
                 </Grid>
               </Grid>
             </div>
@@ -294,7 +396,9 @@ export default function Dashboard(props) {
                   {PieChartData.map(({ name, value, color }, index) => (
                     <div key={color} className={classes.legendItemContainer}>
                       <Dot color={color} />
-                      <Typography style={{ whiteSpace: "nowrap", fontSize: 12 }} >
+                      <Typography
+                        style={{ whiteSpace: "nowrap", fontSize: 12 }}
+                      >
                         &nbsp;{name}&nbsp;
                       </Typography>
                       <Typography color="text" colorBrightness="secondary">
@@ -341,7 +445,7 @@ export default function Dashboard(props) {
                 </div>
                 <Select
                   value={mainChartState}
-                  onChange={e => setMainChartState(e.target.value)}
+                  onChange={(e) => setMainChartState(e.target.value)}
                   input={
                     <OutlinedInput
                       labelWidth={0}
@@ -372,7 +476,7 @@ export default function Dashboard(props) {
                   tickLine={false}
                 />
                 <XAxis
-                  tickFormatter={i => i + 1}
+                  tickFormatter={(i) => i + 1}
                   tick={{ fill: theme.palette.text.hint + "80", fontSize: 14 }}
                   stroke={theme.palette.text.hint + "80"}
                   tickLine={false}
@@ -407,7 +511,7 @@ export default function Dashboard(props) {
             </ResponsiveContainer>
           </Widget>
         </Grid>
-        {mock.bigStat.map(stat => (
+        {mock.bigStat.map((stat) => (
           <Grid item md={4} sm={6} xs={12} key={stat.product}>
             <BigStat {...stat} />
           </Grid>

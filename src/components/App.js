@@ -37,7 +37,7 @@ export default function App() {
     return (
       <Route
         {...rest}
-        render={props =>
+        render={(props) =>
           isAuthenticated ? (
             React.createElement(component, props)
           ) : (
@@ -59,7 +59,7 @@ export default function App() {
     return (
       <Route
         {...rest}
-        render={props =>
+        render={(props) =>
           isAuthenticated ? (
             <Redirect
               to={{

@@ -7,7 +7,6 @@ import {
   Menu,
   MenuItem,
   Fab,
-  Link,
 } from "@material-ui/core";
 import {
   Menu as MenuIcon,
@@ -140,27 +139,7 @@ export default function Header(props) {
           سیستم حسابداری
         </Typography>
         <div className={classes.grow} />
-        <div
-          className={classNames(classes.search, {
-            [classes.searchFocused]: isSearchOpen,
-          })}
-        >
-          <div
-            className={classNames(classes.searchIcon, {
-              [classes.searchIconOpened]: isSearchOpen,
-            })}
-            onClick={() => setSearchOpen(!isSearchOpen)}
-          >
-            <SearchIcon classes={{ root: classes.headerIcon }} />
-          </div>
-          <InputBase
-            placeholder="Search…"
-            classes={{
-              root: classes.inputRoot,
-              input: classes.inputInput,
-            }}
-          />
-        </div>
+       
         <IconButton
           color="inherit"
           aria-haspopup="true"

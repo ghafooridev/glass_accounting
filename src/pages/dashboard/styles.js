@@ -1,6 +1,11 @@
 import { makeStyles } from "@material-ui/styles";
 
-export default makeStyles(theme => ({
+export default makeStyles((theme) => ({
+  paperTitle: {
+    display: "flex",
+    flexDirection: "column",
+    position: "relative",
+  },
   card: {
     minHeight: "100%",
     display: "flex",
@@ -20,7 +25,7 @@ export default makeStyles(theme => ({
   },
   progress: {
     marginBottom: theme.spacing(1),
-    backgroundColor: 'rgb(236, 236, 236)',
+    backgroundColor: "rgb(236, 236, 236)",
   },
   pieChartLegendWrapper: {
     height: "100%",
@@ -117,14 +122,14 @@ export default makeStyles(theme => ({
   },
   success: {
     backgroundColor: theme.palette.success.main,
-    color: '#fff',
+    color: "#fff",
   },
   warning: {
     backgroundColor: theme.palette.warning.main,
-    color: '#fff',
+    color: "#fff",
   },
   secondary: {
     backgroundColor: theme.palette.secondary.main,
-    color: '#fff',
-  }
+    color: "#fff",
+  },
 }));
