@@ -1,16 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableContainer from "@material-ui/core/TableContainer";
-import TablePagination from "@material-ui/core/TablePagination";
-import TableRow from "@material-ui/core/TableRow";
-import Paper from "@material-ui/core/Paper";
-import Checkbox from "@material-ui/core/Checkbox";
-import TableTop from "./tableTop";
-import TableHeader from "./tableHead";
+import {
+  Table,
+  TableBody,
+  TableContainer,
+  TableCell,
+  TableRow,
+  Paper,
+  Typography,
+} from "@material-ui/core";
+
+import TableRowMenu from "../../components/Table/TableRowMenu";
+import TableTop from "../../components/Table/TableTop";
+import TableHeader from "../../components/Table/TableHead";
+import TablePaging from "../../components/Table/TablePaging";
 import { useApi } from "../../hooks/useApi";
+import { convertParamsToQueryString } from "../../helpers/utils";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -53,6 +58,7 @@ const headCells = [
     label: "first_name",
   },
   { id: "last_name", numeric: true, disablePadding: false, label: "last_name" },
+  { id: "action" },
 ];
 
 const useStyles = makeStyles((theme) => ({
@@ -83,7 +89,6 @@ export default function UserList() {
   const classes = useStyles();
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("email");
-  const [selected, setSelected] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [list, setList] = useState([]);
@@ -92,35 +97,6 @@ export default function UserList() {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
     setOrderBy(property);
-  };
-
-  const handleSelectAllClick = (event) => {
-    if (event.target.checked) {
-      const newSelecteds = list.map((n) => n.name);
-      setSelected(newSelecteds);
-      return;
-    }
-    setSelected([]);
-  };
-
-  const handleClick = (event, name) => {
-    const selectedIndex = selected.indexOf(name);
-    let newSelected = [];
-
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1),
-      );
-    }
-
-    setSelected(newSelected);
   };
 
   const handleChangePage = (event, newPage) => {
@@ -132,20 +108,37 @@ export default function UserList() {
     setPage(0);
   };
 
-  const isSelected = (name) => selected.indexOf(name) !== -1;
+  const onAdd = () => {
+    console.log("x");
+  };
 
-  const emptyRows =
-    rowsPerPage - Math.min(rowsPerPage, list.length - page * rowsPerPage);
+  const handleAction = (id, type) => {
+    console.log("x", id, type);
+    const types = {
+      edit: () => {
+        console.log(id, type);
+      },
+      delete: () => {
+        console.log(id, type);
+      },
+    };
+    if (types[type]) {
+      types[type]();
+    }
+  };
 
-  const response = useApi({ method: "get", url: `/api/users?page=${page}` });
+  const userRequest = useApi({
+    method: "get",
+    url: `/api/users?${convertParamsToQueryString()}`,
+  });
 
   const getData = async () => {
-    const userList = await response.execute();
+    const userList = await userRequest.execute();
     setList(userList.data.data);
     console.log(userList);
   };
   console.log(">>>.", list);
-  console.log("response", response);
+  console.log("response", userRequest);
   useEffect(() => {
     getData();
   }, [page]);
@@ -153,20 +146,17 @@ export default function UserList() {
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <TableTop numSelected={selected.length} title="لیست کاربران" />
-        <TableContainer>
+        <TableTop title="لیست کاربران" onAdd={onAdd} />
+        <TableContainer style={{ padding: "0 10px" }}>
           <Table
             className={classes.table}
-            aria-labelledby="tableTitle"
             size={"medium"}
-            aria-label="enhanced table"
+            style={{ paddingRight: 10 }}
           >
             <TableHeader
               classes={classes}
-              numSelected={selected.length}
               order={order}
               orderBy={orderBy}
-              onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
               rowCount={list.length}
               headCells={headCells}
@@ -174,65 +164,48 @@ export default function UserList() {
             <TableBody>
               {stableSort(list, getComparator(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row, index) => {
-                  const isItemSelected = isSelected(row.id);
-                  const labelId = `enhanced-table-checkbox-${index}`;
-
+                .map((row) => {
                   return (
                     <TableRow
                       hover
-                      onClick={(event) => handleClick(event, row.id)}
-                      role="checkbox"
-                      aria-checked={isItemSelected}
                       tabIndex={-1}
                       key={row.id}
-                      selected={isItemSelected}
+                      style={{ paddingRight: 10 }}
                     >
-                      <TableCell padding="checkbox">
-                        <Checkbox
-                          checked={isItemSelected}
-                          inputProps={{ "aria-labelledby": labelId }}
+                      <TableCell padding="none">{row.id}</TableCell>
+                      <TableCell padding="none">{row.email}</TableCell>
+                      <TableCell padding="none">{row.first_name}</TableCell>
+                      <TableCell padding="none">{row.last_name}</TableCell>
+                      <TableCell padding="none">
+                        <TableRowMenu
+                          options={[
+                            { id: "delete", title: "حذف" },
+                            { id: "edit", title: "ویرایش" },
+                          ]}
+                          hadleAction={(type) => handleAction(row.id, type)}
                         />
                       </TableCell>
-                      <TableCell
-                        align={"right"}
-                        component="th"
-                        id={labelId}
-                        scope="row"
-                        padding="none"
-                      >
-                        {row.id}
-                      </TableCell>
-                      <TableCell
-                        align={"right"}
-                        component="th"
-                        id={labelId}
-                        scope="row"
-                        padding="none"
-                      >
-                        {row.email}
-                      </TableCell>
-                      <TableCell align="right">{row.first_name}</TableCell>
-                      <TableCell align="right">{row.last_name}</TableCell>
                     </TableRow>
                   );
                 })}
-              {emptyRows > 0 && (
-                <TableRow style={{ height: 53 * emptyRows }}>
-                  <TableCell colSpan={6} />
+              {!list.length && !userRequest.pending && (
+                <TableRow style={{ height: 53 }}>
+                  <TableCell colSpan={6} style={{ textAlign: "center" }}>
+                    <Typography variant="h6">
+                      داده ای برای نمایش وجود ندارد
+                    </Typography>
+                  </TableCell>
                 </TableRow>
               )}
             </TableBody>
           </Table>
         </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
+        <TablePaging
           count={list.length}
-          rowsPerPage={rowsPerPage}
+          handleChangePage={handleChangePage}
+          handleChangeRowsPerPage={handleChangeRowsPerPage}
           page={page}
-          onChangePage={handleChangePage}
-          onChangeRowsPerPage={handleChangeRowsPerPage}
+          rowsPerPage={rowsPerPage}
         />
       </Paper>
     </div>

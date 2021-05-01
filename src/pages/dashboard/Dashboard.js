@@ -47,11 +47,7 @@ export default function Dashboard(props) {
   var [mainChartState, setMainChartState] = useState("monthly");
 
   const onClickPaper = (type) => {
-    const types = {
-      buy: "buy-list",
-      buy: "buy-list",
-    };
-    history.push("/app/user-list");
+    history.push(`/app/${type}`);
   };
   return (
     <>
@@ -124,7 +120,7 @@ export default function Dashboard(props) {
           <Paper
             icon="manage_accounts"
             onClick={() => {
-              onClickPaper("users");
+              onClickPaper("user-list");
             }}
           >
             <div className={classes.paperTitle}>

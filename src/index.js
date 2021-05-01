@@ -12,16 +12,19 @@ import * as serviceWorker from "./serviceWorker";
 import { LayoutProvider } from "./context/LayoutContext";
 import { UserProvider } from "./context/UserContext";
 import store from "./redux/store";
+import RTLProvider from "./themes/RTL";
 
 ReactDOM.render(
   <Provider store={store}>
     <LayoutProvider>
       <UserProvider>
         <ThemeProvider theme={Themes.default}>
-          <CssBaseline />
-          <App />
-          <Alert />
-          <Dialog />
+          <RTLProvider>
+            <CssBaseline />
+            <App />
+            <Alert />
+            <Dialog />
+          </RTLProvider>
         </ThemeProvider>
       </UserProvider>
     </LayoutProvider>
