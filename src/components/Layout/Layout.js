@@ -7,7 +7,8 @@ import Header from "../Header/Header";
 import Sidebar from "../Sidebar";
 
 import Dashboard from "../../pages/dashboard";
-import Users from "../../pages/users";
+import UserList from "../../pages/users";
+import UserDetail from "../../pages/users/detail";
 
 import Typography from "../../pages/typography";
 import Notifications from "../../pages/notifications";
@@ -39,7 +40,8 @@ function Layout(props) {
           <Switch>
             <Route path="/app/dashboard" component={Dashboard} />
             <Route path="/app/buy-list" component={Typography} />
-            <Route path="/app/user-list" component={Users} />
+            <Route path="/app/user-list" component={UserList} />
+            <Route path="/app/user-detail" component={UserDetail} />
             <Route path="/app/sell-list" component={Typography} />
             <Route path="/app/cash-list" component={Typography} />
             <Route path="/app/personel-list" component={Typography} />

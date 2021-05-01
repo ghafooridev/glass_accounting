@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import {
   Table,
@@ -92,6 +93,7 @@ export default function UserList() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [list, setList] = useState([]);
+  const history = useHistory();
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -110,6 +112,7 @@ export default function UserList() {
 
   const onAdd = () => {
     console.log("x");
+    history.push("/app/user-detail");
   };
 
   const handleAction = (id, type) => {
@@ -129,7 +132,7 @@ export default function UserList() {
 
   const userRequest = useApi({
     method: "get",
-    url: `/api/users?${convertParamsToQueryString()}`,
+    url: `/api/users?${convertParamsToQueryString({ page, order, orderBy })}`,
   });
 
   const getData = async () => {
@@ -141,7 +144,7 @@ export default function UserList() {
   console.log("response", userRequest);
   useEffect(() => {
     getData();
-  }, [page]);
+  }, [page, order]);
 
   return (
     <div className={classes.root}>

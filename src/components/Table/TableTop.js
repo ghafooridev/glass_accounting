@@ -64,7 +64,7 @@ const TableTop = (props) => {
           </IconButton>
         </Tooltip>
         {typeof onAdd === "function" && (
-          <Button variant="contained" color="primary">
+          <Button variant="contained" color="primary" onClick={onAdd}>
             افزودن
             <span class="material-icons-round">add</span>
           </Button>
