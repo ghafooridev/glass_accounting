@@ -3,7 +3,6 @@ import {
   AppBar,
   Toolbar,
   IconButton,
-  InputBase,
   Menu,
   MenuItem,
   Fab,
@@ -13,7 +12,6 @@ import {
   MailOutline as MailIcon,
   NotificationsNone as NotificationsIcon,
   Person as AccountIcon,
-  Search as SearchIcon,
   Send as SendIcon,
   ArrowForward as ArrowForwardIcon,
 } from "@material-ui/icons";
@@ -24,7 +22,6 @@ import useStyles from "./styles";
 
 // components
 import { Badge, Typography } from "../Wrappers";
-import Notification from "../Notification/Notification";
 import UserAvatar from "../UserAvatar/UserAvatar";
 
 // context
@@ -139,7 +136,7 @@ export default function Header(props) {
           سیستم حسابداری
         </Typography>
         <div className={classes.grow} />
-       
+
         <IconButton
           color="inherit"
           aria-haspopup="true"
@@ -252,7 +249,7 @@ export default function Header(props) {
               onClick={() => setNotificationsMenu(null)}
               className={classes.headerMenuItem}
             >
-              <Notification {...notification} typographyVariant="inherit" />
+              {/* <Notification {...notification} typographyVariant="inherit" /> */}
             </MenuItem>
           ))}
         </Menu>

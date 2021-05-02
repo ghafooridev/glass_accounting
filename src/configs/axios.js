@@ -6,7 +6,10 @@ import AlertAction from "../redux/actions/AlertAction";
 
 const http = axios.create({
   baseURL: constants.API_ADDRESS,
-  headers: {},
+  headers: {
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Credentials": "true",
+  },
   adapter: cacheAdapterEnhancer(axios.defaults.adapter),
 });
 

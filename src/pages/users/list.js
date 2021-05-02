@@ -10,7 +10,7 @@ import {
   Paper,
   Typography,
 } from "@material-ui/core";
-
+import Avatar from "../../components/Avatar";
 import TableRowMenu from "../../components/Table/TableRowMenu";
 import TableTop from "../../components/Table/TableTop";
 import TableHeader from "../../components/Table/TableHead";
@@ -43,22 +43,25 @@ function stableSort(array, comparator) {
   });
   return stabilizedThis.map((el) => el[0]);
 }
-
 const headCells = [
   {
-    id: "id",
-    numeric: false,
-    disablePadding: true,
-    label: "id",
+    id: "avatar",
   },
-  { id: "email", numeric: true, disablePadding: false, label: "email" },
   {
-    id: "first_name",
-    numeric: true,
-    disablePadding: false,
-    label: "first_name",
+    id: "userName",
+    label: "نام کاربری",
   },
-  { id: "last_name", numeric: true, disablePadding: false, label: "last_name" },
+  {
+    id: "firstName",
+    label: "نام",
+  },
+  { id: "lastName", label: "نام خانوادگی" },
+  {
+    id: "mobile",
+    label: "موبایل",
+  },
+  { id: "phone", label: "تلفن" },
+  { id: "address", label: "آدرسی" },
   { id: "action" },
 ];
 
@@ -132,7 +135,7 @@ export default function UserList() {
 
   const userRequest = useApi({
     method: "get",
-    url: `/api/users?${convertParamsToQueryString({ page, order, orderBy })}`,
+    url: `users?${convertParamsToQueryString({ page, order, orderBy })}`,
   });
 
   const getData = async () => {
@@ -175,10 +178,15 @@ export default function UserList() {
                       key={row.id}
                       style={{ paddingRight: 10 }}
                     >
-                      <TableCell padding="none">{row.id}</TableCell>
-                      <TableCell padding="none">{row.email}</TableCell>
-                      <TableCell padding="none">{row.first_name}</TableCell>
-                      <TableCell padding="none">{row.last_name}</TableCell>
+                      <TableCell padding="none">
+                        <Avatar usename={row.userName} src={row.avatar} />
+                      </TableCell>
+                      <TableCell padding="none">{row.userName}</TableCell>
+                      <TableCell padding="none">{row.firstName}</TableCell>
+                      <TableCell padding="none">{row.lastName}</TableCell>
+                      <TableCell padding="none">{row.mobile}</TableCell>
+                      <TableCell padding="none">{row.phone}</TableCell>
+                      <TableCell padding="none">{row.address}</TableCell>
                       <TableCell padding="none">
                         <TableRowMenu
                           options={[

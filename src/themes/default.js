@@ -1,5 +1,3 @@
-import tinycolor from "tinycolor2";
-
 const primary = "#536DFE";
 const secondary = "#FF5C93";
 const warning = "#FFC260";
@@ -15,29 +13,29 @@ const defaultTheme = {
   palette: {
     primary: {
       main: primary,
-      light: tinycolor(primary).lighten(lightenRate).toHexString(),
-      dark: tinycolor(primary).darken(darkenRate).toHexString(),
+      light: primary,
+      dark: primary,
     },
     secondary: {
       main: secondary,
-      light: tinycolor(secondary).lighten(lightenRate).toHexString(),
-      dark: tinycolor(secondary).darken(darkenRate).toHexString(),
+      light: secondary,
+      dark: secondary,
       contrastText: "#FFFFFF",
     },
     warning: {
       main: warning,
-      light: tinycolor(warning).lighten(lightenRate).toHexString(),
-      dark: tinycolor(warning).darken(darkenRate).toHexString(),
+      light: warning,
+      dark: warning,
     },
     success: {
       main: success,
-      light: tinycolor(success).lighten(lightenRate).toHexString(),
-      dark: tinycolor(success).darken(darkenRate).toHexString(),
+      light: success,
+      dark: success,
     },
     info: {
       main: info,
-      light: tinycolor(info).lighten(lightenRate).toHexString(),
-      dark: tinycolor(info).darken(darkenRate).toHexString(),
+      light: info,
+      dark: info,
     },
     text: {
       primary: "#6E6E6E",
