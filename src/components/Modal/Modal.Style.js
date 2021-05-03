@@ -1,4 +1,4 @@
-import { makeStyles } from "@material-ui/core/styles"
+import { makeStyles } from "@material-ui/core/styles";
 
 export const styles = makeStyles((theme) => ({
   container: {
@@ -11,4 +11,9 @@ export const styles = makeStyles((theme) => ({
     borderBottom: `1px solid ${theme.palette.grey.light}`,
     padding: "20px",
   },
-}))
+  confirm: {
+    padding: "0px 20px 20px",
+    display: "flex",
+    justifyContent: "flex-end",
+  },
+}));

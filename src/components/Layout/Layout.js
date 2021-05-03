@@ -1,5 +1,6 @@
 import React from "react";
-import { Route, Switch, Redirect, withRouter } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+
 import classnames from "classnames";
 
 import useStyles from "./styles";
@@ -32,33 +33,32 @@ function Layout(props) {
           })}
         >
           <div className={classes.fakeToolbar} />
-          <Switch>
-            <Route path="/app/dashboard" component={Dashboard} />
-            <Route path="/app/buy-list" component={Dashboard} />
-            <Route path="/app/user-list" component={UserList} />
-            <Route path="/app/user-detail" component={UserDetail} />
-            <Route path="/app/sell-list" component={Dashboard} />
-            <Route path="/app/cash-list" component={Dashboard} />
-            <Route path="/app/personel-list" component={Dashboard} />
-            <Route path="/app/customer-list" component={Dashboard} />
-            <Route path="/app/product-list" component={Dashboard} />
 
-            <Route path="/app/typography" component={Dashboard} />
-            <Route path="/app/tables" component={Dashboard} />
-            <Route path="/app/notifications" component={Dashboard} />
-            <Route
-              exact
-              path="/app/ui"
-              render={() => <Redirect to="/app/ui/icons" />}
-            />
-            <Route path="/app/ui/maps" component={Dashboard} />
-            <Route path="/app/ui/icons" component={Dashboard} />
-            <Route path="/app/ui/charts" component={Charts} />
-          </Switch>
+          <Router>
+            <Switch>
+              <Route path="/app/dashboard" component={Dashboard} />
+              <Route path="/app/buy-list" component={Dashboard} />
+              <Route path="/app/user-list" component={UserList} />
+              <Route path="/app/user-detail" component={UserDetail} />
+              <Route path="/app/sell-list" component={Dashboard} />
+              <Route path="/app/cash-list" component={Dashboard} />
+              <Route path="/app/personel-list" component={Dashboard} />
+              <Route path="/app/customer-list" component={Dashboard} />
+              <Route path="/app/product-list" component={Dashboard} />
+
+              <Route path="/app/typography" component={Dashboard} />
+              <Route path="/app/tables" component={Dashboard} />
+              <Route path="/app/notifications" component={Dashboard} />
+
+              <Route path="/app/ui/maps" component={Dashboard} />
+              <Route path="/app/ui/icons" component={Dashboard} />
+              <Route path="/app/ui/charts" component={Charts} />
+            </Switch>
+          </Router>
         </div>
       </>
     </div>
   );
 }
 
-export default withRouter(Layout);
+export default Layout;

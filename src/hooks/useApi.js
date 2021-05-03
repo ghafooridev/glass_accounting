@@ -12,9 +12,15 @@ export const useApi = (args) => {
     setPending(true);
 
     try {
-      const response = await http({ ...args, data });
+      let response;
+      if (args.method === "delete" && data) {
+        const option = { method: "delete", url: `${args.url}/${data}` };
+        response = await http({ ...option });
+      } else {
+        response = await http({ ...args, data });
+      }
       setResult(response);
-      return response;
+      return response.data;
     } catch (e) {
       setResult(null);
       setError(e);

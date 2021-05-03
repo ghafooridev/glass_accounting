@@ -10,20 +10,18 @@ const http = axios.create({
     "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Credentials": "true",
   },
-  adapter: cacheAdapterEnhancer(axios.defaults.adapter),
+  // adapter: cacheAdapterEnhancer(axios.defaults.adapter),
 });
 
-// Request interceptor for API calls
 // http.interceptors.request.use(
 //   async (config) => {
-//     const accessToken = storageService.getItem(constants.ACCESS_TOKEN);
-
-//     config.headers = {
-//       Authorization: `Bearer ${accessToken}`,
-//       "Cache-Control": "no-cache",
-//       Accept: "application/json",
-//     };
-//     return config;
+//     // const accessToken = storageService.getItem(constants.ACCESS_TOKEN);
+//     // config.headers = {
+//     //   Authorization: `Bearer ${accessToken}`,
+//     //   "Cache-Control": "no-cache",
+//     //   Accept: "application/json",
+//     // };
+//     // return config;
 //   },
 //   (error) => {
 //     Promise.reject(error);
@@ -37,14 +35,9 @@ http.interceptors.response.use(
     return config;
   },
   async (error) => {
-    // error Object
-    // {
-    // code: ExcepionsEnum;
-    // message: string;
-    // }
     console.log("error", error.response);
     AlertAction.show({
-      type: "success",
+      type: "error",
       text: "hey",
     });
 

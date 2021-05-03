@@ -17,6 +17,7 @@ import TableHeader from "../../components/Table/TableHead";
 import TablePaging from "../../components/Table/TablePaging";
 import { useApi } from "../../hooks/useApi";
 import { convertParamsToQueryString } from "../../helpers/utils";
+import DialogActions from "../../redux/actions/dialogAction";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -61,7 +62,6 @@ const headCells = [
     label: "موبایل",
   },
   { id: "phone", label: "تلفن" },
-  { id: "address", label: "آدرسی" },
   { id: "action" },
 ];
 
@@ -76,17 +76,6 @@ const useStyles = makeStyles((theme) => ({
   table: {
     minWidth: 750,
   },
-  visuallyHidden: {
-    border: 0,
-    clip: "rect(0 0 0 0)",
-    height: 1,
-    margin: -1,
-    overflow: "hidden",
-    padding: 0,
-    position: "absolute",
-    top: 20,
-    width: 1,
-  },
 }));
 
 export default function UserList() {
@@ -94,7 +83,7 @@ export default function UserList() {
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("email");
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [pageSize, setPageSize] = useState(5);
   const [list, setList] = useState([]);
   const history = useHistory();
 
@@ -109,23 +98,46 @@ export default function UserList() {
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
+    setPageSize(parseInt(event.target.value, 10));
     setPage(0);
   };
 
   const onAdd = () => {
-    console.log("x");
     history.push("/app/user-detail");
   };
 
+  const getUserRequest = useApi({
+    method: "get",
+    url: `user?${convertParamsToQueryString({
+      page,
+      order,
+      orderBy,
+      pageSize,
+    })}`,
+  });
+
+  const deleteUseRequest = useApi({
+    method: "delete",
+    url: `user`,
+  });
+
   const handleAction = (id, type) => {
-    console.log("x", id, type);
     const types = {
       edit: () => {
-        console.log(id, type);
+        history.push(`/app/user-detail?id=${id}`);
       },
       delete: () => {
-        console.log(id, type);
+        DialogActions.show({
+          confirm: true,
+          title: "ایا از حذف این رکورد مطمئن هستید ؟",
+          onAction: async () => {
+            await deleteUseRequest.execute(id);
+            setList(list.filter((item) => item.id !== id));
+            DialogActions.hide();
+          },
+          size: "sm",
+          disableCloseButton: false,
+        });
       },
     };
     if (types[type]) {
@@ -133,18 +145,11 @@ export default function UserList() {
     }
   };
 
-  const userRequest = useApi({
-    method: "get",
-    url: `users?${convertParamsToQueryString({ page, order, orderBy })}`,
-  });
-
   const getData = async () => {
-    const userList = await userRequest.execute();
-    setList(userList.data.data);
-    console.log(userList);
+    const userList = await getUserRequest.execute();
+    setList(userList.data);
   };
-  console.log(">>>.", list);
-  console.log("response", userRequest);
+
   useEffect(() => {
     getData();
   }, [page, order]);
@@ -169,7 +174,7 @@ export default function UserList() {
             />
             <TableBody>
               {stableSort(list, getComparator(order, orderBy))
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .slice(page * pageSize, page * pageSize + pageSize)
                 .map((row) => {
                   return (
                     <TableRow
@@ -186,7 +191,7 @@ export default function UserList() {
                       <TableCell padding="none">{row.lastName}</TableCell>
                       <TableCell padding="none">{row.mobile}</TableCell>
                       <TableCell padding="none">{row.phone}</TableCell>
-                      <TableCell padding="none">{row.address}</TableCell>
+
                       <TableCell padding="none">
                         <TableRowMenu
                           options={[
@@ -199,7 +204,7 @@ export default function UserList() {
                     </TableRow>
                   );
                 })}
-              {!list.length && !userRequest.pending && (
+              {!list.length && !getUserRequest.pending && (
                 <TableRow style={{ height: 53 }}>
                   <TableCell colSpan={6} style={{ textAlign: "center" }}>
                     <Typography variant="h6">
@@ -216,7 +221,7 @@ export default function UserList() {
           handleChangePage={handleChangePage}
           handleChangeRowsPerPage={handleChangeRowsPerPage}
           page={page}
-          rowsPerPage={rowsPerPage}
+          rowsPerPage={pageSize}
         />
       </Paper>
     </div>
