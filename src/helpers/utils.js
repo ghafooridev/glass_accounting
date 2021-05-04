@@ -9,3 +9,7 @@ export const convertParamsToQueryString = (params) => {
 export const getQueryString = (param) => {
   return queryString.parse(window.location.search)[param];
 };
+
+export const getRandomColor = () => {
+  return `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+};

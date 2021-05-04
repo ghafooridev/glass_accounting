@@ -16,7 +16,10 @@ import TableTop from "../../components/Table/TableTop";
 import TableHeader from "../../components/Table/TableHead";
 import TablePaging from "../../components/Table/TablePaging";
 import { useApi } from "../../hooks/useApi";
-import { convertParamsToQueryString } from "../../helpers/utils";
+import {
+  convertParamsToQueryString,
+  getRandomColor,
+} from "../../helpers/utils";
 import DialogActions from "../../redux/actions/dialogAction";
 
 function descendingComparator(a, b, orderBy) {
@@ -184,7 +187,11 @@ export default function UserList() {
                       style={{ paddingRight: 10 }}
                     >
                       <TableCell padding="none">
-                        <Avatar usename={row.userName} src={row.avatar} />
+                        <Avatar
+                          username={row.userName}
+                          src={row.avatar}
+                          color={getRandomColor}
+                        />
                       </TableCell>
                       <TableCell padding="none">{row.userName}</TableCell>
                       <TableCell padding="none">{row.firstName}</TableCell>

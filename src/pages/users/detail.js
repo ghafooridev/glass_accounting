@@ -32,12 +32,9 @@ const useStyles = makeStyles((theme) => ({
 export default function UserList() {
   const classes = useStyles();
   const history = useHistory();
-
   const id = getQueryString("id");
-  const [detail, setDetail] = useState();
-  const { control, handleSubmit, errors } = useForm({
-    defaultValues: { firstName: "aaaa", lastName: "bbb" },
-  });
+  const [detail, setDetail] = useState({});
+  const { control, handleSubmit, errors, reset } = useForm();
   const [isPassword, setIsPassword] = useState(true);
   const addUserRequest = useApi({
     method: "post",
@@ -77,6 +74,10 @@ export default function UserList() {
       getDetail();
     }
   }, []);
+
+  useEffect(() => {
+    reset(detail);
+  }, [reset, detail]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -152,7 +153,7 @@ export default function UserList() {
                           label="نام کاربری"
                           name={name}
                           onChange={onChange}
-                          value={detail?.userName || value}
+                          value={value}
                           error={!!errors.userName}
                           helperText={
                             errors.userName ? errors.userName.message : ""
@@ -176,7 +177,7 @@ export default function UserList() {
                           label="رمز عبور"
                           name={name}
                           onChange={onChange}
-                          value={detail?.password || value}
+                          value={value}
                           error={!!errors.password}
                           helperText={
                             errors.password ? errors.password.message : ""
@@ -223,7 +224,7 @@ export default function UserList() {
                           label="موبایل"
                           name={name}
                           onChange={onChange}
-                          value={detail?.mobile || value}
+                          value={value}
                           error={!!errors.mobile}
                           helperText={
                             errors.mobile ? errors.mobile.message : ""
@@ -256,7 +257,7 @@ export default function UserList() {
                           label="تلفن"
                           name={name}
                           onChange={onChange}
-                          value={detail?.phone || value}
+                          value={value}
                           error={!!errors.phone}
                           helperText={errors.phone ? errors.phone.message : ""}
                           fullWidth
@@ -277,7 +278,7 @@ export default function UserList() {
                           label="آدرس"
                           name={name}
                           onChange={onChange}
-                          value={detail?.address || value}
+                          value={value}
                           error={!!errors.address}
                           helperText={
                             errors.address ? errors.address.message : ""
