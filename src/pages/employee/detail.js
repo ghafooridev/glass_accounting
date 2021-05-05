@@ -15,7 +15,8 @@ import Constant from "../../helpers/constant";
 import clsx from "clsx";
 import { getQueryString } from "../../helpers/utils";
 import CircularProgress from "../../components/CircularProgress";
-
+import { DatePicker } from "@material-ui/pickers";
+import moment from "moment";
 const useStyles = makeStyles((theme) => ({
   root: {
     margin: "0 auto",
@@ -26,6 +27,11 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     paddingBottom: 20,
+  },
+  datePicker: {
+    "& input": {
+      padding: "10px 14px",
+    },
   },
 }));
 
@@ -54,6 +60,7 @@ export default function MainDetail() {
   };
 
   const onSubmit = async (data) => {
+    console.log(data);
     if (id) {
       return await editUserRequest.execute(data);
     }
@@ -78,7 +85,7 @@ export default function MainDetail() {
   useEffect(() => {
     reset(detail);
   }, [reset, detail]);
-
+  const [selectedDate, handleDateChange] = useState(moment());
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       {!detailUserRequest.pending ? (
@@ -95,28 +102,19 @@ export default function MainDetail() {
 
             <Grid container spacing={3}>
               <Fragment>
-                <Grid item lg={6} xs={12}>
-                  <Controller
-                    control={control}
-                    render={({ onChange, value, name }) => {
-                      return (
-                        <TextField
-                          variant="outlined"
-                          label="نام"
-                          name={name}
-                          onChange={onChange}
-                          value={value}
-                          error={!!errors.firstName}
-                          helperText={
-                            errors.firstName ? errors.firstName.message : ""
-                          }
-                          fullWidth
-                          size="small"
-                        />
-                      );
-                    }}
-                    rules={{ required: Constant.VALIDATION.REQUIRED }}
-                    name="firstName"
+                <Grid item lg={6} xs={12} className={classes.datePicker}>
+                  <DatePicker
+                    name="date"
+                    label="تاریخ ثبت"
+                    inputVariant="outlined"
+                    okLabel="تأیید"
+                    cancelLabel="لغو"
+                    labelFunc={(date) =>
+                      date ? date.format("jYYYY/jMM/jDD") : ""
+                    }
+                    value={selectedDate}
+                    onChange={handleDateChange}
+                    style={{ width: "100%" }}
                   />
                 </Grid>
                 <Grid item lg={6} xs={12}>

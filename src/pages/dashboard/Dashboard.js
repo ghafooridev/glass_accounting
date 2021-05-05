@@ -132,7 +132,7 @@ export default function Dashboard(props) {
           <Paper
             icon="supervisor_account"
             onClick={() => {
-              onClickPaper("personel");
+              onClickPaper("employee-list");
             }}
           >
             <div className={classes.paperTitle}>
@@ -144,7 +144,7 @@ export default function Dashboard(props) {
           <Paper
             icon="record_voice_over"
             onClick={() => {
-              onClickPaper("customer");
+              onClickPaper("customer-list");
             }}
           >
             <div className={classes.paperTitle}>

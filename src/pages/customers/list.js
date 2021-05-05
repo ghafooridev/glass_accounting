@@ -8,6 +8,7 @@ import {
   TableRow,
   Paper,
   Typography,
+  Chip,
 } from "@material-ui/core";
 import TableRowMenu from "../../components/Table/TableRowMenu";
 import TableTop from "../../components/Table/TableTop";
@@ -17,12 +18,35 @@ import { useApi } from "../../hooks/useApi";
 import { convertParamsToQueryString } from "../../helpers/utils";
 import DialogActions from "../../redux/actions/dialogAction";
 import styles from "./style";
+import clsx from "clsx";
+import Constant from "../../helpers/constant";
 
+function descendingComparator(a, b, orderBy) {
+  if (b[orderBy] < a[orderBy]) {
+    return -1;
+  }
+  if (b[orderBy] > a[orderBy]) {
+    return 1;
+  }
+  return 0;
+}
+
+function getComparator(order, orderBy) {
+  return order === "desc"
+    ? (a, b) => descendingComparator(a, b, orderBy)
+    : (a, b) => -descendingComparator(a, b, orderBy);
+}
+
+function stableSort(array, comparator) {
+  const stabilizedThis = array.map((el, index) => [el, index]);
+  stabilizedThis.sort((a, b) => {
+    const order = comparator(a[0], b[0]);
+    if (order !== 0) return order;
+    return a[1] - b[1];
+  });
+  return stabilizedThis.map((el) => el[0]);
+}
 const headCells = [
-  {
-    id: "username",
-    label: "نام کاربری",
-  },
   {
     id: "firstName",
     label: "نام",
@@ -36,10 +60,10 @@ const headCells = [
   { id: "action" },
 ];
 
-const MainList = () => {
+export default function MainList() {
   const classes = styles();
   const [order, setOrder] = useState("asc");
-  const [orderBy, setOrderBy] = useState("username");
+  const [orderBy, setOrderBy] = useState("firstName");
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(10);
   const [list, setList] = useState([]);
@@ -61,12 +85,12 @@ const MainList = () => {
   };
 
   const onAdd = () => {
-    history.push("/app/user-detail");
+    history.push("/app/customer-detail");
   };
 
-  const getUserRequest = useApi({
+  const getCustomerRequest = useApi({
     method: "get",
-    url: `user?${convertParamsToQueryString({
+    url: `customer?${convertParamsToQueryString({
       page,
       order,
       orderBy,
@@ -76,13 +100,13 @@ const MainList = () => {
 
   const deleteUseRequest = useApi({
     method: "delete",
-    url: `user`,
+    url: `customer`,
   });
 
   const handleAction = (id, type) => {
     const types = {
       edit: () => {
-        history.push(`/app/user-detail?id=${id}`);
+        history.push(`/app/customer-detail?id=${id}`);
       },
       delete: () => {
         DialogActions.show({
@@ -97,6 +121,9 @@ const MainList = () => {
           disableCloseButton: false,
         });
       },
+      transaction: () => {
+        history.push(`/app/customer-transaction?id=${id}`);
+      },
     };
     if (types[type]) {
       types[type]();
@@ -104,18 +131,18 @@ const MainList = () => {
   };
 
   const getData = async () => {
-    const userList = await getUserRequest.execute();
-    setList(userList.data);
+    const customerList = await getCustomerRequest.execute();
+    setList(customerList.data);
   };
 
   useEffect(() => {
     getData();
-  }, [page, order, pageSize]);
+  }, [page, order]);
 
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <TableTop title="لیست کاربران" onAdd={onAdd} />
+        <TableTop title="لیست مشتریان" onAdd={onAdd} />
         <TableContainer style={{ padding: "0 10px" }}>
           <Table
             className={classes.table}
@@ -131,33 +158,41 @@ const MainList = () => {
               headCells={headCells}
             />
             <TableBody>
-              {list.map((row) => {
-                return (
-                  <TableRow
-                    hover
-                    tabIndex={-1}
-                    key={row.id}
-                    style={{ paddingRight: 10 }}
-                  >
-                    <TableCell padding="none">{row.username}</TableCell>
-                    <TableCell padding="none">{row.firstName}</TableCell>
-                    <TableCell padding="none">{row.lastName}</TableCell>
-                    <TableCell padding="none">{row.mobile}</TableCell>
-                    <TableCell padding="none">{row.phone}</TableCell>
-
-                    <TableCell padding="none">
-                      <TableRowMenu
-                        options={[
-                          { id: "edit", title: "ویرایش" },
-                          { id: "delete", title: "حذف" },
-                        ]}
-                        hadleAction={(type) => handleAction(row.id, type)}
-                      />
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-              {!list.length && !getUserRequest.pending && (
+              {stableSort(list, getComparator(order, orderBy))
+                .slice(page * pageSize, page * pageSize + pageSize)
+                .map((row) => {
+                  return (
+                    <TableRow
+                      hover
+                      tabIndex={-1}
+                      key={row.id}
+                      style={{ paddingRight: 10 }}
+                    >
+                      <TableCell padding="none">{row.customername}</TableCell>
+                      <TableCell padding="none">{row.firstName}</TableCell>
+                      <TableCell padding="none">{row.lastName}</TableCell>
+                      <TableCell padding="none">{row.mobile}</TableCell>
+                      <TableCell padding="none">{row.phone}</TableCell>
+                      <TableCell padding="none">
+                        <Chip
+                          label={Constant.PERSON_STATUS[row.status]}
+                          className={clsx(classes.status, classes[row.status])}
+                        />
+                      </TableCell>
+                      <TableCell padding="none">
+                        <TableRowMenu
+                          options={[
+                            { id: "transaction", title: "تراکنش ها" },
+                            { id: "edit", title: "ویرایش" },
+                            { id: "delete", title: "حذف" },
+                          ]}
+                          hadleAction={(type) => handleAction(row.id, type)}
+                        />
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              {!list.length && !getCustomerRequest.pending && (
                 <TableRow style={{ height: 53 }}>
                   <TableCell colSpan={6} style={{ textAlign: "center" }}>
                     <Typography variant="h6">
@@ -179,6 +214,4 @@ const MainList = () => {
       </Paper>
     </div>
   );
-};
-
-export default MainList;
+}

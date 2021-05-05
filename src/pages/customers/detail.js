@@ -7,14 +7,32 @@ import {
   Typography,
   TextField,
   Button,
-  InputAdornment,
+  MenuItem,
 } from "@material-ui/core";
 import { useForm, Controller } from "react-hook-form";
 import { useApi } from "../../hooks/useApi";
 import Constant from "../../helpers/constant";
-import clsx from "clsx";
 import { getQueryString } from "../../helpers/utils";
 import CircularProgress from "../../components/CircularProgress";
+
+const currencies = [
+  {
+    value: "USD",
+    label: "$",
+  },
+  {
+    value: "EUR",
+    label: "€",
+  },
+  {
+    value: "BTC",
+    label: "฿",
+  },
+  {
+    value: "JPY",
+    label: "¥",
+  },
+];
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -35,37 +53,32 @@ export default function MainDetail() {
   const id = getQueryString("id");
   const [detail, setDetail] = useState({});
   const { control, handleSubmit, errors, reset } = useForm();
-  const [isPassword, setIsPassword] = useState(true);
-  const addUserRequest = useApi({
+  const addCustomerRequest = useApi({
     method: "post",
-    url: `user`,
+    url: `customer`,
   });
-  const editUserRequest = useApi({
+  const editCustomerRequest = useApi({
     method: "put",
-    url: `user/${id}`,
+    url: `customer/${id}`,
   });
-  const detailUserRequest = useApi({
+  const detailCustomerRequest = useApi({
     method: "get",
-    url: `user/${id}`,
+    url: `customer/${id}`,
   });
-
-  const onChangeViewClick = function () {
-    setIsPassword(!isPassword);
-  };
 
   const onSubmit = async (data) => {
     if (id) {
-      return await editUserRequest.execute(data);
+      return await editCustomerRequest.execute(data);
     }
-    await addUserRequest.execute(data);
+    await addCustomerRequest.execute(data);
   };
 
   const onReject = () => {
-    history.push("/app/user-list");
+    history.push("/app/customer-list");
   };
 
   const getDetail = async () => {
-    const detail = await detailUserRequest.execute();
+    const detail = await detailCustomerRequest.execute();
     setDetail(detail.data);
   };
 
@@ -81,7 +94,7 @@ export default function MainDetail() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      {!detailUserRequest.pending ? (
+      {!detailCustomerRequest.pending ? (
         <Grid item lg={6} sm={12} className={classes.root}>
           <Paper className={classes.paper}>
             <Typography
@@ -90,7 +103,7 @@ export default function MainDetail() {
               id="tableTitle"
               component="div"
             >
-              {id ? "ویرایش کاربر" : "افزودن کاربر"}
+              {id ? "ویرایش مشتری" : "افزودن مشتری"}
             </Typography>
 
             <Grid container spacing={3}>
@@ -150,68 +163,18 @@ export default function MainDetail() {
                       return (
                         <TextField
                           variant="outlined"
-                          label="نام کاربری"
+                          label="تلفن"
                           name={name}
                           onChange={onChange}
                           value={value}
-                          error={!!errors.username}
-                          helperText={
-                            errors.username ? errors.username.message : ""
-                          }
+                          error={!!errors.phone}
+                          helperText={errors.phone ? errors.phone.message : ""}
                           fullWidth
                           size="small"
                         />
                       );
                     }}
-                    rules={{ required: Constant.VALIDATION.REQUIRED }}
-                    name="username"
-                  />
-                </Grid>
-                <Grid item lg={6} xs={12}>
-                  <Controller
-                    control={control}
-                    render={({ onChange, value, name }) => {
-                      return (
-                        <TextField
-                          variant="outlined"
-                          label="رمز عبور"
-                          name={name}
-                          onChange={onChange}
-                          value={value}
-                          error={!!errors.password}
-                          helperText={
-                            errors.password ? errors.password.message : ""
-                          }
-                          fullWidth
-                          size="small"
-                          type={isPassword ? "password" : "text"}
-                          InputProps={{
-                            endAdornment: (
-                              <InputAdornment position="end">
-                                <i
-                                  style={{ cursor: "pointer" }}
-                                  className={clsx(
-                                    "material-icons-round",
-                                    classes.icon,
-                                  )}
-                                  onClick={onChangeViewClick}
-                                >
-                                  {isPassword ? "visibility_off" : "visibility"}
-                                </i>
-                              </InputAdornment>
-                            ),
-                          }}
-                        />
-                      );
-                    }}
-                    rules={{
-                      required: Constant.VALIDATION.REQUIRED,
-                      minLength: {
-                        value: 5,
-                        message: Constant.VALIDATION.PASSWORD,
-                      },
-                    }}
-                    name="password"
+                    name="phone"
                   />
                 </Grid>
                 <Grid item lg={6} xs={12}>
@@ -253,19 +216,29 @@ export default function MainDetail() {
                     render={({ onChange, value, name }) => {
                       return (
                         <TextField
-                          variant="outlined"
-                          label="تلفن"
-                          name={name}
-                          onChange={onChange}
+                          select
+                          label="دسته بندی"
                           value={value}
-                          error={!!errors.phone}
-                          helperText={errors.phone ? errors.phone.message : ""}
+                          onChange={onChange}
+                          variant="outlined"
+                          name={name}
+                          error={!!errors.category}
+                          helperText={
+                            errors.category ? errors.category.message : ""
+                          }
                           fullWidth
                           size="small"
-                        />
+                        >
+                          {currencies.map((option) => (
+                            <MenuItem key={option.value} value={option.value}>
+                              {option.label}
+                            </MenuItem>
+                          ))}
+                        </TextField>
                       );
                     }}
-                    name="phone"
+                    rules={{ required: Constant.VALIDATION.REQUIRED }}
+                    name="username"
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -291,6 +264,31 @@ export default function MainDetail() {
                     name="address"
                   />
                 </Grid>
+                <Grid item xs={12}>
+                  <Controller
+                    control={control}
+                    render={({ onChange, value, name }) => {
+                      return (
+                        <TextField
+                          label="توضیحات"
+                          multiline
+                          rows={4}
+                          variant="outlined"
+                          name={name}
+                          onChange={onChange}
+                          value={value}
+                          fullWidth
+                          error={!!errors.description}
+                          helperText={
+                            errors.description ? errors.description.message : ""
+                          }
+                        />
+                      );
+                    }}
+                    name="address"
+                  />
+                </Grid>
+
                 <Grid
                   item
                   xs={12}

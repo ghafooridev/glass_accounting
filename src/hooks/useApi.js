@@ -8,17 +8,19 @@ export const useApi = (args) => {
   const [result, setResult] = useState();
   const [error, setError] = useState();
 
-  const execute = async function (data) {
+  const execute = async function (data, urlParams) {
     setPending(true);
 
     try {
       let response;
-      if (args.method === "delete" && data) {
-        const option = { method: "delete", url: `${args.url}/${data}` };
-        response = await http({ ...option });
+
+      if (urlParams) {
+        const url = `${args.url}/${urlParams}`;
+        response = await http({ ...args, url, data });
       } else {
         response = await http({ ...args, data });
       }
+
       setResult(response);
       return response.data;
     } catch (e) {

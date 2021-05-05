@@ -10,6 +10,7 @@ const Constant = {
   },
   STORAGE: {
     CURRENT_USER: "CURRENT_USER",
+    TOKEN: "TOKEN",
     MODE: "MODE",
     CURRENT_LINK: "CURRENT_LINK",
   },
@@ -19,5 +20,13 @@ const Constant = {
     PASSWORD: "رمز عبور باید حداقل 5 حرف یا رقم باشد",
   },
   MESSAGES: {},
+  ERROR_MESSAGE: {
+    BAD_CREDENTIAL: "نام کاربری یا رمز عبور اشتباه است",
+  },
+  PERSON_STATUS: {
+    BEDEHKAR: "بدهکار",
+    BESTANKAR: "بستانکار",
+    TALABKAR: "طلبکار",
+  },
 };
 export default Constant;

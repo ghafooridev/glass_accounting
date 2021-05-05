@@ -29,16 +29,24 @@ const http = axios.create({
 // );
 
 http.interceptors.response.use(
-  (config) => {
+  (result) => {
     // Do something before request is sent
-    console.log("success", config);
-    return config;
+    const { method, url } = result.config;
+    if (method !== "get") {
+      if (url !== "user/login") {
+        AlertAction.show({
+          type: "success",
+          text: "اطلاعات با موفقیت ثبت شد",
+        });
+      }
+    }
+    return result;
   },
   async (error) => {
-    console.log("error", error.response);
+    const { code } = error.response.data.error;
     AlertAction.show({
       type: "error",
-      text: "hey",
+      text: constants.ERROR_MESSAGE[code],
     });
 
     // TODO : handle 4xx error here and calling refresh token

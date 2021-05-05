@@ -3,9 +3,7 @@ const secondary = "#FF5C93";
 const warning = "#FFC260";
 const success = "#3CD4A0";
 const info = "#9013FE";
-
-const lightenRate = 7.5;
-const darkenRate = 15;
+const gray = "#B9B9B9";
 
 const defaultTheme = {
   direction: "rtl",
@@ -17,6 +15,12 @@ const defaultTheme = {
       dark: primary,
     },
     secondary: {
+      main: secondary,
+      light: secondary,
+      dark: secondary,
+      contrastText: "#FFFFFF",
+    },
+    danger: {
       main: secondary,
       light: secondary,
       dark: secondary,
@@ -36,6 +40,11 @@ const defaultTheme = {
       main: info,
       light: info,
       dark: info,
+    },
+    gray: {
+      main: gray,
+      light: gray,
+      dark: gray,
     },
     text: {
       primary: "#6E6E6E",
