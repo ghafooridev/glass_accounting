@@ -17,6 +17,7 @@ import Constant from "../../helpers/constant";
 import { getQueryString } from "../../helpers/utils";
 import CircularProgress from "../../components/CircularProgress";
 import clsx from "clsx";
+import { v4 as uuidv4 } from "uuid";
 
 const currencies = [
   {
@@ -75,6 +76,7 @@ export default function MainDetail() {
   });
 
   const onAddAmount = function () {
+    const randomId = uuidv4();
     const newAmount = (
       <Fragment>
         <Grid item lg={3} xs={12}>
@@ -160,7 +162,15 @@ export default function MainDetail() {
         </Grid>
         <Grid item lg={1} xs={12}>
           <Tooltip title="جستجو در جدول">
-            <IconButton aria-label="filter list" onClick={() => {}}>
+            <IconButton
+              id={randomId}
+              aria-label="filter list"
+              onClick={() => {
+                setAmountArray(
+                  amountArray.filter((item) => item.id !== randomId),
+                );
+              }}
+            >
               <i className={clsx("material-icons-round", classes.deleteIcon)}>
                 clear
               </i>
@@ -170,7 +180,7 @@ export default function MainDetail() {
       </Fragment>
     );
 
-    setAmountArray([...amountArray, newAmount]);
+    setAmountArray([...amountArray, { element: newAmount, id: randomId }]);
   };
 
   const onSubmit = async (data) => {
@@ -310,7 +320,7 @@ export default function MainDetail() {
                   </Button>
                 </Grid>
                 {amountArray.map((item, index) => {
-                  return item;
+                  return item.element;
                 })}
                 <Grid
                   item

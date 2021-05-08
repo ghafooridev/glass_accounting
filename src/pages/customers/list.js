@@ -57,6 +57,7 @@ const headCells = [
     label: "موبایل",
   },
   { id: "phone", label: "تلفن" },
+  { id: "status", label: "وضعیت" },
   { id: "action" },
 ];
 
@@ -168,7 +169,6 @@ export default function MainList() {
                       key={row.id}
                       style={{ paddingRight: 10 }}
                     >
-                      <TableCell padding="none">{row.customername}</TableCell>
                       <TableCell padding="none">{row.firstName}</TableCell>
                       <TableCell padding="none">{row.lastName}</TableCell>
                       <TableCell padding="none">{row.mobile}</TableCell>

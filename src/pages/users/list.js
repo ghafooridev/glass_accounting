@@ -41,8 +41,9 @@ const MainList = () => {
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("username");
   const [page, setPage] = useState(0);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(5);
   const [list, setList] = useState([]);
+  const [total, setTotal] = useState(0);
   const history = useHistory();
 
   const handleRequestSort = (event, property) => {
@@ -106,6 +107,7 @@ const MainList = () => {
   const getData = async () => {
     const userList = await getUserRequest.execute();
     setList(userList.data);
+    setTotal(userList.total);
   };
 
   useEffect(() => {
@@ -170,7 +172,7 @@ const MainList = () => {
           </Table>
         </TableContainer>
         <TablePaging
-          count={list.length}
+          count={total}
           handleChangePage={handleChangePage}
           handleChangeRowsPerPage={handleChangeRowsPerPage}
           page={page}

@@ -33,7 +33,7 @@ const structure = [
   {
     id: 1,
     label: "کالاها",
-    link: "/app/products",
+    link: "/app/product-list",
     icon: <TypographyIcon />,
   },
   {

@@ -11,11 +11,8 @@ import {
 import { Inbox as InboxIcon } from "@material-ui/icons";
 import { Link } from "react-router-dom";
 import classnames from "classnames";
-
-// styles
+import { useHistory } from "react-router-dom";
 import useStyles from "./styles";
-
-// components
 import Dot from "../Dot";
 
 export default function SidebarLink({
@@ -29,8 +26,12 @@ export default function SidebarLink({
   type,
 }) {
   var classes = useStyles();
+  const history = useHistory();
 
-  // local
+  const onClick = (link) => {
+    history.push(link);
+  };
+
   var [isOpen, setIsOpen] = useState(false);
   var isLinkActive =
     link &&
@@ -61,7 +62,7 @@ export default function SidebarLink({
         }}
         disableRipple
       >
-        <a className={classes.externalLink} href={link}>
+        <div className={classes.externalLink} href={link}>
           <ListItemIcon
             className={classnames(classes.linkIcon, {
               [classes.linkIconActive]: isLinkActive,
@@ -78,7 +79,7 @@ export default function SidebarLink({
             }}
             primary={label}
           />
-        </a>
+        </div>
       </ListItem>
     );
   }
@@ -86,8 +87,6 @@ export default function SidebarLink({
     return (
       <ListItem
         button
-        component={link && Link}
-        to={link}
         className={classes.link}
         classes={{
           root: classnames(classes.linkRoot, {
@@ -106,6 +105,9 @@ export default function SidebarLink({
             {nested ? <Dot color={isLinkActive && "primary"} /> : icon}
           </ListItemIcon>
           <ListItemText
+            onClick={() => {
+              onClick(link);
+            }}
             classes={{
               primary: classnames(classes.linkText, {
                 [classes.linkTextActive]: isLinkActive,

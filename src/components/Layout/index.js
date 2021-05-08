@@ -32,16 +32,16 @@ function Layout(props) {
   return (
     <div className={classes.root}>
       <>
-        <Header history={props.history} />
-        <Sidebar />
-        <div
-          className={classnames(classes.content, {
-            [classes.contentShift]: layoutState.isSidebarOpened,
-          })}
-        >
-          <div className={classes.fakeToolbar} />
+        <Router>
+          <Header history={props.history} />
+          <Sidebar />
+          <div
+            className={classnames(classes.content, {
+              [classes.contentShift]: layoutState.isSidebarOpened,
+            })}
+          >
+            <div className={classes.fakeToolbar} />
 
-          <Router>
             <Switch>
               <Route path="/app/dashboard" component={Dashboard} />
 
@@ -69,8 +69,8 @@ function Layout(props) {
 
               <Route path="/app/setting" component={Setting} />
             </Switch>
-          </Router>
-        </div>
+          </div>
+        </Router>
       </>
     </div>
   );

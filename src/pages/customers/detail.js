@@ -8,6 +8,7 @@ import {
   TextField,
   Button,
   MenuItem,
+  Select,
 } from "@material-ui/core";
 import { useForm, Controller } from "react-hook-form";
 import { useApi } from "../../hooks/useApi";
@@ -52,7 +53,9 @@ export default function MainDetail() {
   const history = useHistory();
   const id = getQueryString("id");
   const [detail, setDetail] = useState({});
+  const [category, setCategory] = useState([]);
   const { control, handleSubmit, errors, reset } = useForm();
+
   const addCustomerRequest = useApi({
     method: "post",
     url: `customer`,
@@ -64,6 +67,11 @@ export default function MainDetail() {
   const detailCustomerRequest = useApi({
     method: "get",
     url: `customer/${id}`,
+  });
+
+  const customerCategoryRequest = useApi({
+    method: "get",
+    url: `customer/category`,
   });
 
   const onSubmit = async (data) => {
@@ -82,7 +90,13 @@ export default function MainDetail() {
     setDetail(detail.data);
   };
 
+  const getCustomerCategory = async () => {
+    const detail = await customerCategoryRequest.execute();
+    setCategory(detail.data);
+  };
+
   useEffect(() => {
+    getCustomerCategory();
     if (id) {
       getDetail();
     }
@@ -91,7 +105,6 @@ export default function MainDetail() {
   useEffect(() => {
     reset(detail);
   }, [reset, detail]);
-
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       {!detailCustomerRequest.pending ? (
@@ -222,14 +235,16 @@ export default function MainDetail() {
                           onChange={onChange}
                           variant="outlined"
                           name={name}
-                          error={!!errors.category}
+                          error={!!errors.customerCategory}
                           helperText={
-                            errors.category ? errors.category.message : ""
+                            errors.customerCategory
+                              ? errors.customerCategory.message
+                              : ""
                           }
                           fullWidth
                           size="small"
                         >
-                          {currencies.map((option) => (
+                          {category.map((option) => (
                             <MenuItem key={option.value} value={option.value}>
                               {option.label}
                             </MenuItem>
@@ -238,7 +253,7 @@ export default function MainDetail() {
                       );
                     }}
                     rules={{ required: Constant.VALIDATION.REQUIRED }}
-                    name="username"
+                    name="customerCategory"
                   />
                 </Grid>
                 <Grid item xs={12}>
