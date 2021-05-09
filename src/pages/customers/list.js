@@ -10,6 +10,7 @@ import {
   Typography,
   Chip,
 } from "@material-ui/core";
+import clsx from "clsx";
 import TableRowMenu from "../../components/Table/TableRowMenu";
 import TableTop from "../../components/Table/TableTop";
 import TableHeader from "../../components/Table/TableHead";
@@ -18,7 +19,7 @@ import { useApi } from "../../hooks/useApi";
 import { convertParamsToQueryString } from "../../helpers/utils";
 import DialogActions from "../../redux/actions/dialogAction";
 import styles from "./style";
-import clsx from "clsx";
+import FilterComponent from "./filter";
 import Constant from "../../helpers/constant";
 
 function descendingComparator(a, b, orderBy) {
@@ -64,6 +65,7 @@ const headCells = [
 export default function MainList() {
   const classes = styles();
   const [order, setOrder] = useState("asc");
+  const [search, setSearch] = useState();
   const [orderBy, setOrderBy] = useState("firstName");
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(10);
@@ -96,6 +98,7 @@ export default function MainList() {
       order,
       orderBy,
       pageSize,
+      search,
     })}`,
   });
 
@@ -131,6 +134,14 @@ export default function MainList() {
     }
   };
 
+  const onSearch = (value) => {
+    setSearch(value);
+  };
+
+  const onFilter = (data) => {
+    console.log(data);
+  };
+
   const getData = async () => {
     const customerList = await getCustomerRequest.execute();
     setList(customerList.data);
@@ -138,12 +149,17 @@ export default function MainList() {
 
   useEffect(() => {
     getData();
-  }, [page, order]);
+  }, [page, order, search]);
 
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <TableTop title="لیست مشتریان" onAdd={onAdd} />
+        <TableTop
+          title="لیست مشتریان"
+          onAdd={onAdd}
+          FilterComponent={<FilterComponent onFilter={onFilter} />}
+          handleSearch={onSearch}
+        />
         <TableContainer style={{ padding: "0 10px" }}>
           <Table
             className={classes.table}
@@ -158,6 +174,7 @@ export default function MainList() {
               rowCount={list.length}
               headCells={headCells}
             />
+
             <TableBody>
               {stableSort(list, getComparator(order, orderBy))
                 .slice(page * pageSize, page * pageSize + pageSize)

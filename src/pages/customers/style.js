@@ -14,13 +14,13 @@ export default makeStyles((theme) => ({
   status: {
     color: "#fff",
   },
-  TALABKAR: {
+  CREDITOR: {
     backgroundColor: theme.palette.success.main,
   },
-  BESTANKAR: {
+  NODEBT: {
     backgroundColor: theme.palette.gray.main,
   },
-  BEDEHKAR: {
+  DEBTIOR: {
     backgroundColor: theme.palette.secondary.main,
   },
 }));

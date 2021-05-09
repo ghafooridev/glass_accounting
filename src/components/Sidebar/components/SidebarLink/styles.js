@@ -1,6 +1,6 @@
 import { makeStyles } from "@material-ui/styles";
 
-export default makeStyles(theme => ({
+export default makeStyles((theme) => ({
   link: {
     textDecoration: "none",
     "&:hover, &:focus": {
@@ -8,10 +8,10 @@ export default makeStyles(theme => ({
     },
   },
   externalLink: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    textDecoration: 'none'
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    textDecoration: "none",
   },
   linkActive: {
     backgroundColor: theme.palette.background.light,
@@ -46,7 +46,7 @@ export default makeStyles(theme => ({
     opacity: 0,
   },
   nestedList: {
-    paddingLeft: theme.spacing(2) + 30,
+    paddingLeft: theme.spacing(2) + 10,
   },
   sectionTitle: {
     marginLeft: theme.spacing(4.5),
@@ -54,8 +54,8 @@ export default makeStyles(theme => ({
     marginBottom: theme.spacing(2),
   },
   divider: {
-    marginTop: theme.spacing(2),
-    marginBottom: theme.spacing(4),
+    marginTop: 10,
+    marginBottom: 10,
     height: 1,
     backgroundColor: "#D8D8D880",
   },

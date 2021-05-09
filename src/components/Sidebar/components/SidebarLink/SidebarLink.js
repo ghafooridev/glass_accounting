@@ -162,7 +162,6 @@ export default function SidebarLink({
                 key={childrenLink && childrenLink.link}
                 location={location}
                 isSidebarOpened={isSidebarOpened}
-                classes={classes}
                 nested
                 {...childrenLink}
               />

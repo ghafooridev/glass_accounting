@@ -29,47 +29,79 @@ import {
 } from "../../context/LayoutContext";
 
 const structure = [
-  { id: 0, label: "داشبورد", link: "/app/dashboard", icon: <HomeIcon /> },
+  {
+    id: 0,
+    label: "داشبورد",
+    link: "/app/dashboard",
+    icon: <i className="material-icons-round">home</i>,
+  },
   {
     id: 1,
     label: "کالاها",
     link: "/app/product-list",
-    icon: <TypographyIcon />,
+    icon: <i className="material-icons-round">inventory_2</i>,
+  },
+  {
+    id: 1,
+    label: "انبار ها",
+    link: "/app/stock-list",
+    icon: <i className="material-icons-round">storefront</i>,
   },
   {
     id: 2,
     label: "خرید",
-    link: "/app/sells",
-    icon: <LibraryIcon />,
+    link: "/app/sell-list",
+    icon: <i className="material-icons-round">sell</i>,
   },
   {
     id: 3,
     label: "فروش",
-    link: "/app/buys",
-    icon: <SupportIcon />,
+    link: "/app/buy-list",
+    icon: <i className="material-icons-round">shopping_basket</i>,
   },
   {
     id: 4,
-    label: "گردش مالی",
-    icon: <UIElementsIcon />,
+    label: "گزارشات مالی",
+    icon: <i className="material-icons-round">monetization_on</i>,
     children: [
-      { label: "گردش کلی", link: "/app/ui/icond" },
-      { label: "لیست دریافتی ها", link: "/app/ui/icons" },
-      { label: "لیست پرداختی ها", link: "/app/ui/charts" },
-      { label: "لیست چک ها", link: "/app/ui/maps" },
+      { label: "گردش صندوق", link: "/app/cash-list" },
+      { label: "لیست دریافتی ها", link: "/app/income-list" },
+      { label: "لیست پرداختی ها", link: "/app/outcome-list" },
+      { label: "لیست چک ها", link: "/app/ui/chek-list" },
     ],
   },
   { id: 5, type: "divider" },
-  { id: 6, label: "کاربران", link: "/app/users", icon: <TableIcon /> },
-  { id: 7, label: "مشتریان", link: "/app/customers", icon: <TableIcon /> },
+  {
+    id: 6,
+    label: "کاربران",
+    link: "/app/user-list",
+    icon: <i className="material-icons-round">manage_accounts</i>,
+  },
+  {
+    id: 7,
+    label: "مشتریان",
+    link: "/app/customer-list",
+    icon: <i className="material-icons-round">record_voice_over</i>,
+  },
   {
     id: 8,
-    label: "کارگران",
-    link: "/app/employee",
-    icon: <Group />,
+    label: "پرسنل",
+    link: "/app/employee-list",
+    icon: <i className="material-icons-round">supervisor_account</i>,
   },
   { id: 9, type: "divider" },
-  { id: 10, label: "تنظیمات ", link: "/app/Settings", icon: <TableIcon /> },
+  {
+    id: 10,
+    label: "دسته بندی ها ",
+    link: "/app/Category",
+    icon: <i className="material-icons-round">category</i>,
+  },
+  {
+    id: 10,
+    label: "تنظیمات ",
+    link: "/app/Settings",
+    icon: <i className="material-icons-round">settings</i>,
+  },
 ];
 
 function Sidebar({ location }) {

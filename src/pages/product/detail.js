@@ -77,6 +77,12 @@ export default function MainDetail() {
 
   const onAddAmount = function () {
     const randomId = uuidv4();
+    const onDelete = (id) => {
+      console.log(id, amountArray);
+      // setAmountArray(
+      //   amountArray.filter((item) => item.id !== randomId),
+      // );
+    };
     const newAmount = (
       <Fragment>
         <Grid item lg={3} xs={12}>
@@ -165,11 +171,7 @@ export default function MainDetail() {
             <IconButton
               id={randomId}
               aria-label="filter list"
-              onClick={() => {
-                setAmountArray(
-                  amountArray.filter((item) => item.id !== randomId),
-                );
-              }}
+              onClick={() => onDelete(randomId)}
             >
               <i className={clsx("material-icons-round", classes.deleteIcon)}>
                 clear

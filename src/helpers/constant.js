@@ -24,9 +24,9 @@ const Constant = {
     BAD_CREDENTIAL: "نام کاربری یا رمز عبور اشتباه است",
   },
   PERSON_STATUS: {
-    BEDEHKAR: "بدهکار",
-    BESTANKAR: "بستانکار",
-    TALABKAR: "طلبکار",
+    DEBTIOR: "بدهکار",
+    NODEBT: "بستانکار",
+    CREDITOR: "طلبکار",
   },
 };
 export default Constant;
