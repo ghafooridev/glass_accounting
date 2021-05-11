@@ -151,7 +151,7 @@ const MainList = () => {
         </Grid>
       ),
       size: "xs",
-      disableCloseButton: false,
+      disableCloseButton: true,
     });
   };
 
