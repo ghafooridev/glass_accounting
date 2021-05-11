@@ -6,7 +6,7 @@ import MoreVertIcon from "@material-ui/icons/MoreVert";
 
 const ITEM_HEIGHT = 48;
 
-export default function LongMenu(props) {
+export default function TableRowMenu(props) {
   const { options, hadleAction } = props;
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
