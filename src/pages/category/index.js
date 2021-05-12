@@ -13,18 +13,18 @@ import {
   Grid,
 } from "@material-ui/core";
 import IconButton from "@material-ui/core/IconButton";
-import MoreVertIcon from "@material-ui/icons/MoreVert";
-import TableRowMenu from "../../components/Table/TableRowMenu";
 import TableTop from "../../components/Table/TableTop";
 import { useApi } from "../../hooks/useApi";
 import DialogActions from "../../redux/actions/dialogAction";
 import styles from "./style";
+import Detail from "./detail";
 
 const MainList = () => {
   const classes = styles();
   const [customerCategory, setCustomerCategory] = useState([]);
   const [depotCategory, setDepotCategory] = useState([]);
   const [productCategory, setProductCategory] = useState([]);
+  const [action, setAction] = useState();
   const [selectedCategory, setSelectedCategory] = useState({
     value: "",
     label: "",
@@ -76,79 +76,72 @@ const MainList = () => {
     url: "depot/category",
   });
 
-  const onAction = (type, id) => {
+  const onAction = ({ name, value }) => {
+    debugger;
     const types = {
-      customer: () => {
-        if (id) {
-          return AddCustomerCategoryRequest.execute();
+      customer: async () => {
+        if (action === "edit") {
+          await EditCustomerCategoryRequest.execute({
+            name,
+          });
+        } else {
+          await AddCustomerCategoryRequest.execute({ name });
         }
-        EditCustomerCategoryRequest.execute();
+        getCustomerCategory();
       },
-      depot: () => {
-        if (id) {
-          return AddDepotCategoryRequest.execute();
+      depot: async () => {
+        if (action === "edit") {
+          await EditDepotCategoryRequest.execute({
+            name,
+          });
+        } else {
+          await AddDepotCategoryRequest.execute({ name });
         }
-        EditDepotCategoryRequest.execute();
+        getDepotCategory();
       },
-      product: () => {
-        if (id) {
-          return AddProductCategoryRequest.execute();
+      product: async () => {
+        if (action === "edit") {
+          await EditProductCategoryRequest.execute({
+            name,
+          });
+        } else {
+          await AddProductCategoryRequest.execute({ name });
         }
-        EditProductCategoryRequest.execute();
+        getProductCategory();
       },
     };
-    if (types[type]) {
-      return types[type]();
+    if (types[selectedType]) {
+      onDismiss();
+      return types[selectedType]();
     }
   };
 
-  const onChangeSelectedCategory = (e) => {
-    const { value } = e.target;
-    setSelectedCategory({ ...selectedCategory, label: value });
+  const handleAdd = (type) => {
+    setAction("add");
+    setSelectedType(type);
   };
 
   const handleAction = (type, item) => {
     console.log(type, item);
-    setSelectedCategory({ ...selectedCategory, item });
+    setAction("edit");
     setSelectedType(type);
+    setSelectedCategory(item);
+  };
+
+  const onDismiss = () => {
+    DialogActions.hide();
+    setAction();
   };
 
   const showEditModal = () => {
     DialogActions.show({
       title: " ویرایش دسته بندی",
       component: (
-        <Grid container spacing={3}>
-          <Grid item xs={12}>
-            <TextField
-              style={{ width: "100%" }}
-              value={selectedCategory.label}
-              size="small"
-              label="عنوان"
-              variant="outlined"
-              onChange={onChangeSelectedCategory}
-            />
-          </Grid>
-          <Grid
-            item
-            xs={12}
-            style={{ display: "flex", justifyContent: "space-between" }}
-          >
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => onAction(selectedType, selectedCategory.value)}
-            >
-              تایید
-            </Button>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => DialogActions.hide()}
-            >
-              انصراف
-            </Button>
-          </Grid>
-        </Grid>
+        <Detail
+          onSubmit={onAction}
+          onDismiss={onDismiss}
+          defaultValue={selectedCategory}
+        />
       ),
       size: "xs",
       disableCloseButton: true,
@@ -177,15 +170,17 @@ const MainList = () => {
   }, []);
 
   useEffect(() => {
-    showEditModal();
-  }, [selectedCategory]);
+    if (action) {
+      showEditModal();
+    }
+  }, [action]);
 
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
         <TableTop
           title="دسته بندی مشتریان"
-          onAdd={() => handleAction("customer")}
+          onAdd={() => handleAdd("customer")}
           toolbarClass={classes.toolbar}
           addButtonClass={classes.addButton}
           minimal
@@ -231,7 +226,7 @@ const MainList = () => {
       <Paper className={classes.paper}>
         <TableTop
           title="دسته بندی انبار"
-          onAdd={() => handleAction("depot")}
+          onAdd={() => handleAdd("depot")}
           toolbarClass={classes.toolbar}
           addButtonClass={classes.addButton}
           minimal
@@ -276,8 +271,8 @@ const MainList = () => {
       </Paper>
       <Paper className={classes.paper}>
         <TableTop
-          title="دسته بندی انبار"
-          onAdd={() => handleAction("product")}
+          title="دسته بندی کالاها"
+          onAdd={() => handleAdd("product")}
           toolbarClass={classes.toolbar}
           addButtonClass={classes.addButton}
           minimal

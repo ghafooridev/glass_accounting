@@ -6,12 +6,13 @@ export default makeStyles((theme) => ({
     display: "flex",
     justifyContent: "space-between",
     flexDirection: "row",
+    alignItems: "baseline",
     [theme.breakpoints.down("xs")]: {
       flexDirection: "column",
     },
   },
   paper: {
-    width: "25%",
+    width: "30%",
     [theme.breakpoints.down("xs")]: {
       width: "90%",
     },

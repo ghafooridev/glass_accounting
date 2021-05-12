@@ -10,7 +10,7 @@ export const useApi = (args) => {
 
   const execute = async function (data, urlParams) {
     setPending(true);
-
+    console.log(data);
     try {
       let response;
 
