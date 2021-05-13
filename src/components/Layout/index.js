@@ -20,6 +20,8 @@ import BuyList from "../../pages/buy";
 import BuyDetail from "../../pages/buy/detail";
 import ProductList from "../../pages/product";
 import ProductDetail from "../../pages/product/detail";
+import DepotList from "../../pages/depot";
+import DepotDetail from "../../pages/depot/detail";
 import Setting from "../../pages/setting";
 import Category from "../../pages/category";
 
@@ -68,8 +70,8 @@ function Layout(props) {
               <Route path="/app/product-list" component={ProductList} />
               <Route path="/app/product-detail" component={ProductDetail} />
 
-              <Route path="/app/stock-list" component={ProductList} />
-              <Route path="/app/stock-detail" component={ProductDetail} />
+              <Route path="/app/depot-list" component={DepotList} />
+              <Route path="/app/depot-detail" component={DepotDetail} />
 
               <Route path="/app/setting" component={Setting} />
               <Route path="/app/category" component={Category} />

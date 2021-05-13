@@ -1,18 +1,5 @@
-import React, { useEffect, useState } from "react";
-import {
-  Table,
-  TableBody,
-  TableContainer,
-  TableCell,
-  TableRow,
-  Paper,
-  Typography,
-  TextField,
-  Button,
-  Grid,
-} from "@material-ui/core";
-import DialogActions from "../../redux/actions/dialogAction";
-import styles from "./style";
+import React, { useState } from "react";
+import { TextField, Button, Grid } from "@material-ui/core";
 
 const MainDetail = ({ onSubmit, onDismiss, defaultValue }) => {
   const [label, setLabel] = useState(defaultValue.label);

@@ -8,11 +8,21 @@ import {
   TextField,
   Button,
   MenuItem,
+  Table,
+  TableBody,
+  TableContainer,
+  TableCell,
+  TableRow,
+  IconButton,
 } from "@material-ui/core";
+import TableHeader from "../../components/Table/TableHead";
+import { DeleteIcon, EditIcon } from "../../components/icons";
 import { useForm, Controller } from "react-hook-form";
 import { useApi } from "../../hooks/useApi";
 import Constant from "../../helpers/constant";
 import { getQueryString } from "../../helpers/utils";
+import DialogActions from "../../redux/actions/dialogAction";
+import Account from "./account";
 import CircularProgress from "../../components/CircularProgress";
 
 const useStyles = makeStyles((theme) => ({
@@ -28,13 +38,28 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const headCells = [
+  {
+    id: "Name",
+    label: "نام بانک",
+  },
+  { id: "accountNumber", label: "شماره حساب " },
+  {
+    id: "CardNumber",
+    label: "شماره کارت",
+  },
+
+  { id: "action" },
+];
+
 export default function MainDetail() {
   const classes = useStyles();
   const history = useHistory();
   const id = getQueryString("id");
   const [detail, setDetail] = useState({});
+  const [accounts, setAccounts] = useState([]);
   const [category, setCategory] = useState([]);
-  const [customerCategory, setCustomerCategory] = useState();
+  const [customerCategory, setCustomerCategory] = useState(1);
   const { control, handleSubmit, errors, reset } = useForm();
 
   const addCustomerRequest = useApi({
@@ -55,8 +80,14 @@ export default function MainDetail() {
     url: `customer/category`,
   });
 
+  const deleteAccountRequest = useApi({
+    method: "delete",
+    url: `account`,
+  });
+
   const onSubmit = async (data) => {
-    const allData = { ...data, customerCategory };
+    debugger;
+    const allData = { ...data, accounts, customerCategory };
     if (id) {
       return await editCustomerRequest.execute(allData);
     }
@@ -71,11 +102,70 @@ export default function MainDetail() {
     const detail = await detailCustomerRequest.execute();
     setDetail(detail.data);
     setCustomerCategory(detail.data.customerCategory);
+    console.log(detail.data);
+    setAccounts(detail.data.personAccount);
   };
 
   const getCustomerCategory = async () => {
     const detail = await customerCategoryRequest.execute();
     setCategory(detail.data);
+  };
+
+  const onSubmitAccount = (data) => {
+    if (data.isUpdate) {
+      const index = accounts.findIndex((item) => item.id === data.id);
+      const accounstTmp = [...accounts];
+      accounstTmp[index] = data;
+      setAccounts(accounstTmp);
+    } else {
+      setAccounts([...accounts, data]);
+    }
+    DialogActions.hide();
+  };
+
+  const onDismissAccount = () => {
+    DialogActions.hide();
+  };
+
+  const onShowDialog = (data) => {
+    DialogActions.show({
+      title: " حساب بانکی",
+      component: (
+        <Account
+          onSubmit={onSubmitAccount}
+          onDismiss={onDismissAccount}
+          defaultValues={data}
+        />
+      ),
+      size: "xs",
+      disableCloseButton: true,
+    });
+  };
+
+  const onAddAccount = () => {
+    onShowDialog();
+  };
+
+  const handleEditAccount = (data) => {
+    onShowDialog(data);
+  };
+
+  const handleDeleteAccount = (id) => {
+    DialogActions.show({
+      confirm: true,
+      title: "ایا از حذف این رکورد مطمئن هستید ؟",
+      onAction: async () => {
+        await deleteAccountRequest.execute(null, id);
+        setAccounts(accounts.filter((item) => item.id !== id));
+        DialogActions.hide();
+      },
+      size: "sm",
+      disableCloseButton: false,
+    });
+  };
+
+  const onChangeCategory = (e) => {
+    setCustomerCategory(e.target.value);
   };
 
   useEffect(() => {
@@ -211,12 +301,12 @@ export default function MainDetail() {
                     />
                   </Grid>
                   <Grid item lg={6} xs={12}>
-                    {category.length && customerCategory && (
+                    {!!category.length && customerCategory && (
                       <TextField
                         select
                         label="دسته بندی"
                         value={customerCategory}
-                        onChange={setCustomerCategory}
+                        onChange={onChangeCategory}
                         variant="outlined"
                         error={!!errors.customerCategory}
                         helperText={
@@ -235,6 +325,90 @@ export default function MainDetail() {
                       </TextField>
                     )}
                   </Grid>
+                  <Grid item lg={6} xs={12}>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={onAddAccount}
+                    >
+                      افزودن حساب بانکی
+                    </Button>
+                  </Grid>
+                  {!!accounts.length && (
+                    <Grid item xs={12}>
+                      <Paper>
+                        <TableContainer style={{ padding: "0 10px" }}>
+                          <Table
+                            className={classes.table}
+                            size={"medium"}
+                            style={{ paddingRight: 10 }}
+                          >
+                            <TableHeader headCells={headCells} />
+
+                            <TableBody>
+                              {accounts.map((row) => {
+                                return (
+                                  <TableRow
+                                    hover
+                                    tabIndex={-1}
+                                    key={row.id}
+                                    style={{ paddingRight: 10 }}
+                                  >
+                                    <TableCell padding="none">
+                                      <div
+                                        style={{
+                                          display: "flex",
+                                          alignItems: "center",
+                                        }}
+                                      >
+                                        <img
+                                          src={`${Constant.API_ADDRESS}/${row.bank.logo}`}
+                                          alt={row.bank.label}
+                                          style={{
+                                            width: 25,
+                                            height: 25,
+                                            borderRadius: "50%",
+                                            marginLeft: 5,
+                                          }}
+                                        />
+                                        {row.bank.label}
+                                      </div>
+                                    </TableCell>
+                                    <TableCell padding="none">
+                                      {row.cardNumber}
+                                    </TableCell>
+                                    <TableCell padding="none">
+                                      {row.accountNumber}
+                                    </TableCell>
+
+                                    <TableCell
+                                      padding="none"
+                                      style={{ textAlign: "left" }}
+                                    >
+                                      <IconButton
+                                        onClick={() => handleEditAccount(row)}
+                                      >
+                                        <EditIcon />
+                                      </IconButton>
+
+                                      <IconButton
+                                        onClick={() =>
+                                          handleDeleteAccount(row.id)
+                                        }
+                                      >
+                                        <DeleteIcon />
+                                      </IconButton>
+                                    </TableCell>
+                                  </TableRow>
+                                );
+                              })}
+                            </TableBody>
+                          </Table>
+                        </TableContainer>
+                      </Paper>
+                    </Grid>
+                  )}
+
                   <Grid item xs={12}>
                     <Controller
                       control={control}

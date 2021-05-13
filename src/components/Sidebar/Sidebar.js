@@ -44,7 +44,7 @@ const structure = [
   {
     id: 1,
     label: "انبار ها",
-    link: "/app/stock-list",
+    link: "/app/depot-list",
     icon: <i className="material-icons-round">storefront</i>,
   },
   {

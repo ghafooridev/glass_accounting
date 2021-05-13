@@ -95,6 +95,9 @@ export default function SidebarLink({
           }),
         }}
         disableRipple
+        onClick={() => {
+          onClick(link);
+        }}
       >
         <span className={classes.externalLink}>
           <ListItemIcon
@@ -105,9 +108,6 @@ export default function SidebarLink({
             {nested ? <Dot color={isLinkActive && "primary"} /> : icon}
           </ListItemIcon>
           <ListItemText
-            onClick={() => {
-              onClick(link);
-            }}
             classes={{
               primary: classnames(classes.linkText, {
                 [classes.linkTextActive]: isLinkActive,

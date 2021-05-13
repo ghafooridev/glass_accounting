@@ -23,4 +23,8 @@ export default makeStyles((theme) => ({
   DEBTIOR: {
     backgroundColor: theme.palette.secondary.main,
   },
+  rootSelect: {
+    display: "flex",
+    alignItems: "center",
+  },
 }));

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Grid,
   CircularProgress,
@@ -12,19 +12,20 @@ import useStyles from "./styles";
 import logo from "./logo.svg";
 import { useUserDispatch, loginUser } from "../../context/UserContext";
 import { useApi } from "../../hooks/useApi";
+import unitAcion from "../../redux/actions/unitAction";
 
 function Login(props) {
-  var classes = useStyles();
-  var userDispatch = useUserDispatch();
+  const classes = useStyles();
+  const userDispatch = useUserDispatch();
   const loginRequest = useApi({
     method: "post",
     url: "user/login",
   });
-  var [isLoading, setIsLoading] = useState(false);
-  var [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  var [usernameValue, setUsernameValue] = useState("ali");
-  var [passwordValue, setPasswordValue] = useState("123456");
+  const [usernameValue, setUsernameValue] = useState("ali");
+  const [passwordValue, setPasswordValue] = useState("123456");
 
   const onPressEnter = function (event) {
     if (event.which === 13 && passwordValue && usernameValue) {
@@ -39,6 +40,10 @@ function Login(props) {
       );
     }
   };
+
+  useEffect(() => {
+    unitAcion.setProdcutUnit();
+  }, []);
 
   return (
     <Grid container className={classes.container}>
