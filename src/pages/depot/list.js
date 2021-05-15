@@ -17,6 +17,7 @@ import { useApi } from "../../hooks/useApi";
 import { convertParamsToQueryString } from "../../helpers/utils";
 import DialogActions from "../../redux/actions/dialogAction";
 import styles from "./style";
+import Constant from "../../helpers/constant";
 
 const headCells = [
   {
@@ -37,7 +38,8 @@ const MainList = () => {
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("name");
   const [page, setPage] = useState(0);
-  const [pageSize, setPageSize] = useState(10);
+  const [search, setSearch] = useState();
+  const [pageSize, setPageSize] = useState(Constant.TABLE_PAGE_SIZE);
   const [list, setList] = useState([]);
   const [total, setTotal] = useState(0);
   const history = useHistory();
@@ -53,12 +55,16 @@ const MainList = () => {
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setPageSize(parseInt(event.target.value, 10));
+    setPageSize(parseInt(event.target.value, Constant.TABLE_PAGE_SIZE));
     setPage(0);
   };
 
   const onAdd = () => {
     history.push("/app/depot-detail");
+  };
+
+  const onSearch = (value) => {
+    setSearch(value);
   };
 
   const getDepotRequest = useApi({
@@ -68,6 +74,7 @@ const MainList = () => {
       order,
       orderBy,
       pageSize,
+      search,
     })}`,
   });
 
@@ -108,12 +115,12 @@ const MainList = () => {
 
   useEffect(() => {
     getData();
-  }, [page, order, pageSize]);
+  }, [page, order, pageSize, search]);
 
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <TableTop title="لیست انبار ها" onAdd={onAdd} />
+        <TableTop title="لیست انبار ها" onAdd={onAdd} handleSearch={onSearch} />
         <TableContainer style={{ padding: "0 10px" }}>
           <Table
             className={classes.table}

@@ -14,6 +14,9 @@ import {
   TableCell,
   TableRow,
   IconButton,
+  Select,
+  FormControl,
+  InputLabel,
 } from "@material-ui/core";
 import TableHeader from "../../components/Table/TableHead";
 import { DeleteIcon, EditIcon } from "../../components/icons";
@@ -40,6 +43,9 @@ const useStyles = makeStyles((theme) => ({
   deleteIcon: {
     color: theme.palette.error.main,
   },
+  formControl: {
+    width: "100%",
+  },
 }));
 
 const headCells = [
@@ -56,6 +62,15 @@ const headCells = [
   { id: "action" },
 ];
 
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: 300,
+      width: 250,
+    },
+  },
+};
+
 export default function MainDetail() {
   const classes = useStyles();
   const history = useHistory();
@@ -64,7 +79,7 @@ export default function MainDetail() {
   const [amounts, setAmounts] = useState([]);
   const [category, setCategory] = useState([]);
   const [selectedUnit, setSelectedUnit] = useState("MASS");
-  const [selectedCategory, setSelectedCategory] = useState(1);
+  const [selectedCategory, setSelectedCategory] = useState([1]);
   const { control, handleSubmit, errors, reset } = useForm();
   const units = unitAction.getProductUnit();
 
@@ -86,7 +101,14 @@ export default function MainDetail() {
   });
 
   const onSubmitAmount = (data) => {
-    setAmounts([...amounts, data]);
+    if (data.isUpdate) {
+      const index = amounts.findIndex((item) => item.id === data.id);
+      const amountTmp = [...amounts];
+      amountTmp[index] = data;
+      setAmounts(amountTmp);
+    } else {
+      setAmounts([...amounts, data]);
+    }
     DialogActions.hide();
   };
 
@@ -99,7 +121,7 @@ export default function MainDetail() {
       .getProductUnit()
       .filter((item) => item.value === selectedUnit)[0].children;
     DialogActions.show({
-      title: " حساب بانکی",
+      title: "موجودی اول دوره",
       component: (
         <Amount
           onSubmit={onSubmitAmount}
@@ -109,6 +131,7 @@ export default function MainDetail() {
         />
       ),
       size: "xs",
+      confirm: false,
       disableCloseButton: true,
     });
   };
@@ -117,11 +140,25 @@ export default function MainDetail() {
     onShowDialog();
   };
 
+  const filterAmounts = (amounts) => {
+    const filteredAmount = [];
+    amounts.map((item) => {
+      const newObject = {
+        stock: item.stock,
+        depotId: item.depot.value,
+        unit: item.unit.value,
+      };
+      filteredAmount.push(newObject);
+    });
+    return filteredAmount;
+  };
+
   const onSubmit = async (data) => {
     const result = {
       ...data,
-      category: selectedCategory,
-      baseUnit: selectedUnit,
+      categories: selectedCategory,
+      unitBase: selectedUnit,
+      stocks: filterAmounts(amounts),
     };
     if (id) {
       return await editProductRequest.execute(result);
@@ -139,7 +176,6 @@ export default function MainDetail() {
   };
 
   const handleEditAmount = (data) => {
-    console.log(data);
     onShowDialog(data);
   };
 
@@ -147,7 +183,7 @@ export default function MainDetail() {
     DialogActions.show({
       confirm: true,
       title: "ایا از حذف این رکورد مطمئن هستید ؟",
-      onAction: async () => {
+      onAction: () => {
         setAmounts(amounts.filter((item) => item.id !== id));
         DialogActions.hide();
       },
@@ -225,7 +261,7 @@ export default function MainDetail() {
                     value={selectedUnit}
                     onChange={onChangeUnit}
                     variant="outlined"
-                    name="baseUnit"
+                    name="unitBase"
                     fullWidth
                     size="small"
                   >
@@ -237,8 +273,35 @@ export default function MainDetail() {
                   </TextField>
                 </Grid>
                 <Grid item lg={6} xs={12}>
-                  <TextField
+                  <FormControl
+                    size="small"
+                    variant="outlined"
+                    className={classes.formControl}
+                  >
+                    <InputLabel htmlFor="outlined-age-native-simple">
+                      دسته بندی
+                    </InputLabel>
+                    <Select
+                      multiple
+                      label="  دسته بندی"
+                      inputProps={{
+                        name: "age",
+                        id: "outlined-age-native-simple",
+                      }}
+                      value={selectedCategory}
+                      onChange={onChangeCategory}
+                    >
+                      {category.map((option) => (
+                        <MenuItem key={option.value} value={option.value}>
+                          {option.label}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+
+                  {/* <TextField
                     select
+                    multiple
                     label="دسته بندی"
                     value={selectedCategory}
                     onChange={onChangeCategory}
@@ -254,7 +317,7 @@ export default function MainDetail() {
                         {option.label}
                       </MenuItem>
                     ))}
-                  </TextField>
+                  </TextField> */}
                 </Grid>
                 <Grid item lg={6} xs={12}>
                   <Button
@@ -286,15 +349,14 @@ export default function MainDetail() {
                                   style={{ paddingRight: 10 }}
                                 >
                                   <TableCell padding="none">
-                                    {row.bank}
+                                    {row.stock}
                                   </TableCell>
                                   <TableCell padding="none">
-                                    {row.cardNumber}
+                                    {row.unit.label}
                                   </TableCell>
                                   <TableCell padding="none">
-                                    {row.accountNumber}
+                                    {row.depot.label}
                                   </TableCell>
-
                                   <TableCell
                                     padding="none"
                                     style={{ textAlign: "left" }}

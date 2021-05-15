@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { TextField, Button, Grid, MenuItem } from "@material-ui/core";
 import { useApi } from "../../hooks/useApi";
 import { useForm, Controller } from "react-hook-form";
+import { v4 as uuid } from "uuid";
 import Constant from "../../helpers/constant";
 
 const Account = ({ onSubmit, onDismiss, defaultValues, units }) => {
@@ -31,8 +32,24 @@ const Account = ({ onSubmit, onDismiss, defaultValues, units }) => {
     setSelectedUnit(e.target.value);
   };
 
+  const getSelectedDepot = () => {
+    return depotPicker.find((item) => item.value === seletedDepot);
+  };
+
+  const getSelectedUnit = () => {
+    return units.find((item) => item.value === seletedUnit);
+  };
+
   const onDone = (data) => {
-    const value = { ...data, unit: seletedUnit, depot: seletedDepot };
+    const newId = uuid();
+
+    const value = {
+      ...data,
+      unit: getSelectedUnit(),
+      depot: getSelectedDepot(),
+      id: defaultValues ? defaultValues.id : newId,
+      isUpdate: !!defaultValues,
+    };
     onSubmit(value);
   };
 
@@ -57,16 +74,22 @@ const Account = ({ onSubmit, onDismiss, defaultValues, units }) => {
                 name={name}
                 onChange={onChange}
                 value={value}
-                error={!!errors.amount}
-                helperText={errors.amount ? errors.amount.message : ""}
+                error={!!errors.stock}
+                helperText={errors.stock ? errors.stock.message : ""}
                 fullWidth
                 size="small"
                 type="number"
               />
             );
           }}
-          rules={{ required: Constant.VALIDATION.REQUIRED }}
-          name="amount"
+          rules={{
+            required: Constant.VALIDATION.REQUIRED,
+            min: {
+              value: 0,
+              message: Constant.VALIDATION.POSITIVE_NUMBER,
+            },
+          }}
+          name="stock"
         />
       </Grid>
       <Grid item xs={12}>

@@ -99,8 +99,12 @@ const Account = ({ onSubmit, onDismiss, defaultValues }) => {
                 label="شماره کارت"
                 variant="outlined"
                 onChange={onChange}
-                error={!!errors.cardNumber}
-                helperText={errors.cardNumber ? errors.cardNumber.message : ""}
+                error={!!errors.accountCardNumber}
+                helperText={
+                  errors.accountCardNumber
+                    ? errors.accountCardNumber.message
+                    : ""
+                }
               />
             );
           }}
@@ -114,7 +118,7 @@ const Account = ({ onSubmit, onDismiss, defaultValues }) => {
               message: Constant.VALIDATION.CARD_NUMBER,
             },
           }}
-          name="cardNumber"
+          name="accountCardNumber"
         />
       </Grid>
       <Grid item xs={12}>
@@ -127,7 +131,7 @@ const Account = ({ onSubmit, onDismiss, defaultValues }) => {
                 value={value}
                 size="small"
                 name={name}
-                label="شمار حساب"
+                label="شماره حساب"
                 variant="outlined"
                 onChange={onChange}
                 error={!!errors.accountNumber}
@@ -138,6 +142,53 @@ const Account = ({ onSubmit, onDismiss, defaultValues }) => {
             );
           }}
           name="accountNumber"
+        />
+      </Grid>
+      <Grid item xs={12}>
+        <Controller
+          control={control}
+          render={({ onChange, value, name }) => {
+            return (
+              <TextField
+                fullWidth
+                value={value}
+                size="small"
+                name={name}
+                label="شماره شبا"
+                variant="outlined"
+                onChange={onChange}
+                error={!!errors.accountShaba}
+                helperText={
+                  errors.accountShaba ? errors.accountShaba.message : ""
+                }
+              />
+            );
+          }}
+          name="accountShaba"
+        />
+      </Grid>
+      <Grid item xs={12}>
+        <Controller
+          control={control}
+          render={({ onChange, value, name }) => {
+            return (
+              <TextField
+                label="توضیحات"
+                multiline
+                rows={4}
+                variant="outlined"
+                name={name}
+                onChange={onChange}
+                value={value}
+                fullWidth
+                error={!!errors.description}
+                helperText={
+                  errors.description ? errors.description.message : ""
+                }
+              />
+            );
+          }}
+          name="description"
         />
       </Grid>
       <Grid

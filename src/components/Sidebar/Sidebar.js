@@ -1,27 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Drawer, IconButton, List } from "@material-ui/core";
-import {
-  Home as HomeIcon,
-  Group,
-  FormatSize as TypographyIcon,
-  FilterNone as UIElementsIcon,
-  BorderAll as TableIcon,
-  QuestionAnswer as SupportIcon,
-  LibraryBooks as LibraryIcon,
-  HelpOutline as FAQIcon,
-  ArrowBack as ArrowBackIcon,
-} from "@material-ui/icons";
+import { ArrowForward as ArrowForwardIcon } from "@material-ui/icons";
 import { useTheme } from "@material-ui/styles";
 import { withRouter } from "react-router-dom";
 import classNames from "classnames";
-
-// styles
 import useStyles from "./styles";
-
-// components
 import SidebarLink from "./components/SidebarLink/SidebarLink";
-
-// context
 import {
   useLayoutState,
   useLayoutDispatch,
@@ -141,7 +125,7 @@ function Sidebar({ location }) {
       <div className={classes.toolbar} />
       <div className={classes.mobileBackButton}>
         <IconButton onClick={() => toggleSidebar(layoutDispatch)}>
-          <ArrowBackIcon
+          <ArrowForwardIcon
             classes={{
               root: classNames(classes.headerIcon, classes.headerIconCollapse),
             }}
@@ -169,6 +153,7 @@ function Sidebar({ location }) {
 
     if (isSmallScreen && isPermanent) {
       setPermanent(false);
+      toggleSidebar(layoutDispatch);
     } else if (!isSmallScreen && !isPermanent) {
       setPermanent(true);
     }

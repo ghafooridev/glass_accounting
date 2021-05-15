@@ -17,6 +17,7 @@ import { useApi } from "../../hooks/useApi";
 import { convertParamsToQueryString } from "../../helpers/utils";
 import DialogActions from "../../redux/actions/dialogAction";
 import styles from "./style";
+import Constant from "../../helpers/constant";
 
 const headCells = [
   {
@@ -40,8 +41,9 @@ const MainList = () => {
   const classes = styles();
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("username");
+  const [search, setSearch] = useState();
   const [page, setPage] = useState(0);
-  const [pageSize, setPageSize] = useState(5);
+  const [pageSize, setPageSize] = useState(Constant.TABLE_PAGE_SIZE);
   const [list, setList] = useState([]);
   const [total, setTotal] = useState(0);
   const history = useHistory();
@@ -57,12 +59,16 @@ const MainList = () => {
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setPageSize(parseInt(event.target.value, 10));
+    setPageSize(parseInt(event.target.value, Constant.TABLE_PAGE_SIZE));
     setPage(0);
   };
 
   const onAdd = () => {
     history.push("/app/user-detail");
+  };
+
+  const onSearch = (value) => {
+    setSearch(value);
   };
 
   const getUserRequest = useApi({
@@ -72,6 +78,7 @@ const MainList = () => {
       order,
       orderBy,
       pageSize,
+      search,
     })}`,
   });
 
@@ -112,12 +119,12 @@ const MainList = () => {
 
   useEffect(() => {
     getData();
-  }, [page, order, pageSize]);
+  }, [page, order, search, pageSize]);
 
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <TableTop title="لیست کاربران" onAdd={onAdd} />
+        <TableTop title="لیست کاربران" onAdd={onAdd} handleSearch={onSearch} />
         <TableContainer style={{ padding: "0 10px" }}>
           <Table
             className={classes.table}

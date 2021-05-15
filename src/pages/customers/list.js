@@ -22,31 +22,6 @@ import styles from "./style";
 import FilterComponent from "./filter";
 import Constant from "../../helpers/constant";
 
-function descendingComparator(a, b, orderBy) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-  return 0;
-}
-
-function getComparator(order, orderBy) {
-  return order === "desc"
-    ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => -descendingComparator(a, b, orderBy);
-}
-
-function stableSort(array, comparator) {
-  const stabilizedThis = array.map((el, index) => [el, index]);
-  stabilizedThis.sort((a, b) => {
-    const order = comparator(a[0], b[0]);
-    if (order !== 0) return order;
-    return a[1] - b[1];
-  });
-  return stabilizedThis.map((el) => el[0]);
-}
 const headCells = [
   {
     id: "firstName",
@@ -68,7 +43,7 @@ export default function MainList() {
   const [search, setSearch] = useState();
   const [orderBy, setOrderBy] = useState("firstName");
   const [page, setPage] = useState(0);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(Constant.TABLE_PAGE_SIZE);
   const [list, setList] = useState([]);
   const history = useHistory();
 
@@ -83,7 +58,7 @@ export default function MainList() {
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setPageSize(parseInt(event.target.value, 10));
+    setPageSize(parseInt(event.target.value, Constant.TABLE_PAGE_SIZE));
     setPage(0);
   };
 
@@ -149,7 +124,7 @@ export default function MainList() {
 
   useEffect(() => {
     getData();
-  }, [page, order, search]);
+  }, [page, order, search, pageSize]);
 
   return (
     <div className={classes.root}>
@@ -176,39 +151,37 @@ export default function MainList() {
             />
 
             <TableBody>
-              {stableSort(list, getComparator(order, orderBy))
-                .slice(page * pageSize, page * pageSize + pageSize)
-                .map((row) => {
-                  return (
-                    <TableRow
-                      hover
-                      tabIndex={-1}
-                      key={row.id}
-                      style={{ paddingRight: 10 }}
-                    >
-                      <TableCell padding="none">{row.firstName}</TableCell>
-                      <TableCell padding="none">{row.lastName}</TableCell>
-                      <TableCell padding="none">{row.mobile}</TableCell>
-                      <TableCell padding="none">{row.phone}</TableCell>
-                      <TableCell padding="none">
-                        <Chip
-                          label={Constant.PERSON_STATUS[row.status]}
-                          className={clsx(classes.status, classes[row.status])}
-                        />
-                      </TableCell>
-                      <TableCell padding="none">
-                        <TableRowMenu
-                          options={[
-                            { id: "transaction", title: "تراکنش ها" },
-                            { id: "edit", title: "ویرایش" },
-                            { id: "delete", title: "حذف" },
-                          ]}
-                          hadleAction={(type) => handleAction(row.id, type)}
-                        />
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
+              {list.map((row) => {
+                return (
+                  <TableRow
+                    hover
+                    tabIndex={-1}
+                    key={row.id}
+                    style={{ paddingRight: 10 }}
+                  >
+                    <TableCell padding="none">{row.firstName}</TableCell>
+                    <TableCell padding="none">{row.lastName}</TableCell>
+                    <TableCell padding="none">{row.mobile}</TableCell>
+                    <TableCell padding="none">{row.phone}</TableCell>
+                    <TableCell padding="none">
+                      <Chip
+                        label={Constant.PERSON_STATUS[row.status]}
+                        className={clsx(classes.status, classes[row.status])}
+                      />
+                    </TableCell>
+                    <TableCell padding="none">
+                      <TableRowMenu
+                        options={[
+                          { id: "transaction", title: "تراکنش ها" },
+                          { id: "edit", title: "ویرایش" },
+                          { id: "delete", title: "حذف" },
+                        ]}
+                        hadleAction={(type) => handleAction(row.id, type)}
+                      />
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
               {!list.length && !getCustomerRequest.pending && (
                 <TableRow style={{ height: 53 }}>
                   <TableCell colSpan={6} style={{ textAlign: "center" }}>

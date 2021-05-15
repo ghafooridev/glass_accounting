@@ -14,6 +14,10 @@ import classnames from "classnames";
 import { useHistory } from "react-router-dom";
 import useStyles from "./styles";
 import Dot from "../Dot";
+import {
+  useLayoutDispatch,
+  toggleSidebar,
+} from "../../../../context/LayoutContext";
 
 export default function SidebarLink({
   link,
@@ -27,9 +31,11 @@ export default function SidebarLink({
 }) {
   var classes = useStyles();
   const history = useHistory();
+  var layoutDispatch = useLayoutDispatch();
 
   const onClick = (link) => {
     history.push(link);
+    toggleSidebar(layoutDispatch);
   };
 
   var [isOpen, setIsOpen] = useState(false);

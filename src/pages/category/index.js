@@ -131,7 +131,7 @@ const MainList = () => {
 
   const showEditModal = () => {
     DialogActions.show({
-      title: " ویرایش دسته بندی",
+      title: " دسته بندی",
       component: (
         <Detail
           onSubmit={onAction}

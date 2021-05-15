@@ -1,5 +1,6 @@
 const Constant = {
   API_ADDRESS: "http://185.204.197.95:5000/",
+  TABLE_PAGE_SIZE: 10,
   ACTION_TYPES: {
     SHOW_ALERT: "SHOW_ALERT",
     HIDE_ALERT: "HIDE_ALERT",
@@ -21,6 +22,7 @@ const Constant = {
     MOBILE_NUMBER: "موبایل باید 11 عدد داشته باشد",
     PASSWORD: "رمز عبور باید حداقل 5 حرف یا رقم باشد",
     CARD_NUMBER: "شماره کارت باید 16 رقم باشد",
+    POSITIVE_NUMBER: "این عدد باید مثبت باشد",
   },
   MESSAGES: {},
   ERROR_MESSAGE: {

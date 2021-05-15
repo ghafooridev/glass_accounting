@@ -17,32 +17,9 @@ import { useApi } from "../../hooks/useApi";
 import { convertParamsToQueryString } from "../../helpers/utils";
 import DialogActions from "../../redux/actions/dialogAction";
 import styles from "./style";
+import AmountBrif from "./amountBrif";
+import Constant from "../../helpers/constant";
 
-function descendingComparator(a, b, orderBy) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-  return 0;
-}
-
-function getComparator(order, orderBy) {
-  return order === "desc"
-    ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => -descendingComparator(a, b, orderBy);
-}
-
-function stableSort(array, comparator) {
-  const stabilizedThis = array.map((el, index) => [el, index]);
-  stabilizedThis.sort((a, b) => {
-    const order = comparator(a[0], b[0]);
-    if (order !== 0) return order;
-    return a[1] - b[1];
-  });
-  return stabilizedThis.map((el) => el[0]);
-}
 const headCells = [
   {
     id: "name",
@@ -56,9 +33,8 @@ const headCells = [
     id: "amount",
     label: "موجودی کل",
   },
-  { id: "unit", label: "واحد" },
-  { id: "buyPrice", label: "قیمت خرید" },
-  { id: "sellPrice", label: "قیمت فروش" },
+  { id: "unit", label: " واحد شمارشی" },
+
   { id: "action" },
 ];
 
@@ -66,8 +42,9 @@ export default function MainList() {
   const classes = styles();
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("name");
+  const [search, setSearch] = useState();
   const [page, setPage] = useState(0);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(Constant.TABLE_PAGE_SIZE);
   const [list, setList] = useState([]);
   const history = useHistory();
 
@@ -82,7 +59,7 @@ export default function MainList() {
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setPageSize(parseInt(event.target.value, 10));
+    setPageSize(parseInt(event.target.value, Constant.TABLE_PAGE_SIZE));
     setPage(0);
   };
 
@@ -97,6 +74,7 @@ export default function MainList() {
       order,
       orderBy,
       pageSize,
+      search,
     })}`,
   });
 
@@ -105,7 +83,12 @@ export default function MainList() {
     url: `product`,
   });
 
-  const handleAction = (id, type) => {
+  const onSearch = (value) => {
+    setSearch(value);
+  };
+
+  const handleAction = (row, type) => {
+    const { id } = row;
     const types = {
       edit: () => {
         history.push(`/app/product-detail?id=${id}`);
@@ -123,6 +106,22 @@ export default function MainList() {
           disableCloseButton: false,
         });
       },
+      amount: () => {
+        DialogActions.show({
+          title: "موجودی در انبار ها",
+          component: (
+            <AmountBrif
+              onSubmit={() => {
+                DialogActions.hide();
+              }}
+              data={row.detail}
+            />
+          ),
+          size: "xs",
+          confirm: false,
+          disableCloseButton: true,
+        });
+      },
     };
     if (types[type]) {
       types[type]();
@@ -136,12 +135,12 @@ export default function MainList() {
 
   useEffect(() => {
     getData();
-  }, [page, order]);
+  }, [page, order, pageSize, search]);
 
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <TableTop title="لیست کاربران" onAdd={onAdd} />
+        <TableTop title="لیست کاربران" onAdd={onAdd} handleSearch={onSearch} />
         <TableContainer style={{ padding: "0 10px" }}>
           <Table
             className={classes.table}
@@ -157,34 +156,32 @@ export default function MainList() {
               headCells={headCells}
             />
             <TableBody>
-              {stableSort(list, getComparator(order, orderBy))
-                .slice(page * pageSize, page * pageSize + pageSize)
-                .map((row) => {
-                  return (
-                    <TableRow
-                      hover
-                      tabIndex={-1}
-                      key={row.id}
-                      style={{ paddingRight: 10 }}
-                    >
-                      <TableCell padding="none">{row.productname}</TableCell>
-                      <TableCell padding="none">{row.firstName}</TableCell>
-                      <TableCell padding="none">{row.lastName}</TableCell>
-                      <TableCell padding="none">{row.mobile}</TableCell>
-                      <TableCell padding="none">{row.phone}</TableCell>
+              {list.map((row) => {
+                return (
+                  <TableRow
+                    hover
+                    tabIndex={-1}
+                    key={row.id}
+                    style={{ paddingRight: 10 }}
+                  >
+                    <TableCell padding="none">{row.name}</TableCell>
+                    <TableCell padding="none">{row.category}</TableCell>
+                    <TableCell padding="none">{row.total}</TableCell>
+                    <TableCell padding="none">{row.unitBase}</TableCell>
 
-                      <TableCell padding="none">
-                        <TableRowMenu
-                          options={[
-                            { id: "delete", title: "حذف" },
-                            { id: "edit", title: "ویرایش" },
-                          ]}
-                          hadleAction={(type) => handleAction(row.id, type)}
-                        />
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
+                    <TableCell padding="none">
+                      <TableRowMenu
+                        options={[
+                          { id: "amount", title: "موجودی ها" },
+                          { id: "edit", title: "ویرایش" },
+                          { id: "delete", title: "حذف" },
+                        ]}
+                        hadleAction={(type) => handleAction(row, type)}
+                      />
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
               {!list.length && !getProductRequest.pending && (
                 <TableRow style={{ height: 53 }}>
                   <TableCell colSpan={6} style={{ textAlign: "center" }}>

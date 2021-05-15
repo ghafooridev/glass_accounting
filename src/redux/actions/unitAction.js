@@ -19,7 +19,6 @@ export default {
   },
 
   getProductUnit() {
-    console.log(store.getState());
     return store.getState().unit;
   },
 };

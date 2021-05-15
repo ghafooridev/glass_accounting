@@ -86,8 +86,20 @@ export default function MainDetail() {
   });
 
   const onSubmit = async (data) => {
-    debugger;
-    const allData = { ...data, accounts, customerCategory };
+    console.log(accounts);
+    const newAccounts = [];
+    accounts.map((item) => {
+      const newData = {
+        bankId: item.bank.value,
+        accountCardNumber: item.accountCardNumber,
+        accountNumber: item.accounstTmp,
+        accountShaba: item.accountShaba,
+        description: item.description,
+      };
+      newAccounts.push(newData);
+    });
+
+    const allData = { ...data, accounts: newAccounts, customerCategory };
     if (id) {
       return await editCustomerRequest.execute(allData);
     }
@@ -102,7 +114,6 @@ export default function MainDetail() {
     const detail = await detailCustomerRequest.execute();
     setDetail(detail.data);
     setCustomerCategory(detail.data.customerCategory);
-    console.log(detail.data);
     setAccounts(detail.data.personAccount);
   };
 
@@ -138,6 +149,7 @@ export default function MainDetail() {
         />
       ),
       size: "xs",
+      confirm: false,
       disableCloseButton: true,
     });
   };
@@ -375,10 +387,10 @@ export default function MainDetail() {
                                       </div>
                                     </TableCell>
                                     <TableCell padding="none">
-                                      {row.cardNumber}
+                                      {row.accountNumber}
                                     </TableCell>
                                     <TableCell padding="none">
-                                      {row.accountNumber}
+                                      {row.accountCardNumber}
                                     </TableCell>
 
                                     <TableCell
@@ -455,7 +467,7 @@ export default function MainDetail() {
                           />
                         );
                       }}
-                      name="address"
+                      name="description"
                     />
                   </Grid>
 
