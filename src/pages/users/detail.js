@@ -15,6 +15,9 @@ import Constant from "../../helpers/constant";
 import clsx from "clsx";
 import { getQueryString } from "../../helpers/utils";
 import CircularProgress from "../../components/CircularProgress";
+import DialogActions from "../../redux/actions/dialogAction";
+import Permission from "./permission";
+import dialogAction from "../../redux/actions/dialogAction";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -53,11 +56,37 @@ export default function MainDetail() {
     setIsPassword(!isPassword);
   };
 
+  const onSubmitPermission = (value) => {
+    console.log(value);
+    dialogAction.hide();
+  };
+
+  const onDismissPermission = () => {
+    dialogAction.hide();
+  };
+
+  const onShowDialog = (data) => {
+    DialogActions.show({
+      title: "دسترسی ها",
+      component: (
+        <Permission
+          onSubmit={onSubmitPermission}
+          onDismiss={onDismissPermission}
+        />
+      ),
+      size: "xs",
+      confirm: false,
+      disableCloseButton: true,
+    });
+  };
+
   const onSubmit = async (data) => {
-    if (id) {
-      return await editUserRequest.execute(data);
-    }
-    await addUserRequest.execute(data);
+    // if (id) {
+    //   await editUserRequest.execute(data);
+    // } else {
+    //   await addUserRequest.execute(data);
+    // }
+    onShowDialog();
   };
 
   const onReject = () => {

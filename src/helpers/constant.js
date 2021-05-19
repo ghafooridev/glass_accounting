@@ -33,5 +33,13 @@ const Constant = {
     NODEBT: "بستانکار",
     CREDITOR: "طلبکار",
   },
+  PERMISSIONS: [
+    { value: "USER_SHOW", label: "لیست کاربران" },
+    { value: "USER_EDIT", label: "ویرایش کاربران" },
+    { value: "PRODCUT_SHOW", label: "لیست محصولات" },
+    { value: "PRODCUT_EDIT", label: "ویرایش محصولات" },
+    { value: " CUSTOMER_SHOW", label: "لیست مشتریان" },
+    { value: " CUSTOMER_EDIT", label: "ویرایش مشتریان" },
+  ],
 };
 export default Constant;

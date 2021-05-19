@@ -62,15 +62,6 @@ const headCells = [
   { id: "action" },
 ];
 
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: 300,
-      width: 250,
-    },
-  },
-};
-
 export default function MainDetail() {
   const classes = useStyles();
   const history = useHistory();
@@ -173,6 +164,9 @@ export default function MainDetail() {
   const getDetail = async () => {
     const detail = await detailProductRequest.execute();
     setDetail(detail.data);
+    setSelectedCategory(detail.data.categories);
+    setSelectedUnit();
+    setAmounts(detail.data.stocks);
   };
 
   const handleEditAmount = (data) => {
@@ -256,6 +250,7 @@ export default function MainDetail() {
                 </Grid>
                 <Grid item lg={6} xs={12}>
                   <TextField
+                    disabled={id}
                     select
                     label="واحد شمارش"
                     value={selectedUnit}
@@ -298,26 +293,6 @@ export default function MainDetail() {
                       ))}
                     </Select>
                   </FormControl>
-
-                  {/* <TextField
-                    select
-                    multiple
-                    label="دسته بندی"
-                    value={selectedCategory}
-                    onChange={onChangeCategory}
-                    variant="outlined"
-                    name="category"
-                    error={!!errors.category}
-                    helperText={errors.category ? errors.category.message : ""}
-                    fullWidth
-                    size="small"
-                  >
-                    {category.map((option) => (
-                      <MenuItem key={option.value} value={option.value}>
-                        {option.label}
-                      </MenuItem>
-                    ))}
-                  </TextField> */}
                 </Grid>
                 <Grid item lg={6} xs={12}>
                   <Button

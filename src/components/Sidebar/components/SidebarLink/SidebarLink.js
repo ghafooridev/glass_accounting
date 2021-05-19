@@ -14,6 +14,7 @@ import classnames from "classnames";
 import { useHistory } from "react-router-dom";
 import useStyles from "./styles";
 import Dot from "../Dot";
+import { useTheme } from "@material-ui/styles";
 import {
   useLayoutDispatch,
   toggleSidebar,
@@ -32,10 +33,17 @@ export default function SidebarLink({
   var classes = useStyles();
   const history = useHistory();
   var layoutDispatch = useLayoutDispatch();
+  var theme = useTheme();
 
   const onClick = (link) => {
     history.push(link);
-    toggleSidebar(layoutDispatch);
+    var windowWidth = window.innerWidth;
+    var breakpointWidth = theme.breakpoints.values.md;
+    var isSmallScreen = windowWidth < breakpointWidth;
+
+    if (isSmallScreen) {
+      toggleSidebar(layoutDispatch);
+    }
   };
 
   var [isOpen, setIsOpen] = useState(false);

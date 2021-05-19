@@ -114,7 +114,7 @@ export default function MainList() {
               onSubmit={() => {
                 DialogActions.hide();
               }}
-              data={row.detail}
+              data={row.stocks}
             />
           ),
           size: "xs",
@@ -165,8 +165,10 @@ export default function MainList() {
                     style={{ paddingRight: 10 }}
                   >
                     <TableCell padding="none">{row.name}</TableCell>
-                    <TableCell padding="none">{row.category}</TableCell>
-                    <TableCell padding="none">{row.total}</TableCell>
+                    <TableCell padding="none">
+                      {row.categories.join(",")}
+                    </TableCell>
+                    <TableCell padding="none">{row.totalStock}</TableCell>
                     <TableCell padding="none">{row.unitBase}</TableCell>
 
                     <TableCell padding="none">
