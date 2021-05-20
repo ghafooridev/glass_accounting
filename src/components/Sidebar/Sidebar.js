@@ -48,9 +48,9 @@ const structure = [
     label: "گزارشات مالی",
     icon: <i className="material-icons-round">monetization_on</i>,
     children: [
-      { label: "گردش صندوق", link: "/app/cash-list" },
-      { label: "لیست دریافتی ها", link: "/app/income-list" },
-      { label: "لیست پرداختی ها", link: "/app/outcome-list" },
+      { label: "گردش کل", link: "/app/payment-list?type=all" },
+      { label: "لیست دریافتی ها", link: "/app/payment-list?type=income" },
+      { label: "لیست پرداختی ها", link: "/app/payment-list?type=outgo" },
       { label: "لیست چک ها", link: "/app/ui/chek-list" },
     ],
   },

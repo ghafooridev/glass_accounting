@@ -13,3 +13,9 @@ export const getQueryString = (param) => {
 export const getRandomColor = () => {
   return `#${Math.floor(Math.random() * 16777215).toString(16)}`;
 };
+
+export const persianNumber = (en) => {
+  return ("" + en).replace(/[0-9]/g, function (t) {
+    return "۰۱۲۳۴۵۶۷۸۹".substr(+t, 1);
+  });
+};

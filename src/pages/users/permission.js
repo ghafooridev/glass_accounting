@@ -1,35 +1,11 @@
 import React, { useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import {
-  Grid,
-  Paper,
-  Typography,
-  Button,
-  FormControlLabel,
-  Checkbox,
-} from "@material-ui/core";
+import { Grid, Button, FormControlLabel, Checkbox } from "@material-ui/core";
 
 import Constant from "../../helpers/constant";
 
-import CircularProgress from "../../components/CircularProgress";
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    margin: "0 auto",
-  },
-  paper: {
-    width: "100%",
-    padding: 20,
-  },
-  title: {
-    paddingBottom: 20,
-  },
-}));
-
 export default function Permission({ onSubmit }) {
-  const classes = useStyles();
   const permissions = Constant.PERMISSIONS;
-  const [userAccess, setUserAccess] = useState([]);
+  const [userAccess, setUserAccess] = useState(["USER_SHOW"]);
 
   const handleChange = (item) => {
     if (userAccess.includes(item)) {

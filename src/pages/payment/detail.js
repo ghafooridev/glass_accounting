@@ -1,23 +1,14 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
-import {
-  Grid,
-  Paper,
-  Typography,
-  TextField,
-  Button,
-  InputAdornment,
-} from "@material-ui/core";
+import { Grid, Paper, Typography, TextField, Button } from "@material-ui/core";
 import { useForm, Controller } from "react-hook-form";
 import { useApi } from "../../hooks/useApi";
 import Constant from "../../helpers/constant";
-import clsx from "clsx";
 import { getQueryString } from "../../helpers/utils";
 import CircularProgress from "../../components/CircularProgress";
 import DialogActions from "../../redux/actions/dialogAction";
-import Permission from "./permission";
-import dialogAction from "../../redux/actions/dialogAction";
+import PersonSelector from "./personSelector";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -38,41 +29,33 @@ export default function MainDetail() {
   const id = getQueryString("id");
   const [detail, setDetail] = useState({});
   const { control, handleSubmit, errors, reset } = useForm();
-  const [isPassword, setIsPassword] = useState(true);
-  const addUserRequest = useApi({
+
+  const addPaymentRequest = useApi({
     method: "post",
-    url: `user`,
+    url: `payment`,
   });
-  const editUserRequest = useApi({
+  const editPaymentRequest = useApi({
     method: "put",
-    url: `user/${id}`,
+    url: `payment/${id}`,
   });
-  const detailUserRequest = useApi({
+  const detailPaymentRequest = useApi({
     method: "get",
-    url: `user/${id}`,
+    url: `payment/${id}`,
   });
 
-  const onChangeViewClick = function () {
-    setIsPassword(!isPassword);
+  const onSelectPerson = (person) => {
+    console.log(person);
   };
 
-  const onSubmitPermission = (value) => {
-    console.log(value);
-    dialogAction.hide();
-  };
-
-  const onDismissPermission = () => {
-    dialogAction.hide();
+  const onDismissPerson = (person) => {
+    DialogActions.hide();
   };
 
   const onShowDialog = (data) => {
     DialogActions.show({
-      title: "دسترسی ها",
+      title: "انتخاب شخص",
       component: (
-        <Permission
-          onSubmit={onSubmitPermission}
-          onDismiss={onDismissPermission}
-        />
+        <PersonSelector onSubmit={onSelectPerson} onDismiss={onDismissPerson} />
       ),
       size: "xs",
       confirm: false,
@@ -82,19 +65,18 @@ export default function MainDetail() {
 
   const onSubmit = async (data) => {
     if (id) {
-      await editUserRequest.execute(data);
+      await editPaymentRequest.execute(data);
     } else {
-      await addUserRequest.execute(data);
+      await addPaymentRequest.execute(data);
     }
-    onShowDialog();
   };
 
   const onReject = () => {
-    history.push("/app/user-list");
+    history.push("/app/payment-list");
   };
 
   const getDetail = async () => {
-    const detail = await detailUserRequest.execute();
+    const detail = await detailPaymentRequest.execute();
     setDetail(detail.data);
   };
 
@@ -110,8 +92,8 @@ export default function MainDetail() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      {!detailUserRequest.pending ? (
-        <Grid item lg={6} sm={12} className={classes.root}>
+      {!detailPaymentRequest.pending ? (
+        <Grid item lg={8} sm={12} className={classes.root}>
           <Paper className={classes.paper}>
             <Typography
               className={classes.title}
@@ -130,8 +112,9 @@ export default function MainDetail() {
                     render={({ onChange, value, name }) => {
                       return (
                         <TextField
+                          aria-readonly
                           variant="outlined"
-                          label="نام"
+                          label="نام طرف"
                           name={name}
                           onChange={onChange}
                           value={value}
@@ -183,9 +166,9 @@ export default function MainDetail() {
                           name={name}
                           onChange={onChange}
                           value={value}
-                          error={!!errors.username}
+                          error={!!errors.paymentname}
                           helperText={
-                            errors.username ? errors.username.message : ""
+                            errors.paymentname ? errors.paymentname.message : ""
                           }
                           fullWidth
                           size="small"
@@ -193,56 +176,10 @@ export default function MainDetail() {
                       );
                     }}
                     rules={{ required: Constant.VALIDATION.REQUIRED }}
-                    name="username"
+                    name="paymentname"
                   />
                 </Grid>
-                <Grid item lg={6} xs={12}>
-                  <Controller
-                    control={control}
-                    render={({ onChange, value, name }) => {
-                      return (
-                        <TextField
-                          variant="outlined"
-                          label="رمز عبور"
-                          name={name}
-                          onChange={onChange}
-                          value={value}
-                          error={!!errors.password}
-                          helperText={
-                            errors.password ? errors.password.message : ""
-                          }
-                          fullWidth
-                          size="small"
-                          type={isPassword ? "password" : "text"}
-                          InputProps={{
-                            endAdornment: (
-                              <InputAdornment position="end">
-                                <i
-                                  style={{ cursor: "pointer" }}
-                                  className={clsx(
-                                    "material-icons-round",
-                                    classes.icon,
-                                  )}
-                                  onClick={onChangeViewClick}
-                                >
-                                  {isPassword ? "visibility_off" : "visibility"}
-                                </i>
-                              </InputAdornment>
-                            ),
-                          }}
-                        />
-                      );
-                    }}
-                    rules={{
-                      required: Constant.VALIDATION.REQUIRED,
-                      minLength: {
-                        value: 5,
-                        message: Constant.VALIDATION.PASSWORD,
-                      },
-                    }}
-                    name="password"
-                  />
-                </Grid>
+
                 <Grid item lg={6} xs={12}>
                   <Controller
                     control={control}

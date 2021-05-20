@@ -86,7 +86,6 @@ export default function MainDetail() {
   });
 
   const onSubmit = async (data) => {
-    console.log(accounts);
     const newAccounts = [];
     accounts.map((item) => {
       const newData = {

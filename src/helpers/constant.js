@@ -33,6 +33,10 @@ const Constant = {
     NODEBT: "بستانکار",
     CREDITOR: "طلبکار",
   },
+  PAYMENT_TYPE: {
+    income: "دریافتی",
+    outgo: "پرداختی",
+  },
   PERMISSIONS: [
     { value: "USER_SHOW", label: "لیست کاربران" },
     { value: "USER_EDIT", label: "ویرایش کاربران" },

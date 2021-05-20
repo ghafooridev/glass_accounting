@@ -18,6 +18,8 @@ import SellList from "../../pages/sell";
 import SellDetail from "../../pages/sell/detail";
 import BuyList from "../../pages/buy";
 import BuyDetail from "../../pages/buy/detail";
+import PaymentList from "../../pages/payment";
+import PaymentDetail from "../../pages/payment/detail";
 import ProductList from "../../pages/product";
 import ProductDetail from "../../pages/product/detail";
 import DepotList from "../../pages/depot";
@@ -66,6 +68,9 @@ function Layout(props) {
 
               <Route path="/app/buy-list" component={BuyList} />
               <Route path="/app/buy-detail" component={BuyDetail} />
+
+              <Route path="/app/payment-list" component={PaymentList} />
+              <Route path="/app/payment-detail" component={PaymentDetail} />
 
               <Route path="/app/product-list" component={ProductList} />
               <Route path="/app/product-detail" component={ProductDetail} />
