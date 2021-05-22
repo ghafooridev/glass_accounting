@@ -11,16 +11,4 @@ export default makeStyles((theme) => ({
   table: {
     minWidth: 750,
   },
-  status: {
-    color: "#fff",
-  },
-  CREDITOR: {
-    backgroundColor: theme.palette.success.main,
-  },
-  NODEBT: {
-    backgroundColor: theme.palette.gray.main,
-  },
-  DEBTIOR: {
-    backgroundColor: theme.palette.secondary.main,
-  },
 }));

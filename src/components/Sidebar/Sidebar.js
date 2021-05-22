@@ -33,6 +33,12 @@ const structure = [
   },
   {
     id: 2,
+    label: "صندوق ها",
+    link: "/app/cash-list",
+    icon: <i className="material-icons-round">account_balance_wallet</i>,
+  },
+  {
+    id: 2,
     label: "خرید",
     link: "/app/sell-list",
     icon: <i className="material-icons-round">sell</i>,
@@ -72,6 +78,12 @@ const structure = [
     label: "پرسنل",
     link: "/app/employee-list",
     icon: <i className="material-icons-round">supervisor_account</i>,
+  },
+  {
+    id: 8,
+    label: "راننده ها",
+    link: "/app/driver-list",
+    icon: <i className="material-icons-round">local_shipping</i>,
   },
   { id: 9, type: "divider" },
   {

@@ -14,13 +14,9 @@ export default makeStyles((theme) => ({
   status: {
     color: "#fff",
   },
-  CREDITOR: {
-    backgroundColor: theme.palette.success.main,
-  },
-  NODEBT: {
-    backgroundColor: theme.palette.gray.main,
-  },
-  DEBTIOR: {
-    backgroundColor: theme.palette.secondary.main,
+
+  rootSelect: {
+    display: "flex",
+    alignItems: "center",
   },
 }));
