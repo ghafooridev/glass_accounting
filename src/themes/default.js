@@ -11,7 +11,7 @@ const defaultTheme = {
   palette: {
     primary: {
       main: primary,
-      light: primary,
+      light: "#dcf0fa",
       dark: primary,
     },
     secondary: {
