@@ -28,6 +28,9 @@ const headCells = [
     id: "type",
     label: "نوع",
   },
+  {
+    id: "logo",
+  },
   { id: "amount", label: "موجودی" },
 
   { id: "action" },
@@ -147,6 +150,15 @@ const MainList = () => {
                     <TableCell padding="none">{row.name}</TableCell>
                     <TableCell padding="none">
                       {row.type === "CASH" ? "نقدی" : "بانکی"}
+                    </TableCell>
+                    <TableCell padding="none">
+                      {row.bank && (
+                        <img
+                          style={{ with: 25, heigh: 25 }}
+                          alt={row.bank.name}
+                          src={`${Constant.API_ADDRESS}/${row.bank.logo}`}
+                        />
+                      )}
                     </TableCell>
                     <TableCell padding="none">{row.amount}</TableCell>
 

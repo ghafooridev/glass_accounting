@@ -5,7 +5,6 @@ import {
   TableContainer,
   TableCell,
   TableRow,
-  Paper,
   Typography,
   Chip,
   Button,
@@ -84,84 +83,78 @@ export default function MainList({ onSelect, onDismiss }) {
   }, [page, order, search, pageSize]);
 
   return (
-    <div className={classes.root}>
-      <div>
-        <TableTop handleSearch={onSearch} />
-        <TableContainer style={{ padding: "0 10px" }}>
-          <Table
-            className={classes.table}
-            size={"medium"}
-            style={{ paddingRight: 10 }}
-          >
-            <TableHeader
-              classes={classes}
-              order={order}
-              orderBy={orderBy}
-              onRequestSort={handleRequestSort}
-              rowCount={list.length}
-              headCells={headCells}
-            />
+    <div style={{ marginTop: -50 }}>
+      <TableTop handleSearch={onSearch} />
+      <TableContainer>
+        <Table className={classes.table} size={"medium"}>
+          <TableHeader
+            classes={classes}
+            order={order}
+            orderBy={orderBy}
+            onRequestSort={handleRequestSort}
+            rowCount={list.length}
+            headCells={headCells}
+          />
 
-            <TableBody>
-              {list.map((row) => {
-                return (
-                  <TableRow
-                    hover
-                    tabIndex={-1}
-                    key={row.id}
-                    style={{ paddingRight: 10 }}
-                  >
-                    <TableCell padding="none">{row.firstName}</TableCell>
-                    <TableCell padding="none">{row.lastName}</TableCell>
-                    <TableCell padding="none">{row.mobile}</TableCell>
-                    <TableCell padding="none">
-                      <Chip
-                        label={Constant.PERSON_STATUS[row.status]}
-                        className={clsx(classes.status, classes[row.status])}
-                      />
-                    </TableCell>
-                    <TableCell padding="none">
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={() => onSelect(row)}
-                      >
-                        انتخاب شخص
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-              {!list.length && !getCustomerRequest.pending && (
-                <TableRow style={{ height: 53 }}>
-                  <TableCell colSpan={6} style={{ textAlign: "center" }}>
-                    <Typography variant="h6">
-                      داده ای برای نمایش وجود ندارد
-                    </Typography>
+          <TableBody>
+            {list.map((row) => {
+              return (
+                <TableRow
+                  hover
+                  tabIndex={-1}
+                  key={row.id}
+                  style={{ paddingRight: 10 }}
+                >
+                  <TableCell padding="none">{row.firstName}</TableCell>
+                  <TableCell padding="none">{row.lastName}</TableCell>
+                  <TableCell padding="none">{row.mobile}</TableCell>
+                  <TableCell padding="none">
+                    <Chip
+                      label={Constant.PERSON_STATUS[row.status]}
+                      className={clsx(classes.status, classes[row.status])}
+                    />
+                  </TableCell>
+                  <TableCell padding="none">
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={() => onSelect(row)}
+                    >
+                      انتخاب شخص
+                    </Button>
                   </TableCell>
                 </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <TablePaging
-          count={list.length}
-          handleChangePage={handleChangePage}
-          handleChangeRowsPerPage={handleChangeRowsPerPage}
-          page={page}
-          rowsPerPage={pageSize}
-        />
+              );
+            })}
+            {!list.length && !getCustomerRequest.pending && (
+              <TableRow style={{ height: 53 }}>
+                <TableCell colSpan={6} style={{ textAlign: "center" }}>
+                  <Typography variant="h6">
+                    داده ای برای نمایش وجود ندارد
+                  </Typography>
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <TablePaging
+        count={list.length}
+        handleChangePage={handleChangePage}
+        handleChangeRowsPerPage={handleChangeRowsPerPage}
+        page={page}
+        rowsPerPage={pageSize}
+      />
 
-        <Grid
-          item
-          xs={12}
-          style={{ display: "flex", justifyContent: "flex-end" }}
-        >
-          <Button variant="contained" color="secondary" onClick={onDismiss}>
-            انصراف
-          </Button>
-        </Grid>
-      </div>
+      <Grid
+        item
+        xs={12}
+        style={{ display: "flex", justifyContent: "flex-end" }}
+      >
+        <Button variant="contained" color="secondary" onClick={onDismiss}>
+          انصراف
+        </Button>
+      </Grid>
     </div>
   );
 }

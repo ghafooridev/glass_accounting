@@ -34,8 +34,9 @@ const Constant = {
     CREDITOR: "طلبکار",
   },
   PAYMENT_TYPE: {
-    income: "دریافتی",
-    outgo: "پرداختی",
+    INCOME: "دریافتی",
+    OUTCOME: "پرداختی",
+    ALL: "دریافتی و پرداختی",
   },
   PERMISSIONS: [
     { value: "USER_SHOW", label: "لیست کاربران" },
@@ -44,6 +45,12 @@ const Constant = {
     { value: "PRODCUT_EDIT", label: "ویرایش محصولات" },
     { value: " CUSTOMER_SHOW", label: "لیست مشتریان" },
     { value: " CUSTOMER_EDIT", label: "ویرایش مشتریان" },
+  ],
+  BANK_TRANSACTION_TYPE: [
+    { value: "کارت به کارت", label: "کارت به کارت" },
+    { value: "دستگاه پوز", label: "دستگاه پوز" },
+    { value: "پایا/ساتنا", label: "پایا/ساتنا" },
+    { value: "واریز به/از حساب", label: "واریز به/از حساب" },
   ],
 };
 export default Constant;

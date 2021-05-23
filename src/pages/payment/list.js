@@ -72,7 +72,7 @@ const MainList = () => {
   };
 
   const onAdd = () => {
-    history.push("/app/payment-detail");
+    history.push(`/app/payment-detail?type=${type}`);
   };
 
   const onSearch = (value) => {
@@ -99,7 +99,7 @@ const MainList = () => {
   const handleAction = (id, type) => {
     const types = {
       edit: () => {
-        history.push(`/app/payment-detail?id=${id}`);
+        history.push(`/app/payment-detail?type=${type}&id=${id}`);
       },
       delete: () => {
         DialogActions.show({
@@ -125,10 +125,9 @@ const MainList = () => {
   };
 
   const getTableTitle = () => {
-    console.log(type, type === Constant.PAYMENT_TYPE.income);
-    if (type === "income") {
+    if (type === "INCOME") {
       return "لیست دریافتی ها";
-    } else if (type === "outgo") {
+    } else if (type === "OUTCOME") {
       return "لیست پرداختی ها";
     }
     return "لیست دریافتی ها و پرداختی ها";
@@ -167,7 +166,7 @@ const MainList = () => {
                 </i>
               }
               label="کل تراکنش ها"
-              value="all"
+              value="ALL"
             />
             <Tab
               icon={
@@ -176,7 +175,7 @@ const MainList = () => {
                 </i>
               }
               label="دریافتی ها"
-              value="income"
+              value="INCOME"
             />
             <Tab
               icon={
@@ -185,7 +184,7 @@ const MainList = () => {
                 </i>
               }
               label="پرداختی ها"
-              value="outgo"
+              value="OUTCOME"
             />
           </Tabs>
         </div>

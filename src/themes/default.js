@@ -103,7 +103,7 @@ const defaultTheme = {
     },
     MuiTableRow: {
       root: {
-        height: 56,
+        height: 45,
       },
     },
     MuiTableCell: {

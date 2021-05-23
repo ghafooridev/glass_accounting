@@ -7,20 +7,29 @@ import {
   Typography,
   TextField,
   Button,
-  Accordion,
+  ButtonGroup,
   AccordionSummary,
   AccordionDetails,
-  MenuItem,
+  Accordion,
+  Table,
+  TableBody,
+  TableContainer,
+  TableCell,
+  TableRow,
+  IconButton,
 } from "@material-ui/core";
+import TableHeader from "../../components/Table/TableHead";
+import { DeleteIcon, EditIcon } from "../../components/icons";
+import Constant from "../../helpers/constant";
 import { useForm, Controller } from "react-hook-form";
 import { useApi } from "../../hooks/useApi";
-import Constant from "../../helpers/constant";
 import { getQueryString } from "../../helpers/utils";
 import CircularProgress from "../../components/CircularProgress";
-import DialogActions from "../../redux/actions/dialogAction";
 import PersonSelector from "./personSelector";
 import { DatePicker } from "@material-ui/pickers";
 import moment from "moment";
+import dialogAction from "../../redux/actions/dialogAction";
+import Payment from "./paymnet";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -44,24 +53,64 @@ const useStyles = makeStyles((theme) => ({
     paddingBottom: 7,
     paddingTop: 7,
   },
-  accordionSummary: {
-    backgroundColor: theme.palette.primary.light,
-  },
 }));
+
+const naghdPayHeadCells = [
+  { id: "cash", label: "صندوق" },
+  {
+    id: "amount",
+    label: "مبلغ ",
+  },
+  { id: "action" },
+];
+const cardPayHeadCells = [
+  { id: "cash", label: "صندوق" },
+  {
+    id: "amount",
+    label: "مبلغ ",
+  },
+  {
+    id: "amount",
+    label: "مبلغ ",
+  },
+  {
+    id: "bank",
+    label: "بانک ",
+  },
+  {
+    id: "code",
+    label: "شماره رهگیری ",
+  },
+  { id: "action" },
+];
+const checkPayHeadCells = [
+  { id: "cash", label: "صندوق" },
+  {
+    id: "amount",
+    label: "مبلغ ",
+  },
+  { id: "dueDate", label: "تاریخ سررسید" },
+  {
+    id: "bank",
+    label: "بانک ",
+  },
+  { id: "action" },
+];
 
 export default function MainDetail({ defaultValues }) {
   const classes = useStyles();
   const history = useHistory();
   const id = getQueryString("id");
+  const paymentType = getQueryString("type");
   const [detail, setDetail] = useState({});
   const [selectedPerson, setSelectedPerson] = useState();
   const { control, handleSubmit, errors, reset } = useForm();
   const [selectedDate, handleDateChange] = useState(moment());
-  const [banks, setBanks] = useState([]);
-  const [expanded, setExpanded] = React.useState("panel1");
-  const [selectedBank, setSelectedBank] = useState(
-    defaultValues?.bank.value || 1,
-  );
+  const [payments, setPayments] = useState({
+    cashes: [],
+    banks: [],
+    cheques: [],
+  });
 
   const addPaymentRequest = useApi({
     method: "post",
@@ -76,32 +125,18 @@ export default function MainDetail({ defaultValues }) {
     url: `payment/${id}`,
   });
 
-  const getBankRequest = useApi({
-    method: "get",
-    url: `bank`,
-  });
-
-  const handleChange = (panel) => (event, newExpanded) => {
-    setExpanded(newExpanded ? panel : false);
-  };
-
-  const onChangeBank = (e) => {
-    setSelectedBank(e.target.value);
-  };
-
   const onSelectPerson = (person) => {
     const name = person.firstName + person.lastName;
-    console.log(name);
     setSelectedPerson(name);
-    DialogActions.hide();
+    dialogAction.hide();
   };
 
   const onDismissPerson = (person) => {
-    DialogActions.hide();
+    dialogAction.hide();
   };
 
   const onShowDialog = () => {
-    DialogActions.show({
+    dialogAction.show({
       title: "انتخاب شخص",
       component: (
         <PersonSelector onSelect={onSelectPerson} onDismiss={onDismissPerson} />
@@ -129,16 +164,109 @@ export default function MainDetail({ defaultValues }) {
     setDetail(detail.data);
   };
 
-  const getBanks = async () => {
-    const result = await getBankRequest.execute();
-    setBanks(result.data);
+  const onSubmitPayment = (value, type) => {
+    console.log(value, type);
+    const types = {
+      NAGHD: () => {
+        console.log("x");
+        setPayments(payments, { cashes: [...payments.cashes, value] });
+      },
+      CARD: () => {
+        setPayments(payments, { banks: [...payments.banks, value] });
+      },
+      CHECK: () => {
+        setPayments(payments, { cheques: [...payments.cheques, value] });
+      },
+    };
+    if (types[type]) {
+      return types[type]();
+    }
+  };
+  console.log(payments);
+
+  const onDismissPayment = () => {
+    dialogAction.hide();
+  };
+
+  const onClickPayment = (type, data) => {
+    dialogAction.show({
+      title: `${paymentType === "INCOME" ? "دریافت" : "پرداخت"} ${
+        type === "NAGHD" ? "نقدی" : type === "CARD" ? "کارتی" : "چکی"
+      }`,
+      component: (
+        <Payment
+          onSubmit={onSubmitPayment}
+          onDismiss={onDismissPayment}
+          defaultValues={data}
+          paymentType={paymentType}
+          type={type}
+        />
+      ),
+      size: "xs",
+      confirm: false,
+      disableCloseButton: true,
+    });
+  };
+
+  const getButtonTitle = (type) => {
+    console.log(type, paymentType);
+    const types = {
+      NAGHD: () => {
+        return (
+          <Typography variant="button">
+            {paymentType === "INCOME" ? "دریافت نقدی" : "پرداخت نقدی"}(
+            {payments.cashes.length})
+          </Typography>
+        );
+      },
+      CARD: () => {
+        return (
+          <Typography variant="button">
+            {paymentType === "INCOME" ? "دریافت کارتی" : "پرداخت کارتی"}(
+            {payments.banks.length})
+          </Typography>
+        );
+      },
+      CHECK: () => {
+        return (
+          <Typography variant="button">
+            {paymentType === "INCOME" ? "دریافت چکی" : "پرداخت چکی"}(
+            {payments.cheques.length})
+          </Typography>
+        );
+      },
+    };
+    if (types[type]) {
+      return types[type]();
+    }
+  };
+
+  const getDetailTitle = () => {
+    if (id) {
+      if (paymentType === "INCOME") {
+        return "ویرایش دریافتی";
+      }
+      return "ویرایش پرداختی";
+    } else {
+      if (paymentType === "INCOME") {
+        return "افزودن دریافتی";
+      }
+      return "افزودن پرداختی";
+    }
+  };
+
+  const handleEditPayment = (value, type) => {
+    console.log(value, type);
+  };
+
+  const handleDeletePayment = (value) => {
+    console.log(value);
   };
 
   useEffect(() => {
     if (id) {
       getDetail();
     }
-    getBanks();
   }, []);
 
   useEffect(() => {
@@ -156,7 +284,7 @@ export default function MainDetail({ defaultValues }) {
               id="tableTitle"
               component="div"
             >
-              {id ? "ویرایش کاربر" : "افزودن کاربر"}
+              {getDetailTitle()}
             </Typography>
 
             <Grid container spacing={3}>
@@ -218,10 +346,43 @@ export default function MainDetail({ defaultValues }) {
                     name="description"
                   />
                 </Grid>
+                <Grid
+                  item
+                  xs={12}
+                  style={{ display: "flex", justifyContent: "center" }}
+                >
+                  <ButtonGroup color="primary">
+                    <Button
+                      startIcon={
+                        <i className="material-icons-round">local_atm</i>
+                      }
+                      onClick={() => onClickPayment("NAGHD")}
+                    >
+                      {getButtonTitle("NAGHD")}
+                    </Button>
+                    <Button
+                      startIcon={
+                        <i className="material-icons-round">payment</i>
+                      }
+                      onClick={() => onClickPayment("CARD")}
+                    >
+                      {getButtonTitle("CARD")}
+                    </Button>
+                    <Button
+                      startIcon={
+                        <i className="material-icons-round">payments</i>
+                      }
+                      onClick={() => onClickPayment("CHECK")}
+                    >
+                      {getButtonTitle("CHECK")}
+                    </Button>
+                  </ButtonGroup>
+                </Grid>
+
                 <Grid item xs={12}>
                   <Accordion
-                    expanded={expanded === "panel1"}
-                    onChange={handleChange("panel1")}
+                    defaultExpanded={payments.cashes.lenght}
+                    disabled={!payments.cashes.lenght}
                   >
                     <AccordionSummary
                       className={classes.accordionSummary}
@@ -231,36 +392,80 @@ export default function MainDetail({ defaultValues }) {
                       aria-controls="panel1a-content"
                       id="panel1a-header"
                     >
-                      <Typography className={classes.heading}>نقدی</Typography>
+                      <Typography className={classes.heading}>
+                        نقدی ها
+                      </Typography>
                     </AccordionSummary>
                     <AccordionDetails>
-                      <Grid item lg={6} xs={12}>
-                        <Controller
-                          control={control}
-                          render={({ onChange, value, name }) => {
-                            return (
-                              <TextField
-                                variant="outlined"
-                                label="مبلغ نقدی"
-                                number
-                                name={name}
-                                onChange={onChange}
-                                value={value}
-                                error={!!errors.amount}
-                                helperText={
-                                  errors.amount ? errors.amount.message : ""
-                                }
-                                fullWidth
-                                size="small"
-                              />
-                            );
-                          }}
-                          name="amount"
-                        />
-                      </Grid>
+                      {!!payments.cashes.length && (
+                        <Grid item xs={12}>
+                          <Paper>
+                            <TableContainer style={{ padding: "0 10px" }}>
+                              <Table
+                                className={classes.table}
+                                size={"medium"}
+                                style={{ paddingRight: 10 }}
+                              >
+                                <TableHeader headCells={naghdPayHeadCells} />
+
+                                <TableBody>
+                                  {payments.cashes.map((row) => {
+                                    return (
+                                      <TableRow
+                                        hover
+                                        tabIndex={-1}
+                                        key={row.id}
+                                        style={{ paddingRight: 10 }}
+                                      >
+                                        <TableCell padding="none">
+                                          <div
+                                            style={{
+                                              display: "flex",
+                                              alignItems: "center",
+                                            }}
+                                          >
+                                            {row.cash}
+                                          </div>
+                                        </TableCell>
+                                        <TableCell padding="none">
+                                          {row.amount}
+                                        </TableCell>
+
+                                        <TableCell
+                                          padding="none"
+                                          style={{ textAlign: "left" }}
+                                        >
+                                          <IconButton
+                                            onClick={() =>
+                                              handleEditPayment(row, "NAGHD")
+                                            }
+                                          >
+                                            <EditIcon />
+                                          </IconButton>
+
+                                          <IconButton
+                                            onClick={() =>
+                                              handleDeletePayment(row.id)
+                                            }
+                                          >
+                                            <DeleteIcon />
+                                          </IconButton>
+                                        </TableCell>
+                                      </TableRow>
+                                    );
+                                  })}
+                                </TableBody>
+                              </Table>
+                            </TableContainer>
+                          </Paper>
+                        </Grid>
+                      )}
                     </AccordionDetails>
                   </Accordion>
-                  <Accordion>
+                  <Accordion
+                    defaultExpanded={payments.banks.lenght}
+                    disabled={!payments.banks.lenght}
+                  >
                     <AccordionSummary
                       className={classes.accordionSummary}
                       expandIcon={
@@ -269,130 +474,86 @@ export default function MainDetail({ defaultValues }) {
                       aria-controls="panel2a-content"
                       id="panel2a-header"
                     >
-                      <Typography className={classes.heading}>کارت</Typography>
+                      <Typography className={classes.heading}>
+                        کارتی ها
+                      </Typography>
                     </AccordionSummary>
                     <AccordionDetails>
-                      <Grid container spacing={3}>
-                        <Grid item lg={6} xs={12}>
-                          <Controller
-                            control={control}
-                            render={({ onChange, value, name }) => {
-                              return (
-                                <TextField
-                                  variant="outlined"
-                                  label="مبلغ قبض"
-                                  number
-                                  name={name}
-                                  onChange={onChange}
-                                  value={value}
-                                  error={!!errors.cardAmount}
-                                  helperText={
-                                    errors.cardAmount
-                                      ? errors.cardAmount.message
-                                      : ""
-                                  }
-                                  fullWidth
-                                  size="small"
-                                />
-                              );
-                            }}
-                            name="cardAmount"
-                          />
+                      {!!payments.banks.length && (
+                        <Grid item xs={12}>
+                          <Paper>
+                            <TableContainer style={{ padding: "0 10px" }}>
+                              <Table
+                                className={classes.table}
+                                size={"medium"}
+                                style={{ paddingRight: 10 }}
+                              >
+                                <TableHeader headCells={cardPayHeadCells} />
+
+                                <TableBody>
+                                  {payments.banks.map((row) => {
+                                    return (
+                                      <TableRow
+                                        hover
+                                        tabIndex={-1}
+                                        key={row.id}
+                                        style={{ paddingRight: 10 }}
+                                      >
+                                        <TableCell padding="none">
+                                          <div
+                                            style={{
+                                              display: "flex",
+                                              alignItems: "center",
+                                            }}
+                                          >
+                                            {row.cash.label}
+                                          </div>
+                                        </TableCell>
+                                        <TableCell padding="none">
+                                          {row.price}
+                                        </TableCell>
+                                        <TableCell padding="none">
+                                          {row.bank.label}
+                                        </TableCell>
+                                        <TableCell padding="none">
+                                          {row.trackingCode}
+                                        </TableCell>
+
+                                        <TableCell
+                                          padding="none"
+                                          style={{ textAlign: "left" }}
+                                        >
+                                          <IconButton
+                                            onClick={() =>
+                                              handleEditPayment(row, "CARD")
+                                            }
+                                          >
+                                            <EditIcon />
+                                          </IconButton>
+
+                                          <IconButton
+                                            onClick={() =>
+                                              handleDeletePayment(row.id)
+                                            }
+                                          >
+                                            <DeleteIcon />
+                                          </IconButton>
+                                        </TableCell>
+                                      </TableRow>
+                                    );
+                                  })}
+                                </TableBody>
+                              </Table>
+                            </TableContainer>
+                          </Paper>
                         </Grid>
-                        <Grid item lg={6} xs={12}>
-                          <TextField
-                            select
-                            label="صندوق"
-                            onChange={onChangeBank}
-                            value={selectedBank}
-                            variant="outlined"
-                            fullWidth
-                            size="small"
-                            name="bank"
-                            SelectProps={{
-                              classes: {
-                                select: classes.rootSelect,
-                              },
-                            }}
-                          >
-                            {banks.map((option) => (
-                              <MenuItem key={option.value} value={option.value}>
-                                <img
-                                  src={`${Constant.API_ADDRESS}/${option.logo}`}
-                                  alt={option.label}
-                                  style={{
-                                    width: 25,
-                                    height: 25,
-                                    borderRadius: "50%",
-                                    marginLeft: 10,
-                                  }}
-                                />
-                                {option.label}
-                              </MenuItem>
-                            ))}
-                          </TextField>
-                        </Grid>
-                        <Grid item lg={6} xs={12}>
-                          <Controller
-                            control={control}
-                            render={({ onChange, value, name }) => {
-                              return (
-                                <TextField
-                                  variant="outlined"
-                                  label="شماره رهگیری"
-                                  number
-                                  name={name}
-                                  onChange={onChange}
-                                  value={value}
-                                  error={!!errors.code}
-                                  helperText={
-                                    errors.code ? errors.code.message : ""
-                                  }
-                                  fullWidth
-                                  size="small"
-                                />
-                              );
-                            }}
-                            name="code"
-                          />
-                        </Grid>
-                        <Grid item lg={6} xs={12}>
-                          <TextField
-                            select
-                            label="بانک"
-                            onChange={onChangeBank}
-                            value={selectedBank}
-                            variant="outlined"
-                            fullWidth
-                            size="small"
-                            name="bank"
-                            SelectProps={{
-                              classes: {
-                                select: classes.rootSelect,
-                              },
-                            }}
-                          >
-                            {banks.map((option) => (
-                              <MenuItem key={option.value} value={option.value}>
-                                <img
-                                  src={`${Constant.API_ADDRESS}/${option.logo}`}
-                                  alt={option.label}
-                                  style={{
-                                    width: 25,
-                                    height: 25,
-                                    borderRadius: "50%",
-                                    marginLeft: 10,
-                                  }}
-                                />
-                                {option.label}
-                              </MenuItem>
-                            ))}
-                          </TextField>
-                        </Grid>
-                      </Grid>
+                      )}
                     </AccordionDetails>
                   </Accordion>
-                  <Accordion>
+                  <Accordion
+                    defaultExpanded={payments.cheques.lenght}
+                    disabled={!payments.cheques.lenght}
+                  >
                     <AccordionSummary
                       className={classes.accordionSummary}
                       expandIcon={
@@ -401,8 +562,79 @@ export default function MainDetail({ defaultValues }) {
                       aria-controls="panel3a-content"
                       id="panel3a-header"
                     >
-                      <Typography className={classes.heading}>چک</Typography>
+                      <Typography className={classes.heading}>چک ها</Typography>
                     </AccordionSummary>
+                    <AccordionDetails>
+                      {!!payments.cheques.length && (
+                        <Grid item xs={12}>
+                          <Paper>
+                            <TableContainer style={{ padding: "0 10px" }}>
+                              <Table
+                                className={classes.table}
+                                size={"medium"}
+                                style={{ paddingRight: 10 }}
+                              >
+                                <TableHeader headCells={checkPayHeadCells} />
+
+                                <TableBody>
+                                  {payments.cheques.map((row) => {
+                                    return (
+                                      <TableRow
+                                        hover
+                                        tabIndex={-1}
+                                        key={row.id}
+                                        style={{ paddingRight: 10 }}
+                                      >
+                                        <TableCell padding="none">
+                                          <div
+                                            style={{
+                                              display: "flex",
+                                              alignItems: "center",
+                                            }}
+                                          >
+                                            {row.cash.label}
+                                          </div>
+                                        </TableCell>
+                                        <TableCell padding="none">
+                                          {row.price}
+                                        </TableCell>
+                                        <TableCell padding="none">
+                                          {row.bank.label}
+                                        </TableCell>
+                                        <TableCell padding="none">
+                                          {row.chequeDueDate}
+                                        </TableCell>
+
+                                        <TableCell
+                                          padding="none"
+                                          style={{ textAlign: "left" }}
+                                        >
+                                          <IconButton
+                                            onClick={() =>
+                                              handleEditPayment(row, "CHECK")
+                                            }
+                                          >
+                                            <EditIcon />
+                                          </IconButton>
+
+                                          <IconButton
+                                            onClick={() =>
+                                              handleDeletePayment(row.id)
+                                            }
+                                          >
+                                            <DeleteIcon />
+                                          </IconButton>
+                                        </TableCell>
+                                      </TableRow>
+                                    );
+                                  })}
+                                </TableBody>
+                              </Table>
+                            </TableContainer>
+                          </Paper>
+                        </Grid>
+                      )}
+                    </AccordionDetails>
                   </Accordion>
                 </Grid>
 

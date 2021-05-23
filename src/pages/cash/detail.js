@@ -70,7 +70,6 @@ export default function MainDetail({ defaultValues }) {
   };
 
   const onSubmit = async (data) => {
-    console.log(data);
     if (id) {
       await editCashRequest.execute(data);
     } else {
@@ -85,6 +84,8 @@ export default function MainDetail({ defaultValues }) {
   const getDetail = async () => {
     const detail = await detailCashRequest.execute();
     setDetail(detail.data);
+    setSelectedBank(detail.data.bankId);
+    setSelectedType(detail.data.type);
   };
 
   const onChangeBank = (e) => {
@@ -97,7 +98,6 @@ export default function MainDetail({ defaultValues }) {
   };
 
   const onDone = (data) => {
-    console.log(data);
     const value = {
       ...data,
       bankId: selectedBank,
@@ -115,6 +115,7 @@ export default function MainDetail({ defaultValues }) {
   }, []);
 
   useEffect(() => {
+    console.log(detail);
     reset(detail);
   }, [reset, detail]);
 

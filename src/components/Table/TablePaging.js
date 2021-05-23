@@ -21,7 +21,7 @@ function TablePaging(props) {
       page={page}
       onChangePage={handleChangePage}
       onChangeRowsPerPage={handleChangeRowsPerPage}
-      labelRowsPerPage="تعداد ردیف در هر صفحه"
+      labelRowsPerPage="تعداد ردیف "
       backIconButtonText="صفحه قبل"
       nextIconButtonText="صفحه بعد"
       labelDisplayedRows={({ from, to, count }) =>

@@ -32,4 +32,15 @@ export default makeStyles((theme) => ({
   outgoIcon: {
     color: theme.palette.danger.main,
   },
+  datePicker: {
+    "& input": {
+      padding: "10px 14px",
+    },
+  },
+  rootSelect: {
+    display: "flex",
+    alignItems: "center",
+    paddingBottom: 7,
+    paddingTop: 7,
+  },
 }));
