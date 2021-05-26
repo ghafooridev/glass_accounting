@@ -162,7 +162,7 @@ export default function MainList() {
                     <TableCell padding="none">{row.lastName}</TableCell>
                     <TableCell padding="none">{row.mobile}</TableCell>
                     <TableCell padding="none">{row.phone}</TableCell>
-                    <TableCell padding="none">{row.car}</TableCell>
+                    <TableCell padding="none">{row.carName}</TableCell>
 
                     <TableCell padding="none">
                       <TableRowMenu

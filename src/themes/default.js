@@ -34,7 +34,7 @@ const defaultTheme = {
     success: {
       main: success,
       light: success,
-      dark: success,
+      dark: "#388e3c",
     },
     info: {
       main: info,

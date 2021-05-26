@@ -8,6 +8,9 @@ import {
   TableRow,
   Paper,
   Typography,
+  Tabs,
+  Tab,
+  Chip,
 } from "@material-ui/core";
 import TableRowMenu from "../../components/Table/TableRowMenu";
 import TableTop from "../../components/Table/TableTop";
@@ -18,22 +21,28 @@ import { convertParamsToQueryString } from "../../helpers/utils";
 import DialogActions from "../../redux/actions/dialogAction";
 import styles from "./style";
 import Constant from "../../helpers/constant";
+import clsx from "clsx";
+import dialogAction from "../../redux/actions/dialogAction";
+import CashSelector from "./cashSelector";
+import SpendCheque from "./spendCheque";
 
 const headCells = [
   {
-    id: "name",
-    label: "نام صندوق",
+    id: " date",
+    label: "تاریخ سررسید",
   },
   {
-    id: "type",
-    label: "نوع",
+    id: "number",
+    label: "شماره چک",
   },
   {
-    id: "logo",
+    id: "bank",
     label: "بانک",
   },
-  { id: "amount", label: "موجودی" },
-
+  { id: "amount", label: "مبلغ" },
+  { id: "person", label: "طرف حساب" },
+  { id: "cashdesk", label: "محل چک" },
+  { id: "type", label: "نوع تراکنش" },
   { id: "action" },
 ];
 
@@ -46,6 +55,7 @@ const MainList = () => {
   const [pageSize, setPageSize] = useState(Constant.TABLE_PAGE_SIZE);
   const [list, setList] = useState([]);
   const [total, setTotal] = useState(0);
+  const [type, setType] = useState();
   const history = useHistory();
 
   const handleRequestSort = (event, property) => {
@@ -64,16 +74,16 @@ const MainList = () => {
   };
 
   const onAdd = () => {
-    history.push("/app/cash-detail");
+    history.push("/app/cheque-detail");
   };
 
   const onSearch = (value) => {
     setSearch(value);
   };
 
-  const getCashRequest = useApi({
+  const getChequeRequest = useApi({
     method: "get",
-    url: `cashdesk?${convertParamsToQueryString({
+    url: `chequedesk?${convertParamsToQueryString({
       page,
       order,
       orderBy,
@@ -84,24 +94,58 @@ const MainList = () => {
 
   const deleteUseRequest = useApi({
     method: "delete",
-    url: `cashdesk`,
+    url: `chequedesk`,
   });
 
-  const handleAction = (id, type) => {
+  const onSelectCash = (id) => {
+    // TODO:call api for sleeping
+  };
+
+  const onSubmitSpend = () => {};
+
+  const handleAction = (row, type) => {
     const types = {
       edit: () => {
-        history.push(`/app/cash-detail?id=${id}`);
+        history.push(`/app/cheque-detail?id=${row.id}`);
       },
       delete: () => {
         DialogActions.show({
           confirm: true,
           title: "ایا از حذف این رکورد مطمئن هستید ؟",
           onAction: async () => {
-            await deleteUseRequest.execute(null, id);
-            setList(list.filter((item) => item.id !== id));
+            await deleteUseRequest.execute(null, row.id);
+            setList(list.filter((item) => item.id !== row.id));
             DialogActions.hide();
           },
           size: "sm",
+          disableCloseButton: false,
+        });
+      },
+      sleep: () => {
+        dialogAction.show({
+          title: "انتخاب صندوق",
+          component: (
+            <CashSelector
+              onSelect={onSelectCash}
+              onDismiss={() => DialogActions.hide()}
+            />
+          ),
+          size: "lg",
+          confirm: false,
+          disableCloseButton: false,
+        });
+      },
+      spend: () => {
+        dialogAction.show({
+          title: "خرج چک",
+          component: (
+            <SpendCheque
+              onSubmit={onSubmitSpend}
+              onDismiss={() => DialogActions.hide()}
+            />
+          ),
+          size: "sm",
+          confirm: false,
           disableCloseButton: false,
         });
       },
@@ -111,10 +155,28 @@ const MainList = () => {
     }
   };
 
+  const onChangeType = (data) => {
+    setType(data);
+  };
+
+  const getActionOptions = (data) => {
+    const menu = [
+      { id: "edit", title: "ویرایش" },
+      { id: "delete", title: "حذف" },
+    ];
+
+    if (data.type === "INCOME" && data.cashDeskType === "NAGHD") {
+      menu.push({ id: "sleep", title: "خواباندن به حساب" });
+      menu.push({ id: "spend", title: "خرج کردن چک" });
+    }
+
+    return menu;
+  };
+
   const getData = async () => {
-    const cashList = await getCashRequest.execute();
-    setList(cashList.data);
-    setTotal(cashList.total);
+    const chequeList = await getChequeRequest.execute();
+    setList(chequeList.data);
+    setTotal(chequeList.total);
   };
 
   useEffect(() => {
@@ -125,6 +187,43 @@ const MainList = () => {
     <div className={classes.root}>
       <Paper className={classes.paper}>
         <TableTop title="لیست صندوق ها" onAdd={onAdd} handleSearch={onSearch} />
+        <div className={classes.tab}>
+          <Tabs
+            value={type}
+            onChange={onChangeType}
+            indicatorColor="primary"
+            textColor="primary"
+            centered
+          >
+            <Tab
+              icon={
+                <i className={clsx("material-icons-round", classes.allIcon)}>
+                  sync
+                </i>
+              }
+              label="کل چک ها"
+              value="ALL"
+            />
+            <Tab
+              icon={
+                <i className={clsx("material-icons-round", classes.incomeIcon)}>
+                  trending_up
+                </i>
+              }
+              label="چک های دریافتی"
+              value="INCOME"
+            />
+            <Tab
+              icon={
+                <i className={clsx("material-icons-round", classes.outgoIcon)}>
+                  trending_down
+                </i>
+              }
+              label="چک های پرداختی"
+              value="OUTCOME"
+            />
+          </Tabs>
+        </div>
         <TableContainer style={{ padding: "0 10px" }}>
           <Table
             className={classes.table}
@@ -139,6 +238,7 @@ const MainList = () => {
               rowCount={list.length}
               headCells={headCells}
             />
+
             <TableBody>
               {list.map((row) => {
                 return (
@@ -148,10 +248,8 @@ const MainList = () => {
                     key={row.id}
                     style={{ paddingRight: 10 }}
                   >
-                    <TableCell padding="none">{row.name}</TableCell>
-                    <TableCell padding="none">
-                      {row.type === "CASH" ? "نقدی" : "بانکی"}
-                    </TableCell>
+                    <TableCell padding="none">{row.chequeDueDate}</TableCell>
+                    <TableCell padding="none">{row.chequeNumber}</TableCell>
                     <TableCell padding="none">
                       {row.bank && (
                         <img
@@ -161,21 +259,26 @@ const MainList = () => {
                         />
                       )}
                     </TableCell>
-                    <TableCell padding="none">{row.amount}</TableCell>
+                    <TableCell padding="none">{row.price}</TableCell>
+                    <TableCell padding="none">{row.person}</TableCell>
+                    <TableCell padding="none">{row.cashDesk}</TableCell>
+                    <TableCell padding="none">
+                      <Chip
+                        label={Constant.PAYMENT_TYPE[row.type]}
+                        className={clsx(classes.type, classes[row.type])}
+                      />
+                    </TableCell>
 
                     <TableCell padding="none">
                       <TableRowMenu
-                        options={[
-                          { id: "edit", title: "ویرایش" },
-                          { id: "delete", title: "حذف" },
-                        ]}
+                        options={() => getActionOptions(row)}
                         hadleAction={(type) => handleAction(row.id, type)}
                       />
                     </TableCell>
                   </TableRow>
                 );
               })}
-              {!list.length && !getCashRequest.pending && (
+              {!list.length && !getChequeRequest.pending && (
                 <TableRow style={{ height: 53 }}>
                   <TableCell colSpan={6} style={{ textAlign: "center" }}>
                     <Typography variant="h6">

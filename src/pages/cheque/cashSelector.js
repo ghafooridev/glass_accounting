@@ -21,27 +21,31 @@ import Constant from "../../helpers/constant";
 
 const headCells = [
   {
-    id: "type",
-    label: "نوع شخص",
+    id: "name",
+    label: "نام صندوق",
   },
   {
-    id: "firstName",
-    label: "نام",
+    id: "type",
+    label: "نوع",
   },
-  { id: "lastName", label: "نام خانوادگی" },
+  {
+    id: "logo",
+    label: "بانک",
+  },
+  { id: "amount", label: "موجودی" },
 
-  { id: "status", label: "وضعیت" },
   { id: "action" },
 ];
 
-export default function MainList({ onSelect, onDismiss, filter }) {
+export default function MainList({ onSelect, onDismiss }) {
   const classes = styles();
   const [order, setOrder] = useState("asc");
+  const [orderBy, setOrderBy] = useState("name");
   const [search, setSearch] = useState();
-  const [orderBy, setOrderBy] = useState("firstName");
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(Constant.TABLE_PAGE_SIZE);
   const [list, setList] = useState([]);
+  const [total, setTotal] = useState(0);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -58,9 +62,13 @@ export default function MainList({ onSelect, onDismiss, filter }) {
     setPage(0);
   };
 
-  const getCustomerRequest = useApi({
+  const onSearch = (value) => {
+    setSearch(value);
+  };
+
+  const getCashRequest = useApi({
     method: "get",
-    url: `${filter}?${convertParamsToQueryString({
+    url: `cashdesk?${convertParamsToQueryString({
       page,
       order,
       orderBy,
@@ -69,13 +77,15 @@ export default function MainList({ onSelect, onDismiss, filter }) {
     })}`,
   });
 
-  const onSearch = (value) => {
-    setSearch(value);
+  const handleAction = (id) => {
+    console.log(id);
+    onSelect(id);
   };
 
   const getData = async () => {
-    const customerList = await getCustomerRequest.execute();
-    setList(customerList.data);
+    const cashList = await getCashRequest.execute();
+    setList(cashList.data);
+    setTotal(cashList.total);
   };
 
   useEffect(() => {
@@ -85,8 +95,12 @@ export default function MainList({ onSelect, onDismiss, filter }) {
   return (
     <div style={{ marginTop: -50 }}>
       <TableTop handleSearch={onSearch} />
-      <TableContainer>
-        <Table className={classes.table} size={"medium"}>
+      <TableContainer style={{ padding: "0 10px" }}>
+        <Table
+          className={classes.table}
+          size={"medium"}
+          style={{ paddingRight: 10 }}
+        >
           <TableHeader
             classes={classes}
             order={order}
@@ -95,7 +109,6 @@ export default function MainList({ onSelect, onDismiss, filter }) {
             rowCount={list.length}
             headCells={headCells}
           />
-
           <TableBody>
             {list.map((row) => {
               return (
@@ -105,20 +118,26 @@ export default function MainList({ onSelect, onDismiss, filter }) {
                   key={row.id}
                   style={{ paddingRight: 10 }}
                 >
-                  <TableCell padding="none">{row.firstName}</TableCell>
-                  <TableCell padding="none">{row.lastName}</TableCell>
-                  <TableCell padding="none">{row.mobile}</TableCell>
+                  <TableCell padding="none">{row.name}</TableCell>
                   <TableCell padding="none">
-                    <Chip
-                      label={Constant.PERSON_STATUS[row.status]}
-                      className={clsx(classes.status, classes[row.status])}
-                    />
+                    {row.type === "CASH" ? "نقدی" : "بانکی"}
                   </TableCell>
+                  <TableCell padding="none">
+                    {row.bank && (
+                      <img
+                        style={{ width: 40, height: 40 }}
+                        alt={row.bank.name}
+                        src={`${Constant.API_ADDRESS}/${row.bank.logo}`}
+                      />
+                    )}
+                  </TableCell>
+                  <TableCell padding="none">{row.amount}</TableCell>
+
                   <TableCell padding="none">
                     <Button
                       variant="contained"
                       color="primary"
-                      onClick={() => onSelect(row)}
+                      onClick={() => handleAction(row.id)}
                     >
                       انتخاب شخص
                     </Button>
@@ -126,7 +145,7 @@ export default function MainList({ onSelect, onDismiss, filter }) {
                 </TableRow>
               );
             })}
-            {!list.length && !getCustomerRequest.pending && (
+            {!list.length && !getCashRequest.pending && (
               <TableRow style={{ height: 53 }}>
                 <TableCell colSpan={6} style={{ textAlign: "center" }}>
                   <Typography variant="h6">
@@ -139,7 +158,7 @@ export default function MainList({ onSelect, onDismiss, filter }) {
         </Table>
       </TableContainer>
       <TablePaging
-        count={list.length}
+        count={total}
         handleChangePage={handleChangePage}
         handleChangeRowsPerPage={handleChangeRowsPerPage}
         page={page}

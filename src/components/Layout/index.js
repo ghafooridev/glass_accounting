@@ -14,10 +14,10 @@ import CustomerDetail from "../../pages/customers/detail";
 import CustomerTransaction from "../../pages/customers/transaction";
 import EmployeeList from "../../pages/employee";
 import EmployeeDetail from "../../pages/employee/detail";
-import SellList from "../../pages/sell";
-import SellDetail from "../../pages/sell/detail";
-import BuyList from "../../pages/buy";
-import BuyDetail from "../../pages/buy/detail";
+import InvoiceList from "../../pages/invoice";
+import InvoiceDetail from "../../pages/invoice/detail";
+import ChequeList from "../../pages/cheque";
+import ChequeDetail from "../../pages/cheque/detail";
 import PaymentList from "../../pages/payment";
 import PaymentDetail from "../../pages/payment/detail";
 import ProductList from "../../pages/product";
@@ -73,11 +73,11 @@ function Layout(props) {
               <Route path="/app/cash-list" component={CashList} />
               <Route path="/app/cash-detail" component={CashDetail} />
 
-              <Route path="/app/sell-list" component={SellList} />
-              <Route path="/app/sell-detail" component={SellDetail} />
+              <Route path="/app/cheque-list" component={ChequeList} />
+              <Route path="/app/cheque-detail" component={ChequeDetail} />
 
-              <Route path="/app/buy-list" component={BuyList} />
-              <Route path="/app/buy-detail" component={BuyDetail} />
+              <Route path="/app/invoice-list" component={InvoiceList} />
+              <Route path="/app/invoice-detail" component={InvoiceDetail} />
 
               <Route path="/app/payment-list" component={PaymentList} />
               <Route path="/app/payment-detail" component={PaymentDetail} />

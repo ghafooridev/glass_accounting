@@ -104,7 +104,7 @@ export default function MainDetail() {
   const getDetail = async () => {
     const detail = await detailDriverRequest.execute();
     setDetail(detail.data);
-    setAccounts(detail.data.personAccount);
+    setAccounts(detail.data?.personAccount || []);
   };
 
   const onSubmitAccount = (data) => {
@@ -303,14 +303,16 @@ export default function MainDetail() {
                             name={name}
                             onChange={onChange}
                             value={value}
-                            error={!!errors.car}
-                            helperText={errors.car ? errors.car.message : ""}
+                            error={!!errors.carName}
+                            helperText={
+                              errors.carName ? errors.carName.message : ""
+                            }
                             fullWidth
                             size="small"
                           />
                         );
                       }}
-                      name="car"
+                      name="carName"
                     />
                   </Grid>
                   <Grid item lg={6} xs={12}>
@@ -324,16 +326,16 @@ export default function MainDetail() {
                             name={name}
                             onChange={onChange}
                             value={value}
-                            error={!!errors.pelak}
+                            error={!!errors.carPlaque}
                             helperText={
-                              errors.pelak ? errors.pelak.message : ""
+                              errors.carPlaque ? errors.carPlaque.message : ""
                             }
                             fullWidth
                             size="small"
                           />
                         );
                       }}
-                      name="pelak"
+                      name="carPlaque"
                     />
                   </Grid>
                   <Grid item lg={6} xs={12}>

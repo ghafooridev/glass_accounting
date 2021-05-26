@@ -10,6 +10,12 @@ const Constant = {
     LOG_OUT_USER: "LOG_OUT_USER",
     GET_UNITS: "GET_UNITS",
   },
+  PERSON_TYPE: {
+    EMPLOYEE: "employee",
+    CUSTOMER: "customer",
+    USER: "user",
+    DRIVER: "driver",
+  },
   STORAGE: {
     CURRENT_USER: "CURRENT_USER",
     TOKEN: "TOKEN",

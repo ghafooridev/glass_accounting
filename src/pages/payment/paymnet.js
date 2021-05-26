@@ -6,17 +6,16 @@ import moment from "moment";
 import { DatePicker } from "@material-ui/pickers";
 import Constant from "../../helpers/constant";
 import styles from "./style";
+import { v4 as uuid } from "uuid";
 
-const Account = ({ onSubmit, onDismiss, defaultValues, paymentType, type }) => {
+const Payment = ({ onSubmit, onDismiss, defaultValues, paymentType, type }) => {
   const [banks, setBanks] = useState([]);
   const [chequeDueDate, handleChequeDueDateChange] = useState(moment());
   const [selectedTransaction, setSelectedTransaction] = useState("CARD");
-  const [selectedBank, setSelectedBank] = useState(
-    defaultValues?.bank.value || 1,
-  );
+  const [selectedBank, setSelectedBank] = useState(defaultValues?.bankId || 1);
   const [cashes, setCashes] = useState([]);
   const [selectedCash, setSelectedCash] = useState(
-    defaultValues?.cash.value || 5,
+    defaultValues?.cashdeskId || 5,
   );
   const { control, handleSubmit, errors, reset } = useForm();
   const classes = styles();
@@ -50,33 +49,41 @@ const Account = ({ onSubmit, onDismiss, defaultValues, paymentType, type }) => {
   };
 
   const onDone = (data) => {
+    const newId = uuid();
     let value;
     if (type === "NAGHD") {
       value = {
         ...data,
+        id: defaultValues ? defaultValues.id : newId,
         cashdeskId: selectedCash,
         cash: getSelectedCash(),
+        isUpdate: !!defaultValues,
       };
     } else if (type === "CARD") {
       value = {
         ...data,
+        id: defaultValues ? defaultValues.id : newId,
         cashdeskId: selectedCash,
         bankId: selectedBank,
         cash: getSelectedCash(),
         bank: getSelectedBank(),
         bankTransactionType: selectedTransaction,
+        isUpdate: !!defaultValues,
       };
     } else {
       value = {
         ...data,
+        id: defaultValues ? defaultValues.id : newId,
         cashdeskId: selectedCash,
         bankId: selectedBank,
         cash: getSelectedCash(),
         bank: getSelectedBank(),
-        chequeDueDate: chequeDueDate,
+        chequeDueDate: chequeDueDate._d,
+        isUpdate: !!defaultValues,
       };
     }
-    onSubmit(value, type);
+    console.log(onSubmit);
+    return onSubmit(value, type, !!defaultValues);
   };
 
   const onChangeBank = (e) => {
@@ -193,7 +200,7 @@ const Account = ({ onSubmit, onDismiss, defaultValues, paymentType, type }) => {
                     return (
                       <TextField
                         variant="outlined"
-                        label="مبلغ قبض"
+                        label="مبلغ "
                         type="number"
                         name={name}
                         onChange={onChange}
@@ -205,6 +212,7 @@ const Account = ({ onSubmit, onDismiss, defaultValues, paymentType, type }) => {
                       />
                     );
                   }}
+                  rules={{ required: Constant.VALIDATION.REQUIRED }}
                   name="price"
                 />
               </Grid>
@@ -306,6 +314,7 @@ const Account = ({ onSubmit, onDismiss, defaultValues, paymentType, type }) => {
                       />
                     );
                   }}
+                  rules={{ required: Constant.VALIDATION.REQUIRED }}
                   name="price"
                 />
               </Grid>
@@ -455,4 +464,4 @@ const Account = ({ onSubmit, onDismiss, defaultValues, paymentType, type }) => {
   );
 };
 
-export default Account;
+export default Payment;

@@ -34,7 +34,7 @@ const headCells = [
   { id: "action" },
 ];
 
-export default function MainList({ onSelect, onDismiss, filter }) {
+export default function MainList({ onSelect, onDismiss }) {
   const classes = styles();
   const [order, setOrder] = useState("asc");
   const [search, setSearch] = useState();
@@ -42,6 +42,7 @@ export default function MainList({ onSelect, onDismiss, filter }) {
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(Constant.TABLE_PAGE_SIZE);
   const [list, setList] = useState([]);
+  const [selectedDrivers, setSelectedDrivers] = useState([]);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -58,9 +59,9 @@ export default function MainList({ onSelect, onDismiss, filter }) {
     setPage(0);
   };
 
-  const getCustomerRequest = useApi({
+  const getDriverRequest = useApi({
     method: "get",
-    url: `${filter}?${convertParamsToQueryString({
+    url: `driver?${convertParamsToQueryString({
       page,
       order,
       orderBy,
@@ -73,9 +74,21 @@ export default function MainList({ onSelect, onDismiss, filter }) {
     setSearch(value);
   };
 
+  const onSelectDriver = (item) => {
+    setSelectedDrivers([...selectedDrivers, item]);
+  };
+
+  const onDeselectDriver = (data) => {
+    setSelectedDrivers(selectedDrivers.filter((item) => item.id !== data.id));
+  };
+
+  const onSubmit = () => {
+    onSelect(selectedDrivers);
+  };
+
   const getData = async () => {
-    const customerList = await getCustomerRequest.execute();
-    setList(customerList.data);
+    const driverList = await getDriverRequest.execute();
+    setList(driverList.data);
   };
 
   useEffect(() => {
@@ -108,25 +121,31 @@ export default function MainList({ onSelect, onDismiss, filter }) {
                   <TableCell padding="none">{row.firstName}</TableCell>
                   <TableCell padding="none">{row.lastName}</TableCell>
                   <TableCell padding="none">{row.mobile}</TableCell>
+                  <TableCell padding="none">{row.carName}</TableCell>
                   <TableCell padding="none">
-                    <Chip
-                      label={Constant.PERSON_STATUS[row.status]}
-                      className={clsx(classes.status, classes[row.status])}
-                    />
-                  </TableCell>
-                  <TableCell padding="none">
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={() => onSelect(row)}
-                    >
-                      انتخاب شخص
-                    </Button>
+                    {selectedDrivers.includes(row) ? (
+                      <Button
+                        variant="contained"
+                        className={classes.selectedButton}
+                        onClick={() => onDeselectDriver(row)}
+                        endIcon={<i className="material-icons-round">done</i>}
+                      >
+                        انتخاب شده
+                      </Button>
+                    ) : (
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => onSelectDriver(row)}
+                      >
+                        انتخاب راننده
+                      </Button>
+                    )}
                   </TableCell>
                 </TableRow>
               );
             })}
-            {!list.length && !getCustomerRequest.pending && (
+            {!list.length && !getDriverRequest.pending && (
               <TableRow style={{ height: 53 }}>
                 <TableCell colSpan={6} style={{ textAlign: "center" }}>
                   <Typography variant="h6">
@@ -145,14 +164,16 @@ export default function MainList({ onSelect, onDismiss, filter }) {
         page={page}
         rowsPerPage={pageSize}
       />
-
       <Grid
         item
         xs={12}
-        style={{ display: "flex", justifyContent: "flex-end" }}
+        style={{ display: "flex", justifyContent: "space-between" }}
       >
+        <Button variant="contained" color="primary" onClick={onSubmit}>
+          تایید
+        </Button>
         <Button variant="contained" color="secondary" onClick={onDismiss}>
-          انصراف
+          بازگشت
         </Button>
       </Grid>
     </div>
