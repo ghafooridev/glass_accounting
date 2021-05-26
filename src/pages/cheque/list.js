@@ -49,13 +49,13 @@ const headCells = [
 const MainList = () => {
   const classes = styles();
   const [order, setOrder] = useState("asc");
-  const [orderBy, setOrderBy] = useState("name");
+  const [orderBy, setOrderBy] = useState("chequeDueDate");
   const [search, setSearch] = useState();
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(Constant.TABLE_PAGE_SIZE);
   const [list, setList] = useState([]);
   const [total, setTotal] = useState(0);
-  const [type, setType] = useState();
+  const [paymentType, setPaymentType] = useState("ALL");
   const history = useHistory();
 
   const handleRequestSort = (event, property) => {
@@ -83,7 +83,7 @@ const MainList = () => {
 
   const getChequeRequest = useApi({
     method: "get",
-    url: `chequedesk?${convertParamsToQueryString({
+    url: `cheque?${convertParamsToQueryString({
       page,
       order,
       orderBy,
@@ -94,7 +94,7 @@ const MainList = () => {
 
   const deleteUseRequest = useApi({
     method: "delete",
-    url: `chequedesk`,
+    url: `cheque`,
   });
 
   const onSelectCash = (id) => {
@@ -155,8 +155,8 @@ const MainList = () => {
     }
   };
 
-  const onChangeType = (data) => {
-    setType(data);
+  const onChangeType = (data, e) => {
+    setPaymentType(e);
   };
 
   const getActionOptions = (data) => {
@@ -181,7 +181,7 @@ const MainList = () => {
 
   useEffect(() => {
     getData();
-  }, [page, order, search, pageSize]);
+  }, [page, order, search, pageSize, paymentType]);
 
   return (
     <div className={classes.root}>
@@ -189,7 +189,8 @@ const MainList = () => {
         <TableTop title="لیست صندوق ها" onAdd={onAdd} handleSearch={onSearch} />
         <div className={classes.tab}>
           <Tabs
-            value={type}
+            variant="fullWidth"
+            value={paymentType}
             onChange={onChangeType}
             indicatorColor="primary"
             textColor="primary"
@@ -280,7 +281,7 @@ const MainList = () => {
               })}
               {!list.length && !getChequeRequest.pending && (
                 <TableRow style={{ height: 53 }}>
-                  <TableCell colSpan={6} style={{ textAlign: "center" }}>
+                  <TableCell colSpan={10} style={{ textAlign: "center" }}>
                     <Typography variant="h6">
                       داده ای برای نمایش وجود ندارد
                     </Typography>

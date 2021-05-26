@@ -158,6 +158,7 @@ const MainList = () => {
             indicatorColor="primary"
             textColor="primary"
             centered
+            variant="fullWidth"
           >
             <Tab
               icon={
