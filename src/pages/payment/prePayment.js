@@ -10,7 +10,6 @@ import {
   Grid,
   Paper,
   Typography,
-  TextField,
   Button,
   ButtonGroup,
   AccordionSummary,
@@ -25,14 +24,7 @@ import {
 } from "@material-ui/core";
 import TableHeader from "../../components/Table/TableHead";
 import { DeleteIcon, EditIcon } from "../../components/icons";
-import Constant from "../../helpers/constant";
-import { useForm, Controller } from "react-hook-form";
-import { useApi } from "../../hooks/useApi";
 import { getQueryString } from "../../helpers/utils";
-import CircularProgress from "../../components/CircularProgress";
-import PersonSelector from "./personSelector";
-import { DatePicker } from "@material-ui/pickers";
-import moment from "moment";
 import dialogAction from "../../redux/actions/dialogAction";
 import Payment from "./paymnet";
 import update from "immutability-helper";
@@ -107,14 +99,13 @@ const PrePayment = React.forwardRef((props, ref) => {
   const { defaultValues } = props;
   const classes = useStyles();
   const paymentType = getQueryString("type");
-  const [payments, setPayments] = useState(defaultValues);
+  const [payments, setPayments] = useState();
 
   useImperativeHandle(ref, () => {
     return payments;
   });
 
   const onSubmitPaymentActions = (value, type, isEdit) => {
-    console.log(value, type, isEdit);
     if (isEdit) {
       return handleSubmitEditPayment(value, type);
     }
@@ -257,7 +248,7 @@ const PrePayment = React.forwardRef((props, ref) => {
         return (
           <Typography variant="button">
             {paymentType === "INCOME" ? "دریافت نقدی" : "پرداخت نقدی"}(
-            {payments.cashes.length})
+            {payments?.cashes.length})
           </Typography>
         );
       },
@@ -265,7 +256,7 @@ const PrePayment = React.forwardRef((props, ref) => {
         return (
           <Typography variant="button">
             {paymentType === "INCOME" ? "دریافت کارتی" : "پرداخت کارتی"}(
-            {payments.banks.length})
+            {payments?.banks.length})
           </Typography>
         );
       },
@@ -273,7 +264,7 @@ const PrePayment = React.forwardRef((props, ref) => {
         return (
           <Typography variant="button">
             {paymentType === "INCOME" ? "دریافت چکی" : "پرداخت چکی"}(
-            {payments.cheques.length})
+            {payments?.cheques.length})
           </Typography>
         );
       },
@@ -282,6 +273,10 @@ const PrePayment = React.forwardRef((props, ref) => {
       return types[type]();
     }
   };
+
+  useEffect(() => {
+    setPayments(defaultValues);
+  }, [defaultValues]);
 
   return (
     <>
@@ -310,10 +305,7 @@ const PrePayment = React.forwardRef((props, ref) => {
 
       <Grid container spacing={3}>
         <Grid item xs={12}>
-          <Accordion
-            expanded={payments.cashes.length}
-            disabled={!payments.cashes.length}
-          >
+          <Accordion expanded={payments?.cashes.length}>
             <AccordionSummary
               className={classes.accordionSummary}
               expandIcon={<i className="material-icons-round">expand_more</i>}
@@ -322,8 +314,8 @@ const PrePayment = React.forwardRef((props, ref) => {
             >
               <Typography className={classes.heading}>نقدی ها</Typography>
             </AccordionSummary>
-            <AccordionDetails>
-              {!!payments.cashes.length && (
+            {!!payments?.cashes.length && (
+              <AccordionDetails>
                 <Grid item xs={12}>
                   <Paper>
                     <TableContainer style={{ padding: "0 10px" }}>
@@ -335,7 +327,7 @@ const PrePayment = React.forwardRef((props, ref) => {
                         <TableHeader headCells={naghdPayHeadCells} />
 
                         <TableBody>
-                          {payments.cashes.map((row) => {
+                          {payments?.cashes.map((row) => {
                             return (
                               <TableRow
                                 hover
@@ -350,7 +342,7 @@ const PrePayment = React.forwardRef((props, ref) => {
                                       alignItems: "center",
                                     }}
                                   >
-                                    {row.cash.label}
+                                    {row.cashDesk?.label}
                                   </div>
                                 </TableCell>
                                 <TableCell padding="none">
@@ -383,12 +375,12 @@ const PrePayment = React.forwardRef((props, ref) => {
                     </TableContainer>
                   </Paper>
                 </Grid>
-              )}
-            </AccordionDetails>
+              </AccordionDetails>
+            )}
           </Accordion>
           <Accordion
-            expanded={payments.banks.length}
-            disabled={!payments.banks.length}
+            expanded={payments?.banks.length}
+            disabled={!payments?.banks.length}
           >
             <AccordionSummary
               className={classes.accordionSummary}
@@ -398,8 +390,8 @@ const PrePayment = React.forwardRef((props, ref) => {
             >
               <Typography className={classes.heading}>کارتی ها</Typography>
             </AccordionSummary>
-            <AccordionDetails>
-              {!!payments.banks.length && (
+            {!!payments?.banks.length && (
+              <AccordionDetails>
                 <Grid item xs={12}>
                   <Paper>
                     <TableContainer style={{ padding: "0 10px" }}>
@@ -411,7 +403,7 @@ const PrePayment = React.forwardRef((props, ref) => {
                         <TableHeader headCells={cardPayHeadCells} />
 
                         <TableBody>
-                          {payments.banks.map((row) => {
+                          {payments?.banks.map((row) => {
                             return (
                               <TableRow
                                 hover
@@ -426,7 +418,7 @@ const PrePayment = React.forwardRef((props, ref) => {
                                       alignItems: "center",
                                     }}
                                   >
-                                    {row.cash.label}
+                                    {row.cashDesk?.label}
                                   </div>
                                 </TableCell>
                                 <TableCell padding="none">
@@ -436,7 +428,7 @@ const PrePayment = React.forwardRef((props, ref) => {
                                   {row.bankTransactionType}
                                 </TableCell>
                                 <TableCell padding="none">
-                                  {row.bank.label}
+                                  {row.bank?.label}
                                 </TableCell>
                                 <TableCell padding="none">
                                   {row.trackingCode}
@@ -468,12 +460,12 @@ const PrePayment = React.forwardRef((props, ref) => {
                     </TableContainer>
                   </Paper>
                 </Grid>
-              )}
-            </AccordionDetails>
+              </AccordionDetails>
+            )}
           </Accordion>
           <Accordion
-            expanded={payments.cheques.length}
-            disabled={!payments.cheques.length}
+            expanded={payments?.cheques.length}
+            disabled={!payments?.cheques.length}
           >
             <AccordionSummary
               className={classes.accordionSummary}
@@ -484,7 +476,7 @@ const PrePayment = React.forwardRef((props, ref) => {
               <Typography className={classes.heading}>چک ها</Typography>
             </AccordionSummary>
             <AccordionDetails>
-              {!!payments.cheques.length && (
+              {!!payments?.cheques.length && (
                 <Grid item xs={12}>
                   <Paper>
                     <TableContainer style={{ padding: "0 10px" }}>
@@ -496,7 +488,7 @@ const PrePayment = React.forwardRef((props, ref) => {
                         <TableHeader headCells={checkPayHeadCells} />
 
                         <TableBody>
-                          {payments.cheques.map((row) => {
+                          {payments?.cheques.map((row) => {
                             return (
                               <TableRow
                                 hover
@@ -511,7 +503,7 @@ const PrePayment = React.forwardRef((props, ref) => {
                                       alignItems: "center",
                                     }}
                                   >
-                                    {row.cash.label}
+                                    {row.cashDesk?.label}
                                   </div>
                                 </TableCell>
                                 <TableCell padding="none">
@@ -524,7 +516,7 @@ const PrePayment = React.forwardRef((props, ref) => {
                                   )}
                                 </TableCell>
                                 <TableCell padding="none">
-                                  {row.bank.label}
+                                  {row.bank?.label}
                                 </TableCell>
                                 <TableCell
                                   padding="none"

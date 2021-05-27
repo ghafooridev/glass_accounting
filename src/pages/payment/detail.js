@@ -66,13 +66,12 @@ export default function MainDetail({ defaultValues }) {
   const [detail, setDetail] = useState({});
   const [selectedPerson, setSelectedPerson] = useState();
   const { control, handleSubmit, errors, reset } = useForm();
-  const [selectedDate, handleDateChange] = useState(moment());
+  const [selectedDate, setSelectedDate] = useState(moment());
   const [payments, setPayments] = useState({
     cashes: [],
     banks: [],
     cheques: [],
   });
-
   const addPaymentRequest = useApi({
     method: "post",
     url: `payment`,
@@ -86,9 +85,12 @@ export default function MainDetail({ defaultValues }) {
     url: `payment/${id}`,
   });
 
+  const handleDateChange = (e, date) => {
+    setSelectedDate(date);
+  };
+
   const onSelectPerson = (person) => {
-    const name = person.firstName + person.lastName;
-    setSelectedPerson(name);
+    setSelectedPerson(person);
     dialogAction.hide();
   };
 
@@ -113,11 +115,19 @@ export default function MainDetail({ defaultValues }) {
   };
 
   const onSubmit = async (data) => {
-    console.log(paymentRef.current);
+    const value = {
+      type: paymentType,
+      personType: "CUSTOMER", //TODO : we should change it later . give this data from person selector component
+      personId: selectedPerson.id,
+      description: data.description,
+      date: selectedDate._d,
+      ...paymentRef.current,
+    };
+
     if (id) {
-      await editPaymentRequest.execute(data);
+      await editPaymentRequest.execute(value);
     } else {
-      await addPaymentRequest.execute(data);
+      await addPaymentRequest.execute(value);
     }
   };
 
@@ -128,6 +138,10 @@ export default function MainDetail({ defaultValues }) {
   const getDetail = async () => {
     const detail = await detailPaymentRequest.execute();
     setDetail(detail.data);
+    const { person, date, banks, cashes, cheques } = detail.data;
+    setSelectedPerson(person);
+    setSelectedDate(date);
+    setPayments({ banks, cashes, cheques });
   };
 
   const getDetailTitle = () => {
@@ -142,6 +156,13 @@ export default function MainDetail({ defaultValues }) {
       }
       return "افزودن پرداختی";
     }
+  };
+
+  const getPersonName = () => {
+    if (selectedPerson) {
+      return `${selectedPerson.firstName} ${selectedPerson.lastName}`;
+    }
+    return "";
   };
 
   useEffect(() => {
@@ -183,7 +204,7 @@ export default function MainDetail({ defaultValues }) {
                   <TextField
                     variant="outlined"
                     name={"personName"}
-                    value={selectedPerson}
+                    value={getPersonName()}
                     disabled
                     style={{ width: "70%" }}
                     size="small"
@@ -227,11 +248,13 @@ export default function MainDetail({ defaultValues }) {
                     name="description"
                   />
                 </Grid>
-                <PrePayment
-                  defaultValues={payments}
-                  type={paymentType}
-                  ref={paymentRef}
-                />
+                {((id && payments) || !id) && (
+                  <PrePayment
+                    defaultValues={payments}
+                    type={paymentType}
+                    ref={paymentRef}
+                  />
+                )}
 
                 <Grid
                   item

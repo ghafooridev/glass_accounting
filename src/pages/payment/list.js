@@ -148,7 +148,7 @@ const MainList = () => {
       <Paper className={classes.paper}>
         <TableTop
           title={getTableTitle()}
-          onAdd={onAdd}
+          onAdd={type !== "ALL" && onAdd}
           handleSearch={onSearch}
         />
         <div className={classes.tab}>
@@ -214,7 +214,11 @@ const MainList = () => {
                   >
                     <TableCell padding="none">{row.paymentname}</TableCell>
                     <TableCell padding="none">{row.person}</TableCell>
-                    <TableCell padding="none">{row.date}</TableCell>
+                    <TableCell padding="none">
+                      {persianNumber(
+                        new Date(row.date).toLocaleDateString("fa-IR"),
+                      )}
+                    </TableCell>
                     <TableCell padding="none">
                       {persianNumber(Number(row.price).toLocaleString())}
                     </TableCell>

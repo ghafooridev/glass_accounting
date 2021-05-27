@@ -15,7 +15,7 @@ const Payment = ({ onSubmit, onDismiss, defaultValues, paymentType, type }) => {
   const [selectedBank, setSelectedBank] = useState(defaultValues?.bankId || 1);
   const [cashes, setCashes] = useState([]);
   const [selectedCash, setSelectedCash] = useState(
-    defaultValues?.cashdeskId || 5,
+    defaultValues?.cashDeskId || 5,
   );
   const { control, handleSubmit, errors, reset } = useForm();
   const classes = styles();
@@ -55,17 +55,17 @@ const Payment = ({ onSubmit, onDismiss, defaultValues, paymentType, type }) => {
       value = {
         ...data,
         id: defaultValues ? defaultValues.id : newId,
-        cashdeskId: selectedCash,
-        cash: getSelectedCash(),
+        cashDeskId: selectedCash,
+        cashDesk: getSelectedCash(),
         isUpdate: !!defaultValues,
       };
     } else if (type === "CARD") {
       value = {
         ...data,
         id: defaultValues ? defaultValues.id : newId,
-        cashdeskId: selectedCash,
+        cashDeskId: selectedCash,
         bankId: selectedBank,
-        cash: getSelectedCash(),
+        cashDesk: getSelectedCash(),
         bank: getSelectedBank(),
         bankTransactionType: selectedTransaction,
         isUpdate: !!defaultValues,
@@ -74,9 +74,9 @@ const Payment = ({ onSubmit, onDismiss, defaultValues, paymentType, type }) => {
       value = {
         ...data,
         id: defaultValues ? defaultValues.id : newId,
-        cashdeskId: selectedCash,
+        cashDeskId: selectedCash,
         bankId: selectedBank,
-        cash: getSelectedCash(),
+        cashDesk: getSelectedCash(),
         bank: getSelectedBank(),
         chequeDueDate: chequeDueDate._d,
         isUpdate: !!defaultValues,
