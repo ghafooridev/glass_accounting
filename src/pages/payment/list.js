@@ -96,18 +96,18 @@ const MainList = () => {
     url: `payment`,
   });
 
-  const handleAction = (id, type) => {
+  const handleAction = (row, type) => {
     const types = {
       edit: () => {
-        history.push(`/app/payment-detail?type=${type}&id=${id}`);
+        history.push(`/app/payment-detail?type=${row.type}&id=${row.id}`);
       },
       delete: () => {
         DialogActions.show({
           confirm: true,
           title: "ایا از حذف این رکورد مطمئن هستید ؟",
           onAction: async () => {
-            await deleteUseRequest.execute(null, id);
-            setList(list.filter((item) => item.id !== id));
+            await deleteUseRequest.execute(null, row.id);
+            setList(list.filter((item) => item.id !== row.id));
             DialogActions.hide();
           },
           size: "sm",
@@ -235,7 +235,7 @@ const MainList = () => {
                           { id: "edit", title: "ویرایش" },
                           { id: "delete", title: "حذف" },
                         ]}
-                        hadleAction={(type) => handleAction(row.id, type)}
+                        hadleAction={(type) => handleAction(row, type)}
                       />
                     </TableCell>
                   </TableRow>

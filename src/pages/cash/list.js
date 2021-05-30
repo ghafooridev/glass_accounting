@@ -18,6 +18,7 @@ import { convertParamsToQueryString } from "../../helpers/utils";
 import DialogActions from "../../redux/actions/dialogAction";
 import styles from "./style";
 import Constant from "../../helpers/constant";
+import Transfer from "./transfer";
 
 const headCells = [
   {
@@ -82,26 +83,57 @@ const MainList = () => {
     })}`,
   });
 
-  const deleteUseRequest = useApi({
+  const deleteCashRequest = useApi({
     method: "delete",
     url: `cashdesk`,
   });
 
-  const handleAction = (id, type) => {
+  const transferCashDesk = useApi({
+    method: "post",
+    url: "cashdesk/transfer",
+  });
+
+  const onDismissTransfer = () => {
+    DialogActions.hide();
+  };
+
+  const onSubmitTransfer = async (data) => {
+    await transferCashDesk.execute(data);
+    getData();
+    DialogActions.hide();
+  };
+
+  const handleAction = (row, type) => {
+    console.log(row);
     const types = {
       edit: () => {
-        history.push(`/app/cash-detail?id=${id}`);
+        history.push(`/app/cash-detail?id=${row.id}`);
       },
       delete: () => {
         DialogActions.show({
           confirm: true,
           title: "ایا از حذف این رکورد مطمئن هستید ؟",
           onAction: async () => {
-            await deleteUseRequest.execute(null, id);
-            setList(list.filter((item) => item.id !== id));
+            await deleteCashRequest.execute(null, row.id);
+            setList(list.filter((item) => item.id !== row.id));
             DialogActions.hide();
           },
           size: "sm",
+          disableCloseButton: false,
+        });
+      },
+      transfer: () => {
+        DialogActions.show({
+          title: "انتقال بین صندوق ها",
+          component: (
+            <Transfer
+              onSubmit={onSubmitTransfer}
+              onDismiss={onDismissTransfer}
+              source={row.id}
+            />
+          ),
+          size: "xs",
+          confirm: false,
           disableCloseButton: false,
         });
       },
@@ -166,10 +198,11 @@ const MainList = () => {
                     <TableCell padding="none">
                       <TableRowMenu
                         options={[
+                          { id: "transfer", title: "انتقال" },
                           { id: "edit", title: "ویرایش" },
                           { id: "delete", title: "حذف" },
                         ]}
-                        hadleAction={(type) => handleAction(row.id, type)}
+                        hadleAction={(type) => handleAction(row, type)}
                       />
                     </TableCell>
                   </TableRow>

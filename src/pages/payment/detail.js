@@ -1,25 +1,7 @@
 import React, { Fragment, useEffect, useRef, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
-import {
-  Grid,
-  Paper,
-  Typography,
-  TextField,
-  Button,
-  ButtonGroup,
-  AccordionSummary,
-  AccordionDetails,
-  Accordion,
-  Table,
-  TableBody,
-  TableContainer,
-  TableCell,
-  TableRow,
-  IconButton,
-} from "@material-ui/core";
-import TableHeader from "../../components/Table/TableHead";
-import { DeleteIcon, EditIcon } from "../../components/icons";
+import { Grid, Paper, Typography, TextField, Button } from "@material-ui/core";
 import Constant from "../../helpers/constant";
 import { useForm, Controller } from "react-hook-form";
 import { useApi } from "../../hooks/useApi";
@@ -29,8 +11,6 @@ import PersonSelector from "./personSelector";
 import { DatePicker } from "@material-ui/pickers";
 import moment from "moment";
 import dialogAction from "../../redux/actions/dialogAction";
-import Payment from "./paymnet";
-import update from "immutability-helper";
 import PrePayment from "./prePayment";
 
 const useStyles = makeStyles((theme) => ({
@@ -85,7 +65,7 @@ export default function MainDetail({ defaultValues }) {
     url: `payment/${id}`,
   });
 
-  const handleDateChange = (e, date) => {
+  const handleDateChange = (date) => {
     setSelectedDate(date);
   };
 
@@ -212,6 +192,7 @@ export default function MainDetail({ defaultValues }) {
                 </Grid>
                 <Grid item lg={6} xs={12} className={classes.datePicker}>
                   <DatePicker
+                    autoOk
                     name="date"
                     label="تاریخ ثبت"
                     inputVariant="outlined"

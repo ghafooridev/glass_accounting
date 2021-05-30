@@ -8,7 +8,9 @@ import {
   TableRow,
   Paper,
   Typography,
+  Chip,
 } from "@material-ui/core";
+import clsx from "clsx";
 import TableRowMenu from "../../components/Table/TableRowMenu";
 import TableTop from "../../components/Table/TableTop";
 import TableHeader from "../../components/Table/TableHead";
@@ -17,37 +19,10 @@ import { useApi } from "../../hooks/useApi";
 import { convertParamsToQueryString } from "../../helpers/utils";
 import DialogActions from "../../redux/actions/dialogAction";
 import styles from "./style";
+import FilterComponent from "./filter";
+import Constant from "../../helpers/constant";
 
-function descendingComparator(a, b, orderBy) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-  return 0;
-}
-
-function getComparator(order, orderBy) {
-  return order === "desc"
-    ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => -descendingComparator(a, b, orderBy);
-}
-
-function stableSort(array, comparator) {
-  const stabilizedThis = array.map((el, index) => [el, index]);
-  stabilizedThis.sort((a, b) => {
-    const order = comparator(a[0], b[0]);
-    if (order !== 0) return order;
-    return a[1] - b[1];
-  });
-  return stabilizedThis.map((el) => el[0]);
-}
 const headCells = [
-  {
-    id: "username",
-    label: "نام کاربری",
-  },
   {
     id: "firstName",
     label: "نام",
@@ -58,15 +33,17 @@ const headCells = [
     label: "موبایل",
   },
   { id: "phone", label: "تلفن" },
+  { id: "status", label: "وضعیت" },
   { id: "action" },
 ];
 
 export default function MainList() {
   const classes = styles();
   const [order, setOrder] = useState("asc");
-  const [orderBy, setOrderBy] = useState("email");
+  const [search, setSearch] = useState();
+  const [orderBy, setOrderBy] = useState("firstName");
   const [page, setPage] = useState(0);
-  const [pageSize, setPageSize] = useState(5);
+  const [pageSize, setPageSize] = useState(Constant.TABLE_PAGE_SIZE);
   const [list, setList] = useState([]);
   const history = useHistory();
 
@@ -81,33 +58,34 @@ export default function MainList() {
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setPageSize(parseInt(event.target.value, 10));
+    setPageSize(parseInt(event.target.value, Constant.TABLE_PAGE_SIZE));
     setPage(0);
   };
 
   const onAdd = () => {
-    history.push("/app/user-detail");
+    history.push("/app/employee-detail");
   };
 
-  const getUserRequest = useApi({
+  const getEmployeeRequest = useApi({
     method: "get",
-    url: `user?${convertParamsToQueryString({
+    url: `employee?${convertParamsToQueryString({
       page,
       order,
       orderBy,
       pageSize,
+      search,
     })}`,
   });
 
   const deleteUseRequest = useApi({
     method: "delete",
-    url: `user`,
+    url: `employee`,
   });
 
   const handleAction = (id, type) => {
     const types = {
       edit: () => {
-        history.push(`/app/user-detail?id=${id}`);
+        history.push(`/app/employee-detail?id=${id}`);
       },
       delete: () => {
         DialogActions.show({
@@ -122,25 +100,41 @@ export default function MainList() {
           disableCloseButton: false,
         });
       },
+      transaction: () => {
+        history.push(`/app/employee-transaction?id=${id}`);
+      },
     };
     if (types[type]) {
       types[type]();
     }
   };
 
+  const onSearch = (value) => {
+    setSearch(value);
+  };
+
+  const onFilter = (data) => {
+    console.log(data);
+  };
+
   const getData = async () => {
-    const userList = await getUserRequest.execute();
-    setList(userList.data);
+    const employeeList = await getEmployeeRequest.execute();
+    setList(employeeList.data);
   };
 
   useEffect(() => {
     getData();
-  }, [page, order]);
+  }, [page, order, search, pageSize]);
 
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <TableTop title="لیست کاربران" onAdd={onAdd} />
+        <TableTop
+          title="لیست مشتریان"
+          onAdd={onAdd}
+          FilterComponent={<FilterComponent onFilter={onFilter} />}
+          handleSearch={onSearch}
+        />
         <TableContainer style={{ padding: "0 10px" }}>
           <Table
             className={classes.table}
@@ -155,36 +149,40 @@ export default function MainList() {
               rowCount={list.length}
               headCells={headCells}
             />
-            <TableBody>
-              {stableSort(list, getComparator(order, orderBy))
-                .slice(page * pageSize, page * pageSize + pageSize)
-                .map((row) => {
-                  return (
-                    <TableRow
-                      hover
-                      tabIndex={-1}
-                      key={row.id}
-                      style={{ paddingRight: 10 }}
-                    >
-                      <TableCell padding="none">{row.username}</TableCell>
-                      <TableCell padding="none">{row.firstName}</TableCell>
-                      <TableCell padding="none">{row.lastName}</TableCell>
-                      <TableCell padding="none">{row.mobile}</TableCell>
-                      <TableCell padding="none">{row.phone}</TableCell>
 
-                      <TableCell padding="none">
-                        <TableRowMenu
-                          options={[
-                            { id: "delete", title: "حذف" },
-                            { id: "edit", title: "ویرایش" },
-                          ]}
-                          hadleAction={(type) => handleAction(row.id, type)}
-                        />
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              {!list.length && !getUserRequest.pending && (
+            <TableBody>
+              {list.map((row) => {
+                return (
+                  <TableRow
+                    hover
+                    tabIndex={-1}
+                    key={row.id}
+                    style={{ paddingRight: 10 }}
+                  >
+                    <TableCell padding="none">{row.firstName}</TableCell>
+                    <TableCell padding="none">{row.lastName}</TableCell>
+                    <TableCell padding="none">{row.mobile}</TableCell>
+                    <TableCell padding="none">{row.phone}</TableCell>
+                    <TableCell padding="none">
+                      <Chip
+                        label={Constant.PERSON_STATUS[row.status]}
+                        className={clsx(classes.status, classes[row.status])}
+                      />
+                    </TableCell>
+                    <TableCell padding="none">
+                      <TableRowMenu
+                        options={[
+                          { id: "transaction", title: "تراکنش ها" },
+                          { id: "edit", title: "ویرایش" },
+                          { id: "delete", title: "حذف" },
+                        ]}
+                        hadleAction={(type) => handleAction(row.id, type)}
+                      />
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+              {!list.length && !getEmployeeRequest.pending && (
                 <TableRow style={{ height: 53 }}>
                   <TableCell colSpan={6} style={{ textAlign: "center" }}>
                     <Typography variant="h6">
