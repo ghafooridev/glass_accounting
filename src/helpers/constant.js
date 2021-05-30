@@ -1,6 +1,11 @@
 const Constant = {
   API_ADDRESS: "http://185.204.197.95:5000/",
   TABLE_PAGE_SIZE: 10,
+  EMPLOYEE_CONTACRT: [
+    { value: "HOURLY", label: "ساعتی" },
+    { value: "DAYLI", label: "روزانه" },
+    { value: "MONTHLY", label: "ماهانه" },
+  ],
   ACTION_TYPES: {
     SHOW_ALERT: "SHOW_ALERT",
     HIDE_ALERT: "HIDE_ALERT",

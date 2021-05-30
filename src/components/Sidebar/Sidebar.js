@@ -76,6 +76,12 @@ const structure = [
   { id: 13, type: "divider" },
   {
     id: 14,
+    label: " حضور و غیاب",
+    link: "/app/traffic",
+    icon: <i className="material-icons-round">transfer_within_a_station</i>,
+  },
+  {
+    id: 14,
     label: "دسته بندی ها ",
     link: "/app/Category",
     icon: <i className="material-icons-round">category</i>,

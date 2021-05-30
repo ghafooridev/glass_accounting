@@ -14,6 +14,9 @@ import {
   TableCell,
   TableRow,
   IconButton,
+  RadioGroup,
+  Radio,
+  FormControlLabel,
 } from "@material-ui/core";
 import TableHeader from "../../components/Table/TableHead";
 import { DeleteIcon, EditIcon } from "../../components/icons";
@@ -24,6 +27,8 @@ import { getQueryString } from "../../helpers/utils";
 import DialogActions from "../../redux/actions/dialogAction";
 import Account from "./account";
 import CircularProgress from "../../components/CircularProgress";
+import { DatePicker } from "@material-ui/pickers";
+import moment from "moment";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -35,6 +40,17 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     paddingBottom: 20,
+  },
+  datePicker: {
+    "& input": {
+      padding: "10px 14px",
+    },
+  },
+  rootSelect: {
+    display: "flex",
+    alignItems: "center",
+    paddingBottom: 7,
+    paddingTop: 7,
   },
 }));
 
@@ -59,6 +75,9 @@ export default function MainDetail() {
   const [detail, setDetail] = useState({});
   const [accounts, setAccounts] = useState([]);
   const [category, setCategory] = useState([]);
+  const [selectedGender, setSelectedGender] = useState("M");
+  const [selectedContract, setSelectedContract] = useState("DAILY");
+  const [selectedDate, setSelectedDate] = useState(moment());
   const [employeeCategory, setEmployeeCategory] = useState(1);
   const { control, handleSubmit, errors, reset } = useForm();
 
@@ -66,19 +85,21 @@ export default function MainDetail() {
     method: "post",
     url: `employee`,
   });
+
   const editEmployeeRequest = useApi({
     method: "put",
     url: `employee/${id}`,
   });
+
   const detailEmployeeRequest = useApi({
     method: "get",
     url: `employee/${id}`,
   });
 
-  const employeeCategoryRequest = useApi({
-    method: "get",
-    url: `employee/category`,
-  });
+  // const employeeCategoryRequest = useApi({
+  //   method: "get",
+  //   url: `employee/category`,
+  // });
 
   const deleteAccountRequest = useApi({
     method: "delete",
@@ -117,8 +138,8 @@ export default function MainDetail() {
   };
 
   const getEmployeeCategory = async () => {
-    const detail = await employeeCategoryRequest.execute();
-    setCategory(detail.data);
+    // const detail = await employeeCategoryRequest.execute();
+    // setCategory(detail.data);
   };
 
   const onSubmitAccount = (data) => {
@@ -179,6 +200,18 @@ export default function MainDetail() {
     setEmployeeCategory(e.target.value);
   };
 
+  const handleChangeGender = (e) => {
+    setSelectedGender(e.target.value);
+  };
+
+  const onChangeContract = (e) => {
+    setSelectedContract(e.target.value);
+  };
+
+  const handleDateChange = (date) => {
+    setSelectedDate(date);
+  };
+
   useEffect(() => {
     getEmployeeCategory();
     if (id) {
@@ -202,7 +235,7 @@ export default function MainDetail() {
                 id="tableTitle"
                 component="div"
               >
-                {id ? "ویرایش مشتری" : "افزودن مشتری"}
+                {id ? "ویرایش پرسنل" : "افزودن پرسنل"}
               </Typography>
 
               <Grid container spacing={3}>
@@ -312,6 +345,30 @@ export default function MainDetail() {
                     />
                   </Grid>
                   <Grid item lg={6} xs={12}>
+                    <RadioGroup
+                      aria-label="gender"
+                      name="gender1"
+                      value={selectedGender}
+                      onChange={handleChangeGender}
+                      style={{
+                        display: "flex",
+                        flexDirection: "row",
+                        justifyContent: "space-around",
+                      }}
+                    >
+                      <FormControlLabel
+                        value="M"
+                        control={<Radio />}
+                        label="مرد"
+                      />
+                      <FormControlLabel
+                        value="F"
+                        control={<Radio />}
+                        label="زن"
+                      />
+                    </RadioGroup>
+                  </Grid>
+                  {/* <Grid item lg={6} xs={12}>
                     {!!category.length && employeeCategory && (
                       <TextField
                         select
@@ -335,6 +392,66 @@ export default function MainDetail() {
                         ))}
                       </TextField>
                     )}
+                  </Grid> */}
+
+                  <Grid item lg={6} xs={12}>
+                    <TextField
+                      select
+                      label="نوع قرارداد"
+                      value={selectedContract}
+                      onChange={onChangeContract}
+                      variant="outlined"
+                      fullWidth
+                      size="small"
+                    >
+                      {Constant.EMPLOYEE_CONTACRT.map((option) => (
+                        <MenuItem key={option.value} value={option.value}>
+                          {option.label}
+                        </MenuItem>
+                      ))}
+                    </TextField>
+                  </Grid>
+                  <Grid item lg={6} xs={12}>
+                    <Controller
+                      control={control}
+                      render={({ onChange, value, name }) => {
+                        return (
+                          <TextField
+                            variant="outlined"
+                            label="مبلغ قرارداد"
+                            name={name}
+                            onChange={onChange}
+                            value={value}
+                            error={!!errors.contarctPrice}
+                            helperText={
+                              errors.contarctPrice
+                                ? errors.contarctPrice.message
+                                : ""
+                            }
+                            fullWidth
+                            size="small"
+                          />
+                        );
+                      }}
+                      rules={{ required: Constant.VALIDATION.REQUIRED }}
+                      name="contarctPrice"
+                    />
+                  </Grid>
+                  <Grid item lg={6} xs={12} className={classes.datePicker}>
+                    <DatePicker
+                      autoOk
+                      name="date"
+                      label="تاریخ شروع قرارداد"
+                      inputVariant="outlined"
+                      okLabel="تأیید"
+                      cancelLabel="لغو"
+                      labelFunc={(date) =>
+                        date ? date.format("jYYYY/jMM/jDD") : ""
+                      }
+                      value={selectedDate}
+                      onChange={handleDateChange}
+                      style={{ width: "100%" }}
+                    />
                   </Grid>
                   <Grid item lg={6} xs={12}>
                     <Button

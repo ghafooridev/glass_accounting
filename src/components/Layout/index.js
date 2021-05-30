@@ -30,6 +30,8 @@ import DriverList from "../../pages/driver";
 import DriverDetail from "../../pages/driver/detail";
 import Setting from "../../pages/setting";
 import Category from "../../pages/category";
+import Traffic from "../../pages/traffic";
+import TrafficDetail from "../../pages/traffic/register";
 
 import { useLayoutState } from "../../context/LayoutContext";
 
@@ -90,6 +92,9 @@ function Layout(props) {
 
               <Route path="/app/setting" component={Setting} />
               <Route path="/app/category" component={Category} />
+
+              <Route path="/app/traffic" component={Traffic} />
+              <Route path="/app/traffic-detail" component={TrafficDetail} />
             </Switch>
           </div>
         </Router>
