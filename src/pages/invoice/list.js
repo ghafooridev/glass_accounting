@@ -125,12 +125,12 @@ const MainList = () => {
   };
 
   const getTableTitle = () => {
-    if (type === "INCOME") {
-      return "لیست دریافتی ها";
-    } else if (type === "OUTCOME") {
-      return "لیست پرداختی ها";
+    if (type === "SELL") {
+      return "لیست فاکتورهای فروش ";
+    } else if (type === "BUY") {
+      return "لیست فاکتورهای خرید";
     }
-    return "لیست دریافتی ها و پرداختی ها";
+    return "لیست تمامی فاکتور ها";
   };
 
   const getData = async () => {
@@ -148,11 +148,12 @@ const MainList = () => {
       <Paper className={classes.paper}>
         <TableTop
           title={getTableTitle()}
-          onAdd={onAdd}
+          onAdd={type !== "ALL" && onAdd}
           handleSearch={onSearch}
         />
         <div className={classes.tab}>
           <Tabs
+            variant="fullWidth"
             value={type}
             onChange={onChangeType}
             indicatorColor="primary"
@@ -171,20 +172,20 @@ const MainList = () => {
             <Tab
               icon={
                 <i className={clsx("material-icons-round", classes.incomeIcon)}>
-                  trending_up
+                  sell
                 </i>
               }
-              label="دریافتی ها"
-              value="INCOME"
+              label="فاکتور های فروش"
+              value="SELL"
             />
             <Tab
               icon={
                 <i className={clsx("material-icons-round", classes.outgoIcon)}>
-                  trending_down
+                  shopping_basket
                 </i>
               }
-              label="پرداختی ها"
-              value="OUTCOME"
+              label="فاکتور های خرید"
+              value="BUY"
             />
           </Tabs>
         </div>

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
 import {
   Table,
   TableBody,
@@ -17,7 +16,7 @@ import TableTop from "../../components/Table/TableTop";
 import TableHeader from "../../components/Table/TableHead";
 import TablePaging from "../../components/Table/TablePaging";
 import { useApi } from "../../hooks/useApi";
-import { convertParamsToQueryString } from "../../helpers/utils";
+import { convertParamsToQueryString, persianNumber } from "../../helpers/utils";
 import DialogActions from "../../redux/actions/dialogAction";
 import styles from "./style";
 import Constant from "../../helpers/constant";
@@ -56,7 +55,6 @@ const MainList = () => {
   const [list, setList] = useState([]);
   const [total, setTotal] = useState(0);
   const [paymentType, setPaymentType] = useState("ALL");
-  const history = useHistory();
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -73,10 +71,6 @@ const MainList = () => {
     setPage(0);
   };
 
-  const onAdd = () => {
-    history.push("/app/cheque-detail");
-  };
-
   const onSearch = (value) => {
     setSearch(value);
   };
@@ -89,43 +83,41 @@ const MainList = () => {
       orderBy,
       pageSize,
       search,
+      paymentType,
     })}`,
   });
 
-  const deleteUseRequest = useApi({
-    method: "delete",
-    url: `cheque`,
+  const spendRequest = useApi({
+    method: "post",
+    url: `cheque/spend`,
   });
 
-  const onSelectCash = (id) => {
-    // TODO:call api for sleeping
+  const sleepRequest = useApi({
+    method: "post",
+    url: `cheque/sleep`,
+  });
+
+  const onSelectCash = async (cashdeskId, chequeId) => {
+    await sleepRequest.execute({ chequeId, cashdeskId });
+    getData();
+    DialogActions.hide();
   };
 
-  const onSubmitSpend = () => {};
+  const onSubmitSpend = async (data) => {
+    console.log(data);
+    await spendRequest.execute(data);
+    getData();
+    DialogActions.hide();
+  };
 
   const handleAction = (row, type) => {
     const types = {
-      edit: () => {
-        history.push(`/app/cheque-detail?id=${row.id}`);
-      },
-      delete: () => {
-        DialogActions.show({
-          confirm: true,
-          title: "ایا از حذف این رکورد مطمئن هستید ؟",
-          onAction: async () => {
-            await deleteUseRequest.execute(null, row.id);
-            setList(list.filter((item) => item.id !== row.id));
-            DialogActions.hide();
-          },
-          size: "sm",
-          disableCloseButton: false,
-        });
-      },
       sleep: () => {
         dialogAction.show({
           title: "انتخاب صندوق",
           component: (
             <CashSelector
+              chequeId={row.id}
               onSelect={onSelectCash}
               onDismiss={() => DialogActions.hide()}
             />
@@ -140,6 +132,7 @@ const MainList = () => {
           title: "خرج چک",
           component: (
             <SpendCheque
+              chequeId={row.id}
               onSubmit={onSubmitSpend}
               onDismiss={() => DialogActions.hide()}
             />
@@ -149,7 +142,20 @@ const MainList = () => {
           disableCloseButton: false,
         });
       },
+      revert: () => {
+        DialogActions.show({
+          confirm: true,
+          title: "ایا از برداشتن این چک مطمئن هستید ؟",
+          onAction: async () => {
+            onSelectCash({ cashdeskId: 1, chequeId: row.id });
+            DialogActions.hide();
+          },
+          size: "sm",
+          disableCloseButton: false,
+        });
+      },
     };
+
     if (types[type]) {
       types[type]();
     }
@@ -160,17 +166,30 @@ const MainList = () => {
   };
 
   const getActionOptions = (data) => {
-    const menu = [
-      { id: "edit", title: "ویرایش" },
-      { id: "delete", title: "حذف" },
-    ];
-
-    if (data.type === "INCOME" && data.cashDeskType === "NAGHD") {
-      menu.push({ id: "sleep", title: "خواباندن به حساب" });
-      menu.push({ id: "spend", title: "خرج کردن چک" });
+    if (data.type === "INCOME" && data.status === "PENDING") {
+      return (
+        <TableCell padding="none">
+          <TableRowMenu
+            options={[
+              { id: "sleep", title: "خواباندن به حساب" },
+              { id: "spend", title: "خرج کردن چک" },
+            ]}
+            hadleAction={(type) => handleAction(data, type)}
+          />
+        </TableCell>
+      );
+    } else if (data.type === "INCOME" && data.status === "SLEEP") {
+      return (
+        <TableCell padding="none">
+          <TableRowMenu
+            options={[{ id: "revert", title: "برداشتن از حساب" }]}
+            hadleAction={(type) => handleAction(data, type)}
+          />
+        </TableCell>
+      );
+    } else {
+      return <TableCell padding="none" />;
     }
-
-    return menu;
   };
 
   const getData = async () => {
@@ -186,7 +205,7 @@ const MainList = () => {
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <TableTop title="لیست صندوق ها" onAdd={onAdd} handleSearch={onSearch} />
+        <TableTop title="لیست چک ها" handleSearch={onSearch} />
         <div className={classes.tab}>
           <Tabs
             variant="fullWidth"
@@ -249,8 +268,14 @@ const MainList = () => {
                     key={row.id}
                     style={{ paddingRight: 10 }}
                   >
-                    <TableCell padding="none">{row.chequeDueDate}</TableCell>
-                    <TableCell padding="none">{row.chequeNumber}</TableCell>
+                    <TableCell padding="none">
+                      {persianNumber(
+                        new Date(row.chequeDueDate).toLocaleDateString("fa-IR"),
+                      )}
+                    </TableCell>
+                    <TableCell padding="none">
+                      {persianNumber(row.chequeNumber)}
+                    </TableCell>
                     <TableCell padding="none">
                       {row.bank && (
                         <img
@@ -260,22 +285,19 @@ const MainList = () => {
                         />
                       )}
                     </TableCell>
-                    <TableCell padding="none">{row.price}</TableCell>
+                    <TableCell padding="none">
+                      {persianNumber(row.price)}
+                    </TableCell>
                     <TableCell padding="none">{row.person}</TableCell>
-                    <TableCell padding="none">{row.cashDesk}</TableCell>
+                    <TableCell padding="none">{row.cashDeskName}</TableCell>
                     <TableCell padding="none">
                       <Chip
                         label={Constant.PAYMENT_TYPE[row.type]}
-                        className={clsx(classes.type, classes[row.type])}
+                        className={clsx(classes.chip, classes[row.type])}
                       />
                     </TableCell>
 
-                    <TableCell padding="none">
-                      <TableRowMenu
-                        options={() => getActionOptions(row)}
-                        hadleAction={(type) => handleAction(row.id, type)}
-                      />
-                    </TableCell>
+                    {getActionOptions(row)}
                   </TableRow>
                 );
               })}

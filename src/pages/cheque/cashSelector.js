@@ -24,10 +24,7 @@ const headCells = [
     id: "name",
     label: "نام صندوق",
   },
-  {
-    id: "type",
-    label: "نوع",
-  },
+
   {
     id: "logo",
     label: "بانک",
@@ -37,7 +34,7 @@ const headCells = [
   { id: "action" },
 ];
 
-export default function MainList({ onSelect, onDismiss }) {
+export default function CashSelector({ onSelect, onDismiss, chequeId }) {
   const classes = styles();
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("name");
@@ -68,7 +65,7 @@ export default function MainList({ onSelect, onDismiss }) {
 
   const getCashRequest = useApi({
     method: "get",
-    url: `cashdesk?${convertParamsToQueryString({
+    url: `cashdesk?type=BANK&${convertParamsToQueryString({
       page,
       order,
       orderBy,
@@ -79,7 +76,7 @@ export default function MainList({ onSelect, onDismiss }) {
 
   const handleAction = (id) => {
     console.log(id);
-    onSelect(id);
+    onSelect(id, chequeId);
   };
 
   const getData = async () => {
@@ -119,9 +116,7 @@ export default function MainList({ onSelect, onDismiss }) {
                   style={{ paddingRight: 10 }}
                 >
                   <TableCell padding="none">{row.name}</TableCell>
-                  <TableCell padding="none">
-                    {row.type === "CASH" ? "نقدی" : "بانکی"}
-                  </TableCell>
+
                   <TableCell padding="none">
                     {row.bank && (
                       <img
@@ -139,7 +134,7 @@ export default function MainList({ onSelect, onDismiss }) {
                       color="primary"
                       onClick={() => handleAction(row.id)}
                     >
-                      انتخاب شخص
+                      انتخاب حساب
                     </Button>
                   </TableCell>
                 </TableRow>

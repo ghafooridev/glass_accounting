@@ -11,16 +11,19 @@ export default makeStyles((theme) => ({
   table: {
     minWidth: 750,
   },
+  chip: {
+    color: "#fff",
+  },
   allIcon: {
     color: theme.palette.primary.main,
   },
-  income: {
+  INCOME: {
     backgroundColor: theme.palette.success.main,
   },
   incomeIcon: {
     color: theme.palette.success.main,
   },
-  outgo: {
+  OUTCOME: {
     backgroundColor: theme.palette.danger.main,
   },
   outgoIcon: {

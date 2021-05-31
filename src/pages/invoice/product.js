@@ -47,7 +47,7 @@ const headCells = [
   { id: "action" },
 ];
 
-export default function MainList({ onSelect, onDismiss }) {
+export default function MainList({ onSelect, onDismiss, customerId }) {
   const classes = styles();
   const [order, setOrder] = useState("asc");
   const [search, setSearch] = useState();
@@ -57,6 +57,7 @@ export default function MainList({ onSelect, onDismiss }) {
   const [list, setList] = useState([]);
   const units = unitAction.getProductUnit();
   const [selectedProduct, setSelectedProduct] = useState();
+  const [productFee, setProductFee] = useState();
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -84,6 +85,11 @@ export default function MainList({ onSelect, onDismiss }) {
     })}`,
   });
 
+  const getProductFeeRequest = useApi({
+    method: "post",
+    url: "invoice/fee",
+  });
+
   const onChangeSelectedProduct = () => {};
 
   const onSearch = (value) => {
@@ -91,13 +97,18 @@ export default function MainList({ onSelect, onDismiss }) {
   };
 
   const getData = async () => {
-    const productList = await getProductRequest.execute();
+    const productList = await getProductRequest.execute({});
     setList(productList.data);
   };
 
-  const onSelectProduct = (data) => {
+  const onSelectProduct = async (data) => {
     console.log(data);
     setSelectedProduct(data);
+    const fee = await getProductFeeRequest.execute({
+      customerId,
+      productId: data.id,
+    });
+    setProductFee(fee);
   };
 
   const onDeselectProduct = () => {
@@ -131,7 +142,7 @@ export default function MainList({ onSelect, onDismiss }) {
             <TextField
               select
               label="واحد شمارش"
-              value={selectedProduct?.defaultUnit}
+              value={productFee?.unit}
               onChange={onChangeSelectedProduct}
               variant="outlined"
               name="unitBase"
@@ -151,7 +162,7 @@ export default function MainList({ onSelect, onDismiss }) {
               label="مقدار"
               name={"amount"}
               onChange={onChangeSelectedProduct}
-              value={selectedProduct?.amount}
+              value={productFee?.amount}
               fullWidth
               size="small"
             />
@@ -162,7 +173,7 @@ export default function MainList({ onSelect, onDismiss }) {
               label="قیمت"
               name={"fee"}
               onChange={onChangeSelectedProduct}
-              value={selectedProduct?.fee}
+              value={productFee?.fee}
               fullWidth
               size="small"
             />

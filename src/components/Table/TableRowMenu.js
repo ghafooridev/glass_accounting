@@ -43,7 +43,6 @@ export default function TableRowMenu(props) {
         PaperProps={{
           style: {
             maxHeight: ITEM_HEIGHT * 4.5,
-            width: "15ch",
           },
         }}
       >

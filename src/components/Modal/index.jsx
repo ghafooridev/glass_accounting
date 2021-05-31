@@ -14,10 +14,11 @@ const Modal = function () {
     size,
     disableCloseButton,
     confirm,
+    name,
   } = useSelector((state) => state.dialog);
 
   const onClose = function () {
-    dialogAction.hide();
+    dialogAction.hide(name);
   };
 
   return (

@@ -305,7 +305,10 @@ const PrePayment = React.forwardRef((props, ref) => {
 
       <Grid container spacing={3}>
         <Grid item xs={12}>
-          <Accordion expanded={payments?.cashes.length}>
+          <Accordion
+            expanded={payments?.cashes.length}
+            disabled={!payments?.cashes.length}
+          >
             <AccordionSummary
               className={classes.accordionSummary}
               expandIcon={<i className="material-icons-round">expand_more</i>}

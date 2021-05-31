@@ -41,7 +41,7 @@ const structure = [
   {
     id: 5,
     label: "فاکتور ها",
-    icon: <i className="material-icons-round">monetization_on</i>,
+    icon: <i className="material-icons-round">receipt</i>,
     children: [
       { label: "کل فاکتور ها", link: "/app/invoice-list?type=ALL" },
       { label: "فاکتور خرید", link: "/app/invoice-list?type=BUY" },
@@ -64,7 +64,7 @@ const structure = [
   {
     id: 9,
     label: "اشخاص",
-    icon: <i className="material-icons-round">monetization_on</i>,
+    icon: <i className="material-icons-round">account_circle</i>,
     children: [
       { label: "کاربران", link: "/app/user-list" },
       { label: "مشتریان", link: "/app/customer-list" },

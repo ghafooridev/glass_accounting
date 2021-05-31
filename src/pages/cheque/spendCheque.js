@@ -10,6 +10,8 @@ import PersonSelector from "../payment/personSelector";
 import { DatePicker } from "@material-ui/pickers";
 import moment from "moment";
 import dialogAction from "../../redux/actions/dialogAction";
+import Autocomplete from "@material-ui/lab/Autocomplete";
+import { Description } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -35,157 +37,103 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function MainDetail({ defaultValues }) {
-  const paymentRef = useRef(null);
+export default function SpendCheque({ chequeId, onDismiss, onSubmit }) {
   const classes = useStyles();
-  const history = useHistory();
-  const id = getQueryString("id");
-  const [detail, setDetail] = useState({});
   const [selectedPerson, setSelectedPerson] = useState();
-  const { control, handleSubmit, errors, reset } = useForm();
   const [selectedDate, handleDateChange] = useState(moment());
+  const [persons, setPersons] = useState([]);
+  const [description, setDescription] = useState();
 
-  const addPaymentRequest = useApi({
-    method: "post",
-    url: `payment`,
-  });
-  const editPaymentRequest = useApi({
-    method: "put",
-    url: `payment/${id}`,
-  });
-  const detailPaymentRequest = useApi({
+  const getPersonsRequest = useApi({
     method: "get",
-    url: `payment/${id}`,
+    url: "customer",
   });
 
-  const onSelectPerson = (person) => {
-    const name = person.firstName + person.lastName;
-    setSelectedPerson(name);
-    dialogAction.hide();
+  const getPersons = async () => {
+    const personList = await getPersonsRequest.execute();
+    setPersons(personList.data);
   };
 
-  const onDismissPerson = () => {
-    dialogAction.hide();
-  };
-
-  const onShowDialog = () => {
-    dialogAction.show({
-      title: "انتخاب شخص",
-      component: (
-        <PersonSelector
-          onSelect={onSelectPerson}
-          onDismiss={onDismissPerson}
-          filter={Constant.PERSON_TYPE.CUSTOMER}
-        />
-      ),
-      size: "lg",
-      confirm: false,
-      disableCloseButton: false,
+  const onDone = () => {
+    onSubmit({
+      chequeId,
+      personId: selectedPerson.id,
+      personType: selectedPerson.type,
+      date: selectedDate._d,
+      description,
     });
+    console.log(selectedPerson, selectedDate, chequeId);
   };
 
-  const onSubmit = async (data) => {
-    console.log(paymentRef.current);
-    if (id) {
-      await editPaymentRequest.execute(data);
-    } else {
-      await addPaymentRequest.execute(data);
-    }
+  const onChangePerson = (e, value) => {
+    setSelectedPerson(value);
   };
 
-  const onReject = () => {
-    history.push("/app/payment-list?type=ALL");
-  };
-
-  const getDetail = async () => {
-    const detail = await detailPaymentRequest.execute();
-    setDetail(detail.data);
+  const onChangeDescription = (e) => {
+    setDescription(e.target.value);
   };
 
   useEffect(() => {
-    if (id) {
-      getDetail();
-    }
+    getPersons();
   }, []);
 
-  useEffect(() => {
-    reset(detail);
-  }, [reset, detail]);
-
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <Grid container spacing={3}>
-        <Fragment>
-          <Grid item xs={12} style={{ display: "flex" }}>
-            <Button
-              style={{ marginLeft: 10, width: "30%" }}
-              variant="contained"
-              color="primary"
-              onClick={onShowDialog}
-            >
-              انتخاب شخص
-            </Button>
+    <Grid container spacing={3}>
+      <Fragment>
+        <Grid item xs={12} style={{ display: "flex" }}>
+          <Autocomplete
+            id="combo-box-demo"
+            onChange={onChangePerson}
+            options={persons}
+            getOptionLabel={(option) =>
+              `${option.firstName} ${option.lastName}`
+            }
+            fullWidth
+            size="small"
+            renderInput={(params) => (
+              <TextField {...params} label="انتخاب شخص" variant="outlined" />
+            )}
+          />
+        </Grid>
+        <Grid item xs={12} className={classes.datePicker}>
+          <DatePicker
+            autoOk
+            name="date"
+            label="تاریخ ثبت"
+            inputVariant="outlined"
+            okLabel="تأیید"
+            cancelLabel="لغو"
+            labelFunc={(date) => (date ? date.format("jYYYY/jMM/jDD") : "")}
+            value={selectedDate}
+            onChange={handleDateChange}
+            style={{ width: "100%" }}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <TextField
+            variant="outlined"
+            label="بابت"
+            name={"description"}
+            onChange={onChangeDescription}
+            value={description}
+            fullWidth
+            size="small"
+          />
+        </Grid>
 
-            <TextField
-              variant="outlined"
-              name={"personName"}
-              value={selectedPerson}
-              disabled
-              style={{ width: "70%" }}
-              size="small"
-            />
-          </Grid>
-          <Grid item xs={12} className={classes.datePicker}>
-            <DatePicker
-              name="date"
-              label="تاریخ ثبت"
-              inputVariant="outlined"
-              okLabel="تأیید"
-              cancelLabel="لغو"
-              labelFunc={(date) => (date ? date.format("jYYYY/jMM/jDD") : "")}
-              value={selectedDate}
-              onChange={handleDateChange}
-              style={{ width: "100%" }}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <Controller
-              control={control}
-              render={({ onChange, value, name }) => {
-                return (
-                  <TextField
-                    variant="outlined"
-                    label="بابت"
-                    name={name}
-                    onChange={onChange}
-                    value={value}
-                    error={!!errors.description}
-                    helperText={
-                      errors.description ? errors.description.message : ""
-                    }
-                    fullWidth
-                    size="small"
-                  />
-                );
-              }}
-              name="description"
-            />
-          </Grid>
-
-          <Grid
-            item
-            xs={12}
-            style={{ display: "flex", justifyContent: "space-between" }}
-          >
-            <Button variant="contained" color="primary" type="submit">
-              تایید
-            </Button>
-            <Button variant="contained" color="secondary" onClick={onReject}>
-              بازگشت
-            </Button>
-          </Grid>
-        </Fragment>
-      </Grid>
-    </form>
+        <Grid
+          item
+          xs={12}
+          style={{ display: "flex", justifyContent: "space-between" }}
+        >
+          <Button variant="contained" color="primary" onClick={onDone}>
+            تایید
+          </Button>
+          <Button variant="contained" color="secondary" onClick={onDismiss}>
+            بازگشت
+          </Button>
+        </Grid>
+      </Fragment>
+    </Grid>
   );
 }

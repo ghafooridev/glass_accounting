@@ -25,7 +25,7 @@ import PersonSelector from "../payment/personSelector";
 import { DatePicker } from "@material-ui/pickers";
 import moment from "moment";
 import dialogAction from "../../redux/actions/dialogAction";
-import update from "immutability-helper";
+import isEmpty from "lodash.isempty";
 import PrePayment from "../payment/prePayment";
 import Drivers from "./driver";
 import Product from "./product";
@@ -105,8 +105,7 @@ export default function MainDetail({ defaultValues }) {
   });
 
   const onSelectPerson = (person) => {
-    const name = person.firstName + person.lastName;
-    setSelectedPerson(name);
+    setSelectedPerson(person);
     dialogAction.hide();
   };
 
@@ -198,7 +197,11 @@ export default function MainDetail({ defaultValues }) {
     dialogAction.show({
       title: "انتخاب کالا",
       component: (
-        <Product onSubmit={onSubmitProduct} onDismiss={onDismissProduct} />
+        <Product
+          onSubmit={onSubmitProduct}
+          onDismiss={onDismissProduct}
+          customerId={selectedPerson?.id}
+        />
       ),
       size: "lg",
       confirm: false,
@@ -259,7 +262,11 @@ export default function MainDetail({ defaultValues }) {
                   <TextField
                     variant="outlined"
                     name={"personName"}
-                    value={selectedPerson}
+                    value={
+                      selectedPerson
+                        ? `${selectedPerson.firstName} ${selectedPerson.lastName}`
+                        : ""
+                    }
                     disabled
                     style={{ width: "70%" }}
                     size="small"
@@ -355,6 +362,7 @@ export default function MainDetail({ defaultValues }) {
 
                 <Grid item lg={6} xs={12} style={{ display: "flex" }}>
                   <Button
+                    disabled={isEmpty(selectedPerson)}
                     style={{ marginLeft: 10, width: "30%" }}
                     variant="contained"
                     color="primary"
@@ -422,11 +430,6 @@ export default function MainDetail({ defaultValues }) {
                     </Paper>
                   </Grid>
                 )}
-                <PrePayment
-                  type={invoiceType === "BUY" ? "OUTCOME" : "INCOME"}
-                  ref={paymentRef}
-                  defaultValues={payments}
-                />
                 <Grid item xs={12}>
                   <Controller
                     control={control}
@@ -451,6 +454,11 @@ export default function MainDetail({ defaultValues }) {
                     name="description"
                   />
                 </Grid>
+                <PrePayment
+                  type={invoiceType === "BUY" ? "OUTCOME" : "INCOME"}
+                  ref={paymentRef}
+                  defaultValues={payments}
+                />
 
                 <Grid
                   item
