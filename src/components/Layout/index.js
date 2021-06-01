@@ -5,7 +5,6 @@ import classnames from "classnames";
 import useStyles from "./styles";
 import Header from "../Header/Header";
 import Sidebar from "../Sidebar/Sidebar";
-
 import Dashboard from "../../pages/dashboard/Dashboard";
 import UserList from "../../pages/users";
 import UserDetail from "../../pages/users/detail";
@@ -52,7 +51,6 @@ function Layout(props) {
             })}
           >
             <div className={classes.fakeToolbar} />
-
             <Switch>
               <Route path="/app/dashboard" component={Dashboard} />
 

@@ -5,6 +5,7 @@ import {
   Route,
   Redirect,
 } from "react-router-dom";
+
 import Layout from "./Layout";
 import Error from "../pages/error";
 import Login from "../pages/login";
@@ -21,6 +22,7 @@ export default function App() {
           path="/app"
           render={() => <Redirect to="/app/dashboard" />}
         />
+
         <PrivateRoute path="/app" component={Layout} />
         <PublicRoute path="/login" component={Login} />
         <Route component={Error} />
