@@ -13,6 +13,9 @@ import {
   ComposedChart,
   AreaChart,
   LineChart,
+  CartesianGrid,
+  Legend,
+  Tooltip,
   Line,
   Area,
   PieChart,
@@ -20,23 +23,183 @@ import {
   Cell,
   YAxis,
   XAxis,
+  Bar,
+  BarChart,
+  PolarRadiusAxis,
+  Radar,
+  PolarGrid,
+  PolarAngleAxis,
+  RadarChart,
 } from "recharts";
 
 import useStyles from "./styles";
-import mock from "./mock";
 import Widget from "../../components/Widget";
 import { Typography } from "../../components/Wrappers";
 import Dot from "../../components/Sidebar/components/Dot";
-import Table from "./components/Table/Table";
-import BigStat from "./components/BigStat/BigStat";
+
 import Paper from "../../components/Paper";
+import { persianNumber } from "../../helpers/utils";
 
 const mainChartData = getMainChartData();
-const PieChartData = [
-  { name: "Group A", value: 400, color: "primary" },
-  { name: "Group B", value: 300, color: "secondary" },
-  { name: "Group C", value: 300, color: "warning" },
-  { name: "Group D", value: 200, color: "success" },
+
+const CashDeskCahrt = [
+  { name: "صندوق 1", value: 525200, color: "primary" },
+  { name: "صندوق 2", value: 476100, color: "secondary" },
+];
+
+const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
+
+const RADIAN = Math.PI / 180;
+const renderCustomizedLabel = ({
+  cx,
+  cy,
+  midAngle,
+  innerRadius,
+  outerRadius,
+  percent,
+  index,
+}) => {
+  const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+  const x = cx + radius * Math.cos(-midAngle * RADIAN);
+  const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+  return (
+    <text
+      x={x}
+      y={y}
+      fill="white"
+      textAnchor={x > cx ? "start" : "end"}
+      dominantBaseline="central"
+    >
+      {`${(percent * 100).toFixed(0)}%`}
+    </text>
+  );
+};
+const incomeOutcomeChart = [
+  {
+    name: "Page A",
+    uv: 4000,
+    pv: 2400,
+    amt: 2400,
+  },
+  {
+    name: "Page B",
+    uv: 3000,
+    pv: 1398,
+    amt: 2210,
+  },
+  {
+    name: "Page C",
+    uv: 2000,
+    pv: 9800,
+    amt: 2290,
+  },
+  {
+    name: "Page D",
+    uv: 2780,
+    pv: 3908,
+    amt: 2000,
+  },
+  {
+    name: "Page E",
+    uv: 1890,
+    pv: 4800,
+    amt: 2181,
+  },
+  {
+    name: "Page F",
+    uv: 2390,
+    pv: 3800,
+    amt: 2500,
+  },
+  {
+    name: "Page G",
+    uv: 3490,
+    pv: 4300,
+    amt: 2100,
+  },
+];
+const factorPriceChart = [
+  {
+    name: "Page A",
+    uv: 4000,
+    pv: 2400,
+    amt: 2400,
+  },
+  {
+    name: "Page B",
+    uv: 3000,
+    pv: 1398,
+    amt: 2210,
+  },
+  {
+    name: "Page C",
+    uv: 2000,
+    pv: 9800,
+    amt: 2290,
+  },
+  {
+    name: "Page D",
+    uv: 2780,
+    pv: 3908,
+    amt: 2000,
+  },
+  {
+    name: "Page E",
+    uv: 1890,
+    pv: 4800,
+    amt: 2181,
+  },
+  {
+    name: "Page F",
+    uv: 2390,
+    pv: 3800,
+    amt: 2500,
+  },
+  {
+    name: "Page G",
+    uv: 3490,
+    pv: 4300,
+    amt: 2100,
+  },
+];
+const empoyeeTrafficChart = [
+  {
+    subject: "Math",
+    A: 120,
+    B: 110,
+    fullMark: 150,
+  },
+  {
+    subject: "Chinese",
+    A: 98,
+    B: 130,
+    fullMark: 150,
+  },
+  {
+    subject: "English",
+    A: 86,
+    B: 130,
+    fullMark: 150,
+  },
+  {
+    subject: "Geography",
+    A: 99,
+    B: 100,
+    fullMark: 150,
+  },
+  {
+    subject: "Physics",
+    A: 85,
+    B: 90,
+    fullMark: 150,
+  },
+  {
+    subject: "History",
+    A: 65,
+    B: 85,
+    fullMark: 150,
+  },
 ];
 
 export default function Dashboard(props) {
@@ -156,137 +319,10 @@ export default function Dashboard(props) {
         </Grid>
       </Grid>
 
-      {/* <Grid container spacing={4}>
-        <Grid item lg={3} md={4} sm={6} xs={12}>
+      <Grid container spacing={4}>
+        <Grid item lg={6} xs={12}>
           <Widget
-            title="Visits Today"
-            upperTitle
-            bodyClass={classes.fullHeightBody}
-            className={classes.card}
-          >
-            <div className={classes.visitsNumberContainer}>
-              <Grid container item alignItems={"center"}>
-                <Grid item xs={6}>
-                  <Typography size="xl" weight="medium" noWrap>
-                    12, 678
-                  </Typography>
-                </Grid>
-                <Grid item xs={6}>
-                  <LineChart
-                    width={100}
-                    height={30}
-                    data={[
-                      { value: 10 },
-                      { value: 15 },
-                      { value: 10 },
-                      { value: 17 },
-                      { value: 18 },
-                    ]}
-                  >
-                    <Line
-                      type="natural"
-                      dataKey="value"
-                      stroke={theme.palette.success.main}
-                      strokeWidth={2}
-                      dot={false}
-                    />
-                  </LineChart>
-                </Grid>
-              </Grid>
-            </div>
-            <Grid
-              container
-              direction="row"
-              justify="space-between"
-              alignItems="center"
-            >
-              <Grid item xs={4}>
-                <Typography color="text" colorBrightness="secondary" noWrap>
-                  Registrations
-                </Typography>
-                <Typography size="md">860</Typography>
-              </Grid>
-              <Grid item xs={4}>
-                <Typography color="text" colorBrightness="secondary" noWrap>
-                  Sign Out
-                </Typography>
-                <Typography size="md">32</Typography>
-              </Grid>
-              <Grid item xs={4}>
-                <Typography color="text" colorBrightness="secondary" noWrap>
-                  Rate
-                </Typography>
-                <Typography size="md">3.25%</Typography>
-              </Grid>
-            </Grid>
-          </Widget>
-        </Grid>
-        <Grid item lg={3} md={8} sm={6} xs={12}>
-          <Widget
-            title="App Performance"
-            upperTitle
-            className={classes.card}
-            bodyClass={classes.fullHeightBody}
-          >
-            <div className={classes.performanceLegendWrapper}>
-              <div className={classes.legendElement}>
-                <Dot color="warning" />
-                <Typography
-                  color="text"
-                  colorBrightness="secondary"
-                  className={classes.legendElementText}
-                >
-                  Integration
-                </Typography>
-              </div>
-              <div className={classes.legendElement}>
-                <Dot color="primary" />
-                <Typography
-                  color="text"
-                  colorBrightness="secondary"
-                  className={classes.legendElementText}
-                >
-                  SDK
-                </Typography>
-              </div>
-            </div>
-            <div className={classes.progressSection}>
-              <Typography
-                size="md"
-                color="text"
-                colorBrightness="secondary"
-                className={classes.progressSectionTitle}
-              >
-                Integration
-              </Typography>
-              <LinearProgress
-                variant="determinate"
-                value={77}
-                classes={{ barColorPrimary: classes.progressBarPrimary }}
-                className={classes.progress}
-              />
-            </div>
-            <div>
-              <Typography
-                size="md"
-                color="text"
-                colorBrightness="secondary"
-                className={classes.progressSectionTitle}
-              >
-                SDK
-              </Typography>
-              <LinearProgress
-                variant="determinate"
-                value={73}
-                classes={{ barColorPrimary: classes.progressBarWarning }}
-                className={classes.progress}
-              />
-            </div>
-          </Widget>
-        </Grid>
-        <Grid item lg={3} md={8} sm={6} xs={12}>
-          <Widget
-            title="Server Overview"
+            title="موجودی ده روز اخیر صندوق ها"
             upperTitle
             className={classes.card}
             bodyClass={classes.fullHeightBody}
@@ -298,7 +334,7 @@ export default function Dashboard(props) {
                 className={classes.serverOverviewElementText}
                 noWrap
               >
-                60% / 37°С / 3.3 Ghz
+                صندوق 1
               </Typography>
               <div className={classes.serverOverviewElementChartWrapper}>
                 <ResponsiveContainer height={50} width="99%">
@@ -322,7 +358,7 @@ export default function Dashboard(props) {
                 className={classes.serverOverviewElementText}
                 noWrap
               >
-                54% / 31°С / 3.3 Ghz
+                صندوق 2
               </Typography>
               <div className={classes.serverOverviewElementChartWrapper}>
                 <ResponsiveContainer height={50} width="99%">
@@ -346,7 +382,7 @@ export default function Dashboard(props) {
                 className={classes.serverOverviewElementText}
                 noWrap
               >
-                57% / 21°С / 3.3 Ghz
+                صندوق 3
               </Typography>
               <div className={classes.serverOverviewElementChartWrapper}>
                 <ResponsiveContainer height={50} width="99%">
@@ -365,40 +401,143 @@ export default function Dashboard(props) {
             </div>
           </Widget>
         </Grid>
-        <Grid item lg={3} md={4} sm={6} xs={12}>
-          <Widget title="Revenue Breakdown" upperTitle className={classes.card}>
+        <Grid item lg={6} xs={12}>
+          <Widget
+            title="فاکتور ها"
+            upperTitle
+            className={classes.card}
+            bodyClass={classes.fullHeightBody}
+          >
+            <div className={classes.performanceLegendWrapper}>
+              <div className={classes.legendElement}>
+                <Dot color="warning" />
+                <Typography
+                  color="text"
+                  colorBrightness="secondary"
+                  className={classes.legendElementText}
+                >
+                  فاکتور فروش
+                </Typography>
+              </div>
+              <div className={classes.legendElement}>
+                <Dot color="primary" />
+                <Typography
+                  color="text"
+                  colorBrightness="secondary"
+                  className={classes.legendElementText}
+                >
+                  فاکتور خرید
+                </Typography>
+              </div>
+            </div>
+            <div className={classes.progressSection}>
+              <Typography
+                size="md"
+                color="text"
+                colorBrightness="secondary"
+                className={classes.progressSectionTitle}
+              >
+                {`${persianNumber(77)}%`}
+              </Typography>
+              <LinearProgress
+                variant="determinate"
+                value={77}
+                classes={{ barColorPrimary: classes.progressBarPrimary }}
+                className={classes.progress}
+              />
+            </div>
+            <div>
+              <Typography
+                size="md"
+                color="text"
+                colorBrightness="secondary"
+                className={classes.progressSectionTitle}
+              >
+                {`${persianNumber(23)}%`}
+              </Typography>
+              <LinearProgress
+                variant="determinate"
+                value={23}
+                classes={{ barColorPrimary: classes.progressBarSecondary }}
+                className={classes.progress}
+              />
+            </div>
+          </Widget>
+        </Grid>
+
+        <Grid style={{ height: 500 }} item lg={6} xs={12}>
+          <Widget
+            title="میزان حضور پرسنل"
+            upperTitle
+            bodyClass={classes.fullHeightBody}
+            className={classes.card}
+          >
+            <ResponsiveContainer width="100%" height="100%">
+              <RadarChart
+                cx="50%"
+                cy="50%"
+                outerRadius="80%"
+                data={empoyeeTrafficChart}
+              >
+                <PolarGrid />
+                <PolarAngleAxis dataKey="subject" />
+                <PolarRadiusAxis />
+                <Radar
+                  name="Mike"
+                  dataKey="A"
+                  stroke="#8884d8"
+                  fill="#8884d8"
+                  fillOpacity={0.6}
+                />
+              </RadarChart>
+            </ResponsiveContainer>
+          </Widget>
+        </Grid>
+
+        <Grid style={{ height: 500 }} item lg={6} xs={12}>
+          <Widget title="موجودی صندوق ها" upperTitle className={classes.card}>
             <Grid container spacing={2}>
-              <Grid item xs={6}>
-                <ResponsiveContainer width="100%" height={144}>
-                  <PieChart>
-                    <Pie
-                      data={PieChartData}
-                      innerRadius={30}
-                      outerRadius={40}
-                      dataKey="value"
-                    >
-                      {PieChartData.map((entry, index) => (
-                        <Cell
-                          key={`cell-${index}`}
-                          fill={theme.palette[entry.color].main}
-                        />
-                      ))}
-                    </Pie>
-                  </PieChart>
-                </ResponsiveContainer>
+              <Grid item xs={8}>
+                <div style={{ width: "100%", height: "330px" }}>
+                  <div style={{ width: "100%", height: "100%" }}>
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart width="400" height="400">
+                        <Pie
+                          data={CashDeskCahrt}
+                          cx="50%"
+                          cy="50%"
+                          labelLine={false}
+                          label={renderCustomizedLabel}
+                          outerRadius={150}
+                          fill="#8884d8"
+                          dataKey="value"
+                        >
+                          {CashDeskCahrt.map((entry, index) => (
+                            <Cell
+                              key={`cell-${index}`}
+                              fill={COLORS[index % COLORS.length]}
+                            />
+                          ))}
+                        </Pie>
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={4}>
                 <div className={classes.pieChartLegendWrapper}>
-                  {PieChartData.map(({ name, value, color }, index) => (
+                  {CashDeskCahrt.map(({ name, value, color }, index) => (
                     <div key={color} className={classes.legendItemContainer}>
                       <Dot color={color} />
-                      <Typography
-                        style={{ whiteSpace: "nowrap", fontSize: 12 }}
-                      >
+                      <Typography variant="h6" style={{ whiteSpace: "nowrap" }}>
                         &nbsp;{name}&nbsp;
                       </Typography>
-                      <Typography color="text" colorBrightness="secondary">
-                        &nbsp;{value}
+                      <Typography
+                        color="text"
+                        variant="h4"
+                        colorBrightness="secondary"
+                      >
+                        &nbsp;{persianNumber(value)}
                       </Typography>
                     </div>
                   ))}
@@ -407,6 +546,7 @@ export default function Dashboard(props) {
             </Grid>
           </Widget>
         </Grid>
+
         <Grid item xs={12}>
           <Widget
             bodyClass={classes.mainChartBody}
@@ -417,113 +557,113 @@ export default function Dashboard(props) {
                   color="text"
                   colorBrightness="secondary"
                 >
-                  Daily Line Chart
+                  دریافتی و پرداختی ها
                 </Typography>
                 <div className={classes.mainChartHeaderLabels}>
                   <div className={classes.mainChartHeaderLabel}>
-                    <Dot color="warning" />
-                    <Typography className={classes.mainChartLegentElement}>
-                      Tablet
-                    </Typography>
-                  </div>
-                  <div className={classes.mainChartHeaderLabel}>
                     <Dot color="primary" />
                     <Typography className={classes.mainChartLegentElement}>
-                      Mobile
+                      دریافتی
                     </Typography>
                   </div>
                   <div className={classes.mainChartHeaderLabel}>
                     <Dot color="secondary" />
                     <Typography className={classes.mainChartLegentElement}>
-                      Desktop
+                      پرداختی
                     </Typography>
                   </div>
                 </div>
-                <Select
-                  value={mainChartState}
-                  onChange={(e) => setMainChartState(e.target.value)}
-                  input={
-                    <OutlinedInput
-                      labelWidth={0}
-                      classes={{
-                        notchedOutline: classes.mainChartSelectRoot,
-                        input: classes.mainChartSelect,
-                      }}
-                    />
-                  }
-                  autoWidth
-                >
-                  <MenuItem value="daily">Daily</MenuItem>
-                  <MenuItem value="weekly">Weekly</MenuItem>
-                  <MenuItem value="monthly">Monthly</MenuItem>
-                </Select>
               </div>
             }
           >
-            <ResponsiveContainer width="100%" minWidth={500} height={350}>
-              <ComposedChart
-                margin={{ top: 0, right: -15, left: -15, bottom: 0 }}
-                data={mainChartData}
+            <ResponsiveContainer width="100%" height={350}>
+              <LineChart
+                width={500}
+                height={300}
+                data={incomeOutcomeChart}
+                margin={{
+                  top: 5,
+                  right: 30,
+                  left: 20,
+                  bottom: 5,
+                }}
               >
-                <YAxis
-                  ticks={[0, 2500, 5000, 7500]}
-                  tick={{ fill: theme.palette.text.hint + "80", fontSize: 14 }}
-                  stroke={theme.palette.text.hint + "80"}
-                  tickLine={false}
-                />
-                <XAxis
-                  tickFormatter={(i) => i + 1}
-                  tick={{ fill: theme.palette.text.hint + "80", fontSize: 14 }}
-                  stroke={theme.palette.text.hint + "80"}
-                  tickLine={false}
-                />
-                <Area
-                  type="natural"
-                  dataKey="desktop"
-                  fill={theme.palette.background.light}
-                  strokeWidth={0}
-                  activeDot={false}
-                />
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
                 <Line
-                  type="natural"
-                  dataKey="mobile"
+                  type="monotone"
+                  dataKey="pv"
                   stroke={theme.palette.primary.main}
-                  strokeWidth={2}
-                  dot={false}
-                  activeDot={false}
+                  activeDot={{ r: 8 }}
                 />
                 <Line
-                  type="linear"
-                  dataKey="tablet"
-                  stroke={theme.palette.warning.main}
-                  strokeWidth={2}
-                  dot={{
-                    stroke: theme.palette.warning.dark,
-                    strokeWidth: 2,
-                    fill: theme.palette.warning.main,
-                  }}
+                  type="monotone"
+                  dataKey="uv"
+                  stroke={theme.palette.secondary.main}
                 />
-              </ComposedChart>
+              </LineChart>
             </ResponsiveContainer>
           </Widget>
         </Grid>
-        {mock.bigStat.map((stat) => (
-          <Grid item md={4} sm={6} xs={12} key={stat.product}>
-            <BigStat {...stat} />
-          </Grid>
-        ))}
+
         <Grid item xs={12}>
           <Widget
-            title="Support Requests"
-            upperTitle
-            noBodyPadding
-            bodyClass={classes.tableWidget}
+            bodyClass={classes.mainChartBody}
+            header={
+              <div className={classes.mainChartHeader}>
+                <Typography
+                  variant="h5"
+                  color="text"
+                  colorBrightness="secondary"
+                >
+                  مبلغ فاکتور ها
+                </Typography>
+                <div className={classes.mainChartHeaderLabels}>
+                  <div className={classes.mainChartHeaderLabel}>
+                    <Dot color="primary" />
+                    <Typography className={classes.mainChartLegentElement}>
+                      فاکتور فروش
+                    </Typography>
+                  </div>
+                  <div className={classes.mainChartHeaderLabel}>
+                    <Dot color="secondary" />
+                    <Typography className={classes.mainChartLegentElement}>
+                      فاکتور خرید
+                    </Typography>
+                  </div>
+                </div>
+              </div>
+            }
           >
-            <Table data={mock.table} />
+            <div style={{ width: "100%", height: "450px" }}>
+              <div style={{ width: "100%", height: "100%" }}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart
+                    width={100}
+                    height={300}
+                    data={factorPriceChart}
+                    margin={{
+                      top: 5,
+                      right: 30,
+                      left: 20,
+                      bottom: 5,
+                    }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" />
+                    <YAxis />
+                    <Tooltip />
+                    <Bar dataKey="pv" fill="#3CD4A0" />
+                    <Bar dataKey="uv" fill="#FF5C93" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
           </Widget>
         </Grid>
       </Grid>
-     */}
     </>
   );
 }

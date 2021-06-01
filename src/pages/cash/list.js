@@ -19,7 +19,7 @@ import DialogActions from "../../redux/actions/dialogAction";
 import styles from "./style";
 import Constant from "../../helpers/constant";
 import Transfer from "./transfer";
-import { Slide, Fade } from "@material-ui/core";
+import { Slide } from "@material-ui/core";
 import TableSkeleton from "../../components/Skeleton";
 
 const headCells = [

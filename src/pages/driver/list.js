@@ -15,11 +15,13 @@ import TableTop from "../../components/Table/TableTop";
 import TableHeader from "../../components/Table/TableHead";
 import TablePaging from "../../components/Table/TablePaging";
 import { useApi } from "../../hooks/useApi";
-import { convertParamsToQueryString } from "../../helpers/utils";
+import { convertParamsToQueryString, hasPermission } from "../../helpers/utils";
 import DialogActions from "../../redux/actions/dialogAction";
 import styles from "./style";
 import FilterComponent from "./filter";
 import Constant from "../../helpers/constant";
+import { Slide } from "@material-ui/core";
+import TableSkeleton from "../../components/Skeleton";
 
 const headCells = [
   {
@@ -126,77 +128,100 @@ export default function MainList() {
   }, [page, order, search, pageSize]);
 
   return (
-    <div className={classes.root}>
-      <Paper className={classes.paper}>
-        <TableTop
-          title="لیست مشتریان"
-          onAdd={onAdd}
-          FilterComponent={<FilterComponent onFilter={onFilter} />}
-          handleSearch={onSearch}
-        />
-        <TableContainer style={{ padding: "0 10px" }}>
-          <Table
-            className={classes.table}
-            size={"medium"}
-            style={{ paddingRight: 10 }}
-          >
-            <TableHeader
-              classes={classes}
-              order={order}
-              orderBy={orderBy}
-              onRequestSort={handleRequestSort}
-              rowCount={list.length}
-              headCells={headCells}
-            />
-
-            <TableBody>
-              {list.map((row) => {
-                return (
-                  <TableRow
-                    hover
-                    tabIndex={-1}
-                    key={row.id}
-                    style={{ paddingRight: 10 }}
-                  >
-                    <TableCell padding="none">{row.firstName}</TableCell>
-                    <TableCell padding="none">{row.lastName}</TableCell>
-                    <TableCell padding="none">{row.mobile}</TableCell>
-                    <TableCell padding="none">{row.phone}</TableCell>
-                    <TableCell padding="none">{row.carName}</TableCell>
-
-                    <TableCell padding="none">
-                      <TableRowMenu
-                        options={[
-                          { id: "transaction", title: "تراکنش ها" },
-                          { id: "edit", title: "ویرایش" },
-                          { id: "delete", title: "حذف" },
-                        ]}
-                        hadleAction={(type) => handleAction(row.id, type)}
+    <>
+      {hasPermission(Constant.ALL_PERMISSIONS.CASH_LIST) && (
+        <Slide direction="down" in={true}>
+          <div>
+            {getDriverRequest.pending ? (
+              <TableSkeleton headCount={headCells} />
+            ) : (
+              <div className={classes.root}>
+                <Paper className={classes.paper}>
+                  <TableTop
+                    title="لیست مشتریان"
+                    onAdd={onAdd}
+                    FilterComponent={<FilterComponent onFilter={onFilter} />}
+                    handleSearch={onSearch}
+                  />
+                  <TableContainer style={{ padding: "0 10px" }}>
+                    <Table
+                      className={classes.table}
+                      size={"medium"}
+                      style={{ paddingRight: 10 }}
+                    >
+                      <TableHeader
+                        classes={classes}
+                        order={order}
+                        orderBy={orderBy}
+                        onRequestSort={handleRequestSort}
+                        rowCount={list.length}
+                        headCells={headCells}
                       />
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-              {!list.length && !getDriverRequest.pending && (
-                <TableRow style={{ height: 53 }}>
-                  <TableCell colSpan={6} style={{ textAlign: "center" }}>
-                    <Typography variant="h6">
-                      داده ای برای نمایش وجود ندارد
-                    </Typography>
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <TablePaging
-          count={list.length}
-          handleChangePage={handleChangePage}
-          handleChangeRowsPerPage={handleChangeRowsPerPage}
-          page={page}
-          rowsPerPage={pageSize}
-        />
-      </Paper>
-    </div>
+
+                      <TableBody>
+                        {list.map((row) => {
+                          return (
+                            <TableRow
+                              hover
+                              tabIndex={-1}
+                              key={row.id}
+                              style={{ paddingRight: 10 }}
+                            >
+                              <TableCell padding="none">
+                                {row.firstName}
+                              </TableCell>
+                              <TableCell padding="none">
+                                {row.lastName}
+                              </TableCell>
+                              <TableCell padding="none">{row.mobile}</TableCell>
+                              <TableCell padding="none">{row.phone}</TableCell>
+                              <TableCell padding="none">
+                                {row.carName}
+                              </TableCell>
+
+                              <TableCell padding="none">
+                                <TableRowMenu
+                                  options={[
+                                    { id: "transaction", title: "تراکنش ها" },
+                                    { id: "edit", title: "ویرایش" },
+                                    { id: "delete", title: "حذف" },
+                                  ]}
+                                  hadleAction={(type) =>
+                                    handleAction(row.id, type)
+                                  }
+                                />
+                              </TableCell>
+                            </TableRow>
+                          );
+                        })}
+                        {!list.length && !getDriverRequest.pending && (
+                          <TableRow style={{ height: 53 }}>
+                            <TableCell
+                              colSpan={6}
+                              style={{ textAlign: "center" }}
+                            >
+                              <Typography variant="h6">
+                                داده ای برای نمایش وجود ندارد
+                              </Typography>
+                            </TableCell>
+                          </TableRow>
+                        )}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                  <TablePaging
+                    count={list.length}
+                    handleChangePage={handleChangePage}
+                    handleChangeRowsPerPage={handleChangeRowsPerPage}
+                    page={page}
+                    rowsPerPage={pageSize}
+                  />
+                </Paper>
+              </div>
+            )}
+          </div>
+        </Slide>
+      )}
+    </>
   );
 }

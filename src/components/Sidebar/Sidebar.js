@@ -26,7 +26,7 @@ const structure = [
     label: "کالاها",
     link: "/app/product-list",
     icon: <i className="material-icons-round">inventory_2</i>,
-    permission: Constants.ALL_PERMISSIONS.PRODUCT_SHOW,
+    permission: Constants.ALL_PERMISSIONS.PRODCUT_SHOW,
   },
   {
     id: 2,

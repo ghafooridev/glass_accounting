@@ -16,7 +16,11 @@ import TableTop from "../../components/Table/TableTop";
 import TableHeader from "../../components/Table/TableHead";
 import TablePaging from "../../components/Table/TablePaging";
 import { useApi } from "../../hooks/useApi";
-import { convertParamsToQueryString, persianNumber } from "../../helpers/utils";
+import {
+  convertParamsToQueryString,
+  persianNumber,
+  hasPermission,
+} from "../../helpers/utils";
 import DialogActions from "../../redux/actions/dialogAction";
 import styles from "./style";
 import Constant from "../../helpers/constant";
@@ -24,6 +28,8 @@ import clsx from "clsx";
 import dialogAction from "../../redux/actions/dialogAction";
 import CashSelector from "./cashSelector";
 import SpendCheque from "./spendCheque";
+import { Slide } from "@material-ui/core";
+import TableSkeleton from "../../components/Skeleton";
 
 const headCells = [
   {
@@ -203,125 +209,162 @@ const MainList = () => {
   }, [page, order, search, pageSize, paymentType]);
 
   return (
-    <div className={classes.root}>
-      <Paper className={classes.paper}>
-        <TableTop title="لیست چک ها" handleSearch={onSearch} />
-        <div className={classes.tab}>
-          <Tabs
-            variant="fullWidth"
-            value={paymentType}
-            onChange={onChangeType}
-            indicatorColor="primary"
-            textColor="primary"
-            centered
-          >
-            <Tab
-              icon={
-                <i className={clsx("material-icons-round", classes.allIcon)}>
-                  sync
-                </i>
-              }
-              label="کل چک ها"
-              value="ALL"
-            />
-            <Tab
-              icon={
-                <i className={clsx("material-icons-round", classes.incomeIcon)}>
-                  trending_up
-                </i>
-              }
-              label="چک های دریافتی"
-              value="INCOME"
-            />
-            <Tab
-              icon={
-                <i className={clsx("material-icons-round", classes.outgoIcon)}>
-                  trending_down
-                </i>
-              }
-              label="چک های پرداختی"
-              value="OUTCOME"
-            />
-          </Tabs>
-        </div>
-        <TableContainer style={{ padding: "0 10px" }}>
-          <Table
-            className={classes.table}
-            size={"medium"}
-            style={{ paddingRight: 10 }}
-          >
-            <TableHeader
-              classes={classes}
-              order={order}
-              orderBy={orderBy}
-              onRequestSort={handleRequestSort}
-              rowCount={list.length}
-              headCells={headCells}
-            />
-
-            <TableBody>
-              {list.map((row) => {
-                return (
-                  <TableRow
-                    hover
-                    tabIndex={-1}
-                    key={row.id}
-                    style={{ paddingRight: 10 }}
-                  >
-                    <TableCell padding="none">
-                      {persianNumber(
-                        new Date(row.chequeDueDate).toLocaleDateString("fa-IR"),
-                      )}
-                    </TableCell>
-                    <TableCell padding="none">
-                      {persianNumber(row.chequeNumber)}
-                    </TableCell>
-                    <TableCell padding="none">
-                      {row.bank && (
-                        <img
-                          style={{ width: 40, height: 40 }}
-                          alt={row.bank.name}
-                          src={`${Constant.API_ADDRESS}/${row.bank.logo}`}
-                        />
-                      )}
-                    </TableCell>
-                    <TableCell padding="none">
-                      {persianNumber(row.price)}
-                    </TableCell>
-                    <TableCell padding="none">{row.person}</TableCell>
-                    <TableCell padding="none">{row.cashDeskName}</TableCell>
-                    <TableCell padding="none">
-                      <Chip
-                        label={Constant.PAYMENT_TYPE[row.type]}
-                        className={clsx(classes.chip, classes[row.type])}
+    <>
+      {hasPermission(Constant.ALL_PERMISSIONS.CASH_LIST) && (
+        <Slide direction="down" in={true}>
+          <div>
+            {getChequeRequest.pending ? (
+              <TableSkeleton headCount={headCells} />
+            ) : (
+              <div className={classes.root}>
+                <Paper className={classes.paper}>
+                  <TableTop title="لیست چک ها" handleSearch={onSearch} />
+                  <div className={classes.tab}>
+                    <Tabs
+                      variant="fullWidth"
+                      value={paymentType}
+                      onChange={onChangeType}
+                      indicatorColor="primary"
+                      textColor="primary"
+                      centered
+                    >
+                      <Tab
+                        icon={
+                          <i
+                            className={clsx(
+                              "material-icons-round",
+                              classes.allIcon,
+                            )}
+                          >
+                            sync
+                          </i>
+                        }
+                        label="کل چک ها"
+                        value="ALL"
                       />
-                    </TableCell>
+                      <Tab
+                        icon={
+                          <i
+                            className={clsx(
+                              "material-icons-round",
+                              classes.incomeIcon,
+                            )}
+                          >
+                            trending_up
+                          </i>
+                        }
+                        label="چک های دریافتی"
+                        value="INCOME"
+                      />
+                      <Tab
+                        icon={
+                          <i
+                            className={clsx(
+                              "material-icons-round",
+                              classes.outgoIcon,
+                            )}
+                          >
+                            trending_down
+                          </i>
+                        }
+                        label="چک های پرداختی"
+                        value="OUTCOME"
+                      />
+                    </Tabs>
+                  </div>
+                  <TableContainer style={{ padding: "0 10px" }}>
+                    <Table
+                      className={classes.table}
+                      size={"medium"}
+                      style={{ paddingRight: 10 }}
+                    >
+                      <TableHeader
+                        classes={classes}
+                        order={order}
+                        orderBy={orderBy}
+                        onRequestSort={handleRequestSort}
+                        rowCount={list.length}
+                        headCells={headCells}
+                      />
 
-                    {getActionOptions(row)}
-                  </TableRow>
-                );
-              })}
-              {!list.length && !getChequeRequest.pending && (
-                <TableRow style={{ height: 53 }}>
-                  <TableCell colSpan={10} style={{ textAlign: "center" }}>
-                    <Typography variant="h6">
-                      داده ای برای نمایش وجود ندارد
-                    </Typography>
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <TablePaging
-          count={total}
-          handleChangePage={handleChangePage}
-          handleChangeRowsPerPage={handleChangeRowsPerPage}
-          page={page}
-          rowsPerPage={pageSize}
-        />
-      </Paper>
-    </div>
+                      <TableBody>
+                        {list.map((row) => {
+                          return (
+                            <TableRow
+                              hover
+                              tabIndex={-1}
+                              key={row.id}
+                              style={{ paddingRight: 10 }}
+                            >
+                              <TableCell padding="none">
+                                {persianNumber(
+                                  new Date(
+                                    row.chequeDueDate,
+                                  ).toLocaleDateString("fa-IR"),
+                                )}
+                              </TableCell>
+                              <TableCell padding="none">
+                                {persianNumber(row.chequeNumber)}
+                              </TableCell>
+                              <TableCell padding="none">
+                                {row.bank && (
+                                  <img
+                                    style={{ width: 40, height: 40 }}
+                                    alt={row.bank.name}
+                                    src={`${Constant.API_ADDRESS}/${row.bank.logo}`}
+                                  />
+                                )}
+                              </TableCell>
+                              <TableCell padding="none">
+                                {persianNumber(row.price)}
+                              </TableCell>
+                              <TableCell padding="none">{row.person}</TableCell>
+                              <TableCell padding="none">
+                                {row.cashDeskName}
+                              </TableCell>
+                              <TableCell padding="none">
+                                <Chip
+                                  label={Constant.PAYMENT_TYPE[row.type]}
+                                  className={clsx(
+                                    classes.chip,
+                                    classes[row.type],
+                                  )}
+                                />
+                              </TableCell>
+
+                              {getActionOptions(row)}
+                            </TableRow>
+                          );
+                        })}
+                        {!list.length && !getChequeRequest.pending && (
+                          <TableRow style={{ height: 53 }}>
+                            <TableCell
+                              colSpan={10}
+                              style={{ textAlign: "center" }}
+                            >
+                              <Typography variant="h6">
+                                داده ای برای نمایش وجود ندارد
+                              </Typography>
+                            </TableCell>
+                          </TableRow>
+                        )}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                  <TablePaging
+                    count={total}
+                    handleChangePage={handleChangePage}
+                    handleChangeRowsPerPage={handleChangeRowsPerPage}
+                    page={page}
+                    rowsPerPage={pageSize}
+                  />
+                </Paper>
+              </div>
+            )}
+          </div>
+        </Slide>
+      )}
+    </>
   );
 };
 

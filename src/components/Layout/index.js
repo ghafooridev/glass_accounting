@@ -31,8 +31,8 @@ import Setting from "../../pages/setting";
 import Category from "../../pages/category";
 import Traffic from "../../pages/traffic";
 import TrafficDetail from "../../pages/traffic/register";
-
 import { useLayoutState } from "../../context/LayoutContext";
+import Chart from "../../pages/charts/Charts";
 
 function Layout(props) {
   var classes = useStyles();
@@ -93,6 +93,7 @@ function Layout(props) {
 
               <Route path="/app/traffic" component={Traffic} />
               <Route path="/app/traffic-detail" component={TrafficDetail} />
+              <Route path="/app/chart" component={Chart} />
             </Switch>
           </div>
         </Router>
