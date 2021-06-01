@@ -3,9 +3,9 @@ import { Grid, Button, FormControlLabel, Checkbox } from "@material-ui/core";
 
 import Constant from "../../helpers/constant";
 
-export default function Permission({ onSubmit }) {
+export default function Permission({ onSubmit, defaultPermissions }) {
   const permissions = Constant.PERMISSIONS;
-  const [userAccess, setUserAccess] = useState(["USER_SHOW"]);
+  const [userAccess, setUserAccess] = useState(defaultPermissions || []);
 
   const handleChange = (item) => {
     if (userAccess.includes(item)) {

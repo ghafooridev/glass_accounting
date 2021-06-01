@@ -64,7 +64,7 @@ const MainList = () => {
   };
 
   const onAdd = () => {
-    history.push("/app/user-detail");
+    history.push("/app/user-detail?action=add");
   };
 
   const onSearch = (value) => {
@@ -90,7 +90,7 @@ const MainList = () => {
   const handleAction = (id, type) => {
     const types = {
       edit: () => {
-        history.push(`/app/user-detail?id=${id}`);
+        history.push(`/app/user-detail?action=edit&id=${id}`);
       },
       delete: () => {
         DialogActions.show({
