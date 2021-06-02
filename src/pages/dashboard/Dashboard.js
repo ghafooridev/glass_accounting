@@ -38,13 +38,13 @@ import { Typography } from "../../components/Wrappers";
 import Dot from "../../components/Sidebar/components/Dot";
 
 import Paper from "../../components/Paper";
-import { persianNumber } from "../../helpers/utils";
-
-const mainChartData = getMainChartData();
+import { persianNumber, getRandomColor } from "../../helpers/utils";
+import { useApi } from "../../hooks/useApi";
+import { useEffect } from "react";
 
 const CashDeskCahrt = [
-  { name: "صندوق 1", value: 525200, color: "primary" },
-  { name: "صندوق 2", value: 476100, color: "secondary" },
+  { name: "صندوق 1", amount: 525200, color: "primary" },
+  { name: "صندوق 2", amount: 476100, color: "secondary" },
 ];
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
@@ -71,7 +71,7 @@ const renderCustomizedLabel = ({
       textAnchor={x > cx ? "start" : "end"}
       dominantBaseline="central"
     >
-      {`${(percent * 100).toFixed(0)}%`}
+      {`${persianNumber((percent * 100).toFixed(0))}%`}
     </text>
   );
 };
@@ -206,12 +206,37 @@ export default function Dashboard(props) {
   var classes = useStyles();
   var theme = useTheme();
   const history = useHistory();
+  const [pieChart, setPieChart] = useState([]);
 
-  var [mainChartState, setMainChartState] = useState("monthly");
+  const getDashboardRequest = useApi({
+    method: "get",
+    url: `dashboard`,
+  });
 
   const onClickPaper = (type) => {
     history.push(`/app/${type}`);
   };
+
+  const getPieChartData = async () => {
+    const dashboardChart = await getDashboardRequest.execute();
+    const { cashDesks } = dashboardChart;
+    const x = [];
+    cashDesks.map((item) => {
+      x.push({ ...item, color: getRandomColor() });
+    });
+
+    const ss = [
+      { name: "aaaa", amount: 2222, color: "#1e3ce9" },
+      { name: "1", amount: 330, color: "#ebda3f" },
+      { name: "2", amount: 37, color: "#271117" },
+    ];
+    setPieChart(ss);
+  };
+
+  useEffect(() => {
+    getPieChartData();
+  }, []);
+  console.log(pieChart);
   return (
     <>
       <Grid container spacing={4}>
@@ -497,36 +522,38 @@ export default function Dashboard(props) {
         <Grid style={{ height: 500 }} item lg={6} xs={12}>
           <Widget title="موجودی صندوق ها" upperTitle className={classes.card}>
             <Grid container spacing={2}>
-              <Grid item xs={8}>
-                <div style={{ width: "100%", height: "330px" }}>
-                  <div style={{ width: "100%", height: "100%" }}>
-                    <ResponsiveContainer width="100%" height="100%">
-                      <PieChart width="400" height="400">
-                        <Pie
-                          data={CashDeskCahrt}
-                          cx="50%"
-                          cy="50%"
-                          labelLine={false}
-                          label={renderCustomizedLabel}
-                          outerRadius={150}
-                          fill="#8884d8"
-                          dataKey="value"
-                        >
-                          {CashDeskCahrt.map((entry, index) => (
-                            <Cell
-                              key={`cell-${index}`}
-                              fill={COLORS[index % COLORS.length]}
-                            />
-                          ))}
-                        </Pie>
-                      </PieChart>
-                    </ResponsiveContainer>
+              {pieChart.length && (
+                <Grid item xs={8}>
+                  <div style={{ width: "100%", height: "330px" }}>
+                    <div style={{ width: "100%", height: "100%" }}>
+                      <ResponsiveContainer width="100%" height="100%">
+                        <PieChart width="400" height="400">
+                          <Pie
+                            data={pieChart}
+                            cx="50%"
+                            cy="50%"
+                            labelLine={false}
+                            label={renderCustomizedLabel}
+                            outerRadius={150}
+                            fill="#8884d8"
+                            dataKey="amount"
+                          >
+                            {pieChart.map((entry, index) => (
+                              <Cell
+                                key={`cell-${index}`}
+                                fill={COLORS[index % COLORS.length]}
+                              />
+                            ))}
+                          </Pie>
+                        </PieChart>
+                      </ResponsiveContainer>
+                    </div>
                   </div>
-                </div>
-              </Grid>
+                </Grid>
+              )}
               <Grid item xs={4}>
                 <div className={classes.pieChartLegendWrapper}>
-                  {CashDeskCahrt.map(({ name, value, color }, index) => (
+                  {pieChart.map(({ name, amount, color }, index) => (
                     <div key={color} className={classes.legendItemContainer}>
                       <Dot color={color} />
                       <Typography variant="h6" style={{ whiteSpace: "nowrap" }}>
@@ -537,7 +564,7 @@ export default function Dashboard(props) {
                         variant="h4"
                         colorBrightness="secondary"
                       >
-                        &nbsp;{persianNumber(value)}
+                        &nbsp;{persianNumber(amount)}
                       </Typography>
                     </div>
                   ))}
