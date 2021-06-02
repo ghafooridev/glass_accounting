@@ -38,7 +38,11 @@ import { Typography } from "../../components/Wrappers";
 import Dot from "../../components/Sidebar/components/Dot";
 
 import Paper from "../../components/Paper";
-import { persianNumber, getRandomColor } from "../../helpers/utils";
+import {
+  persianNumber,
+  getRandomColor,
+  getRandomColorFromTheme,
+} from "../../helpers/utils";
 import { useApi } from "../../hooks/useApi";
 import { useEffect } from "react";
 
@@ -222,13 +226,13 @@ export default function Dashboard(props) {
     const { cashDesks } = dashboardChart;
     const x = [];
     cashDesks.map((item) => {
-      x.push({ ...item, color: getRandomColor() });
+      x.push({ ...item, color: getRandomColorFromTheme() });
     });
 
     const ss = [
-      { name: "aaaa", amount: 2222, color: "#1e3ce9" },
-      { name: "1", amount: 330, color: "#ebda3f" },
-      { name: "2", amount: 37, color: "#271117" },
+      { name: "aaaa", amount: 2222, color: getRandomColorFromTheme() },
+      { name: "1", amount: 330, color: getRandomColorFromTheme() },
+      { name: "2", amount: 37, color: getRandomColorFromTheme() },
     ];
     setPieChart(ss);
   };
@@ -539,10 +543,7 @@ export default function Dashboard(props) {
                             dataKey="amount"
                           >
                             {pieChart.map((entry, index) => (
-                              <Cell
-                                key={`cell-${index}`}
-                                fill={COLORS[index % COLORS.length]}
-                              />
+                              <Cell key={`cell-${index}`} fill={entry.color} />
                             ))}
                           </Pie>
                         </PieChart>

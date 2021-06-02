@@ -1,9 +1,11 @@
-const primary = "#536DFE";
-const secondary = "#FF5C93";
-const warning = "#FFC260";
-const success = "#3CD4A0";
-const info = "#9013FE";
-const gray = "#B9B9B9";
+export const primary = "#536DFE";
+export const secondary = "#FF5C93";
+export const warning = "#FFC260";
+export const success = "#3CD4A0";
+export const info = "#9013FE";
+export const gray = "#B9B9B9";
+export const orange = "#F95700FF";
+export const purple = "#E69A8DFF";
 
 const defaultTheme = {
   direction: "rtl",
