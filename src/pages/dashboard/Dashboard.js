@@ -232,7 +232,7 @@ export default function Dashboard(props) {
     const ss = [
       { name: "aaaa", amount: 2222, color: getRandomColorFromTheme() },
       { name: "1", amount: 330, color: getRandomColorFromTheme() },
-      { name: "2", amount: 37, color: getRandomColorFromTheme() },
+      { name: "2", amount: 470, color: getRandomColorFromTheme() },
     ];
     setPieChart(ss);
   };
