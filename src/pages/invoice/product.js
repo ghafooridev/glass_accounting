@@ -28,6 +28,7 @@ import styles from "./style";
 import Constant from "../../helpers/constant";
 import { useForm, Controller } from "react-hook-form";
 import unitAction from "../../redux/actions/unitAction";
+import isEmpty from "lodash.isempty";
 
 const headCells = [
   {
@@ -47,7 +48,13 @@ const headCells = [
   { id: "action" },
 ];
 
-export default function MainList({ onSelect, onDismiss, customerId }) {
+export default function ProductList({
+  onSubmit,
+  onDismiss,
+  customerId,
+  defaultValues,
+}) {
+  console.log("defaultValues", defaultValues);
   const classes = styles();
   const [order, setOrder] = useState("asc");
   const [search, setSearch] = useState();
@@ -56,8 +63,14 @@ export default function MainList({ onSelect, onDismiss, customerId }) {
   const [pageSize, setPageSize] = useState(Constant.TABLE_PAGE_SIZE);
   const [list, setList] = useState([]);
   const units = unitAction.getProductUnit();
-  const [selectedProduct, setSelectedProduct] = useState();
-  const [productFee, setProductFee] = useState();
+  const [selectedProduct, setSelectedProduct] = useState(defaultValues);
+  const [productFee, setProductFee] = useState(
+    defaultValues || {
+      name: "",
+      fee: "",
+      amount: "",
+    },
+  );
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -86,37 +99,54 @@ export default function MainList({ onSelect, onDismiss, customerId }) {
   });
 
   const getProductFeeRequest = useApi({
-    method: "post",
+    method: "get",
     url: "invoice/fee",
   });
 
-  const onChangeSelectedProduct = () => {};
+  const onChangeSelectedProduct = (e) => {
+    setProductFee({ ...productFee, [e.target.name]: e.target.value });
+  };
 
   const onSearch = (value) => {
     setSearch(value);
   };
 
   const getData = async () => {
-    const productList = await getProductRequest.execute({});
+    const productList = await getProductRequest.execute();
     setList(productList.data);
   };
 
+  const getProductUnitPicker = () => {
+    // TODO: return units.filter((item) => item.value === selectedProduct.unitBase)[0].children;
+    return units.filter((item) => item.value === "NUMERIC")[0].children;
+  };
+
   const onSelectProduct = async (data) => {
-    console.log(data);
+    console.log("data", data);
     setSelectedProduct(data);
-    const fee = await getProductFeeRequest.execute({
-      customerId,
-      productId: data.id,
-    });
-    setProductFee(fee);
+    //TODO:  const fee = await getProductFeeRequest.execute(
+    //   null,
+    //   `${customerId}/${data.id}`,
+    // );
+    // console.log(fee.data);
+    // const feeProduct = fee.data;
+    const feeProduct = {};
+    if (isEmpty(feeProduct)) {
+      setProductFee({ id: data.id, name: data.name, fee: "", amount: "" });
+    } else {
+      setProductFee({ ...feeProduct, id: data.id });
+    }
   };
 
   const onDeselectProduct = () => {
     setSelectedProduct();
   };
 
-  const onSubmit = () => {
-    onSelect(selectedProduct);
+  const onDone = () => {
+    onSubmit({
+      ...productFee,
+      totalFee: Number(productFee.fee) * Number(productFee.amount),
+    });
   };
 
   useEffect(() => {
@@ -133,9 +163,10 @@ export default function MainList({ onSelect, onDismiss, customerId }) {
               label="نام کالا"
               name={"name"}
               onChange={onChangeSelectedProduct}
-              value={selectedProduct?.name}
+              value={productFee?.name}
               fullWidth
               size="small"
+              disabled
             />
           </Grid>
           <Grid item lg={6} xs={12}>
@@ -149,7 +180,7 @@ export default function MainList({ onSelect, onDismiss, customerId }) {
               fullWidth
               size="small"
             >
-              {units.map((option) => (
+              {getProductUnitPicker().map((option) => (
                 <MenuItem key={option.value} value={option.value}>
                   {option.label}
                 </MenuItem>
@@ -165,6 +196,7 @@ export default function MainList({ onSelect, onDismiss, customerId }) {
               value={productFee?.amount}
               fullWidth
               size="small"
+              type="number"
             />
           </Grid>
           <Grid item lg={6} xs={12}>
@@ -176,6 +208,7 @@ export default function MainList({ onSelect, onDismiss, customerId }) {
               value={productFee?.fee}
               fullWidth
               size="small"
+              type="number"
             />
           </Grid>
 
@@ -185,7 +218,7 @@ export default function MainList({ onSelect, onDismiss, customerId }) {
               xs={12}
               style={{ display: "flex", justifyContent: "flex-end" }}
             >
-              <Button variant="contained" color="primary" onClick={onSubmit}>
+              <Button variant="contained" color="primary" onClick={onDone}>
                 تایید
               </Button>
             </Grid>

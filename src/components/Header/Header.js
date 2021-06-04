@@ -1,13 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   AppBar,
   Toolbar,
   IconButton,
   Menu,
   MenuItem,
-  Fab,
+  Chip,
   Divider,
+  Button,
 } from "@material-ui/core";
+import { useHistory, useLocation } from "react-router-dom";
+
 import {
   Menu as MenuIcon,
   MailOutline as MailIcon,
@@ -27,6 +30,10 @@ import {
 } from "../../context/LayoutContext";
 import { useUserState } from "../../context/UserContext";
 import { useUserDispatch, signOut } from "../../context/UserContext";
+import { useApi } from "../../hooks/useApi";
+import { persianNumber } from "../../helpers/utils";
+import clsx from "clsx";
+import Constant from "../../helpers/constant";
 
 const messages = [
   {
@@ -51,18 +58,39 @@ const messages = [
     time: "9:10",
   },
 ];
-
+//notify/cheque
 export default function Header(props) {
   var classes = useStyles();
-
+  const history = useHistory();
   var layoutState = useLayoutState();
   var layoutDispatch = useLayoutDispatch();
   var userDispatch = useUserDispatch();
-
+  const location = useLocation();
   var [mailMenu, setMailMenu] = useState(null);
-  var [isMailsUnread, setIsMailsUnread] = useState(true);
   var [profileMenu, setProfileMenu] = useState(null);
   var { currentUser } = useUserState();
+  const [cheques, setCheques] = useState([]);
+
+  const getDashboardRequest = useApi({
+    method: "get",
+    url: `notify/cheque`,
+  });
+
+  const getChequeNotify = async () => {
+    const notify = await getDashboardRequest.execute();
+
+    setCheques(notify.data);
+  };
+
+  const onShowAllCheque = () => {
+    history.push("/app/cheque-list");
+  };
+
+  const onChangePassword = () => {};
+
+  useEffect(() => {
+    getChequeNotify();
+  }, [location]);
 
   return (
     <AppBar position="fixed" className={classes.appBar}>
@@ -106,14 +134,10 @@ export default function Header(props) {
           aria-controls="mail-menu"
           onClick={(e) => {
             setMailMenu(e.currentTarget);
-            setIsMailsUnread(false);
           }}
           className={classes.headerMenuButton}
         >
-          <Badge
-            badgeContent={isMailsUnread ? messages.length : null}
-            color="secondary"
-          >
+          <Badge badgeContent={cheques.length} color="secondary">
             <NotificationsIcon classes={{ root: classes.headerIcon }} />
           </Badge>
         </IconButton>
@@ -138,31 +162,30 @@ export default function Header(props) {
         >
           <div className={classes.profileMenuUser}>
             <Typography variant="h6" weight="medium">
-              یادآوری های جدید
+              یادآوری چک ها
             </Typography>
-            <Divider />
+            <Button color="primary" onClick={onShowAllCheque}>
+              نمایش همه چک ها
+            </Button>
           </div>
-          {messages.map((message) => (
+          <Divider />
+          {cheques.map((message) => (
             <MenuItem key={message.id} className={classes.messageNotification}>
-              <div className={classes.messageNotificationSide}>
-                <UserAvatar color={message.variant} name={message.name} />
-                <Typography size="sm" color="text" colorBrightness="secondary">
-                  {message.time}
-                </Typography>
-              </div>
-              <div
-                className={classNames(
-                  classes.messageNotificationSide,
-                  classes.messageNotificationBodySide,
+              <Typography variant="h6">
+                {persianNumber(
+                  new Date(message.chequeDueDate).toLocaleDateString("fa-IR"),
                 )}
-              >
-                <Typography weight="medium" gutterBottom>
-                  {message.name}
-                </Typography>
-                <Typography color="text" colorBrightness="secondary">
-                  {message.message}
-                </Typography>
-              </div>
+              </Typography>
+              <Typography variant="h6">{message.person}</Typography>
+              <Typography variant="h6">
+                {persianNumber(message.price)}
+              </Typography>
+              <Typography variant="h6">
+                <Chip
+                  label={Constant.PAYMENT_TYPE[message.type]}
+                  className={clsx(classes.chip, classes[message.type])}
+                />
+              </Typography>
             </MenuItem>
           ))}
         </Menu>
@@ -186,10 +209,21 @@ export default function Header(props) {
               classes.headerMenuItem,
             )}
           >
-            <AccountIcon className={classes.profileMenuIcon} /> پروفایل
+            <Typography
+              className={classes.profileMenuLink}
+              color="primary"
+              onClick={onChangePassword}
+            >
+              تغییر پسورد
+            </Typography>
           </MenuItem>
 
-          <div className={classes.profileMenuUser}>
+          <MenuItem
+            className={classNames(
+              classes.profileMenuItem,
+              classes.headerMenuItem,
+            )}
+          >
             <Typography
               className={classes.profileMenuLink}
               color="primary"
@@ -197,7 +231,7 @@ export default function Header(props) {
             >
               خروج از سیستم
             </Typography>
-          </div>
+          </MenuItem>
         </Menu>
       </Toolbar>
     </AppBar>

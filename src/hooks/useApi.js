@@ -26,6 +26,7 @@ export const useApi = (args) => {
     } catch (e) {
       setResult(null);
       setError(e);
+      throw new Error(e);
     } finally {
       setPending(false);
     }

@@ -278,6 +278,12 @@ const PrePayment = React.forwardRef((props, ref) => {
     setPayments(defaultValues);
   }, [defaultValues]);
 
+  useEffect(() => {
+    if (typeof props.onSubmit === "function") {
+      props.onSubmit(payments);
+    }
+  }, [payments]);
+
   return (
     <>
       <Grid item xs={12} style={{ display: "flex", justifyContent: "center" }}>

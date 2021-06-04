@@ -119,7 +119,9 @@ export default makeStyles((theme) => ({
   },
   profileMenuUser: {
     display: "flex",
-    flexDirection: "column",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     padding: theme.spacing(2),
   },
   profileMenuItem: {
@@ -140,6 +142,8 @@ export default makeStyles((theme) => ({
     },
   },
   messageNotification: {
+    width: "500px",
+    justifyContent: "space-between",
     height: "auto",
     display: "flex",
     alignItems: "center",
@@ -171,5 +175,21 @@ export default makeStyles((theme) => ({
       display: "none",
     },
     marginRight: theme.spacing(3),
+  },
+
+  chip: {
+    color: "#fff",
+  },
+  allIcon: {
+    color: theme.palette.primary.main,
+  },
+  INCOME: {
+    backgroundColor: theme.palette.success.main,
+  },
+  incomeIcon: {
+    color: theme.palette.success.main,
+  },
+  OUTCOME: {
+    backgroundColor: theme.palette.danger.main,
   },
 }));

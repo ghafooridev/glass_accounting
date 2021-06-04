@@ -12,9 +12,6 @@ const useStyles = makeStyles((theme) => ({
     cursor: "pointer",
     transition: "all 0.5s",
     backgroundColor: (props) => props.color,
-    "&:hover": {
-      transform: "scale(1.1)",
-    },
   },
   icon: {
     position: "absolute",

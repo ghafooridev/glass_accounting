@@ -224,23 +224,19 @@ export default function Dashboard(props) {
   const getPieChartData = async () => {
     const dashboardChart = await getDashboardRequest.execute();
     const { cashDesks } = dashboardChart;
-    const x = [];
+    const newCashDesks = [];
+
     cashDesks.map((item) => {
-      x.push({ ...item, color: getRandomColorFromTheme() });
+      newCashDesks.push({ ...item, color: getRandomColorFromTheme() });
     });
 
-    const ss = [
-      { name: "aaaa", amount: 2222, color: getRandomColorFromTheme() },
-      { name: "1", amount: 330, color: getRandomColorFromTheme() },
-      { name: "2", amount: 470, color: getRandomColorFromTheme() },
-    ];
-    setPieChart(ss);
+    setPieChart(newCashDesks);
   };
 
   useEffect(() => {
     getPieChartData();
   }, []);
-  console.log(pieChart);
+
   return (
     <>
       <Grid container spacing={4}>
@@ -248,7 +244,7 @@ export default function Dashboard(props) {
           <Paper
             icon="shopping_basket"
             onClick={() => {
-              onClickPaper("buy");
+              onClickPaper("invoice-detail?type=BUY");
             }}
           >
             <div className={classes.paperTitle}>
@@ -260,7 +256,7 @@ export default function Dashboard(props) {
           <Paper
             icon="sell"
             onClick={() => {
-              onClickPaper("sell");
+              onClickPaper("invoice-detail?type=SELL");
             }}
           >
             <div className={classes.paperTitle}>
@@ -272,7 +268,7 @@ export default function Dashboard(props) {
           <Paper
             icon="payments"
             onClick={() => {
-              onClickPaper("chek");
+              onClickPaper("cheque-list?type=ALL");
             }}
           >
             <div className={classes.paperTitle}>
@@ -282,13 +278,67 @@ export default function Dashboard(props) {
         </Grid>
         <Grid item lg={2} md={4} sm={6} xs={12}>
           <Paper
-            icon="monetization_on"
+            icon="move_to_inbox"
             onClick={() => {
-              onClickPaper("cash");
+              onClickPaper("payment-detail?type=INCOME");
             }}
           >
             <div className={classes.paperTitle}>
-              <Typography variant="h3">صندوق</Typography>
+              <Typography variant="h3">ثبت دریافت</Typography>
+            </div>
+          </Paper>
+        </Grid>
+        <Grid item lg={2} md={4} sm={6} xs={12}>
+          <Paper
+            icon="unarchive"
+            onClick={() => {
+              onClickPaper("payment-detail?type=OUTCOME");
+            }}
+          >
+            <div className={classes.paperTitle}>
+              <Typography variant="h3">ثبت پرداخت</Typography>
+            </div>
+          </Paper>
+        </Grid>
+      </Grid>
+      <Grid container spacing={4}>
+        <Grid item lg={2} md={4} sm={6} xs={12}>
+          <Paper
+            icon="inventory_2"
+            onClick={() => {
+              onClickPaper("product-detail");
+            }}
+          >
+            <div className={classes.paperTitle}>
+              <Typography variant="h3">ثبت کالای جدید</Typography>
+            </div>
+          </Paper>
+        </Grid>
+        <Grid item lg={2} md={4} sm={6} xs={12}>
+          <Paper
+            icon="record_voice_over"
+            onClick={() => {
+              onClickPaper("customer-detail");
+            }}
+          >
+            <div className={classes.paperTitle}>
+              <Typography color="text-s" variant="h3">
+                ثبت مشتری جدید
+              </Typography>
+            </div>
+          </Paper>
+        </Grid>
+        <Grid item lg={2} md={4} sm={6} xs={12}>
+          <Paper
+            icon="manage_accounts"
+            onClick={() => {
+              onClickPaper("employee-detail");
+            }}
+          >
+            <div className={classes.paperTitle}>
+              <Typography color="text-s" variant="h3">
+                ثبت پرسنل جدید
+              </Typography>
             </div>
           </Paper>
         </Grid>
@@ -296,9 +346,9 @@ export default function Dashboard(props) {
       <Grid container spacing={4}>
         <Grid item lg={3} md={4} sm={6} xs={12}>
           <Paper
-            icon="receipt_long"
+            icon="transfer_within_a_station"
             onClick={() => {
-              onClickPaper("worklog");
+              onClickPaper("traffic");
             }}
           >
             <div className={classes.paperTitle}>
@@ -310,39 +360,13 @@ export default function Dashboard(props) {
         </Grid>
         <Grid item lg={3} md={4} sm={6} xs={12}>
           <Paper
-            icon="manage_accounts"
+            icon="monetization_on"
             onClick={() => {
-              onClickPaper("user-list");
+              onClickPaper("cash-list");
             }}
           >
             <div className={classes.paperTitle}>
-              <Typography variant="h3">کاربران</Typography>
-            </div>
-          </Paper>
-        </Grid>
-        <Grid item lg={3} md={4} sm={6} xs={12}>
-          <Paper
-            icon="supervisor_account"
-            onClick={() => {
-              onClickPaper("employee-list");
-            }}
-          >
-            <div className={classes.paperTitle}>
-              <Typography variant="h3">پرسنل</Typography>
-            </div>
-          </Paper>
-        </Grid>
-        <Grid item lg={3} md={4} sm={6} xs={12}>
-          <Paper
-            icon="record_voice_over"
-            onClick={() => {
-              onClickPaper("customer-list");
-            }}
-          >
-            <div className={classes.paperTitle}>
-              <Typography color="textSecondary" variant="h3">
-                مشتریان
-              </Typography>
+              <Typography variant="h3">صندوق</Typography>
             </div>
           </Paper>
         </Grid>

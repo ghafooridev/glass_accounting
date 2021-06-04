@@ -69,6 +69,10 @@ const headCells = [
     id: "fee",
     label: "قیمت",
   },
+  {
+    id: "total",
+    label: "مجموع",
+  },
 
   { id: "action" },
 ];
@@ -90,6 +94,11 @@ export default function MainDetail({ defaultValues }) {
     banks: [],
     cheques: [],
   });
+  const [totalFee, setTotalFee] = useState(0);
+  const [totalPayment, setTotalPayment] = useState(0);
+  const [discount, setDiscount] = useState(0);
+  const [pureFee, setPureFee] = useState(0);
+  const [totalRemaining, setTotalRemaining] = useState(0);
 
   const addInvoiceRequest = useApi({
     method: "post",
@@ -130,10 +139,19 @@ export default function MainDetail({ defaultValues }) {
   };
 
   const onSubmit = async (data) => {
+    const value = {
+      ...data,
+      products,
+      ...paymentRef.current,
+      drivers,
+      date: selectedDate._d,
+      customerId: selectedPerson.id,
+      type: invoiceType,
+    };
     if (id) {
-      await editInvoiceRequest.execute(data);
+      await editInvoiceRequest.execute(value);
     } else {
-      await addInvoiceRequest.execute(data);
+      await addInvoiceRequest.execute(value);
     }
   };
 
@@ -178,22 +196,24 @@ export default function MainDetail({ defaultValues }) {
   };
 
   const onSubmitProduct = (product) => {
-    setProducts(product);
+    setProducts([...products, product]);
+    dialogAction.hide();
   };
 
   const onDismissProduct = () => {
     dialogAction.hide();
   };
 
-  const handleDeleteProduct = (item) => {
-    console.log(item);
+  const handleDeleteProduct = (id) => {
+    setProducts(products.filter((item) => item.id !== id));
   };
 
   const handleEditProduct = (item) => {
     console.log(item);
+    onShowProductDialog(item);
   };
 
-  const onShowProductDialog = () => {
+  const onShowProductDialog = (data) => {
     dialogAction.show({
       title: "انتخاب کالا",
       component: (
@@ -201,6 +221,7 @@ export default function MainDetail({ defaultValues }) {
           onSubmit={onSubmitProduct}
           onDismiss={onDismissProduct}
           customerId={selectedPerson?.id}
+          defaultValues={data}
         />
       ),
       size: "lg",
@@ -223,11 +244,47 @@ export default function MainDetail({ defaultValues }) {
     }
   };
 
+  const onSubmitPayment = (data) => {
+    console.log("data", data);
+    if (data) {
+      const cashesPrice = data.cashes.reduce(
+        (n, { price }) => n + Number(price),
+        0,
+      );
+      const chequesPrice = data.cheques.reduce(
+        (n, { price }) => n + Number(price),
+        0,
+      );
+      const banksPrice = data.banks.reduce(
+        (n, { price }) => n + Number(price),
+        0,
+      );
+      setTotalPayment(cashesPrice + chequesPrice + banksPrice);
+    }
+  };
+
+  const onDiscountChange = (e) => {
+    setDiscount(e.target.value);
+  };
+
   useEffect(() => {
     if (id) {
       getDetail();
     }
   }, []);
+
+  useEffect(() => {
+    setTotalFee(products.reduce((n, { totalFee }) => n + totalFee, 0));
+  }, [products]);
+
+  useEffect(() => {
+    const factorPay = totalFee - (Number(discount) + totalPayment);
+
+    setPureFee(factorPay);
+    if (selectedPerson) {
+      setTotalRemaining(factorPay + selectedPerson?.id); //TODO : should be change by customer remaining dept
+    }
+  }, [totalFee, discount, totalPayment]);
 
   useEffect(() => {
     reset(detail);
@@ -274,6 +331,7 @@ export default function MainDetail({ defaultValues }) {
                 </Grid>
                 <Grid item lg={6} xs={12} className={classes.datePicker}>
                   <DatePicker
+                    autoOk
                     name="date"
                     label="تاریخ ثبت"
                     inputVariant="outlined"
@@ -298,16 +356,16 @@ export default function MainDetail({ defaultValues }) {
                           name={name}
                           onChange={onChange}
                           value={value}
-                          error={!!errors.source}
+                          error={!!errors.origin}
                           helperText={
-                            errors.source ? errors.source.message : ""
+                            errors.origin ? errors.origin.message : ""
                           }
                           fullWidth
                           size="small"
                         />
                       );
                     }}
-                    name="source"
+                    name="origin"
                   />
                 </Grid>
                 <Grid item lg={6} xs={12}>
@@ -395,13 +453,19 @@ export default function MainDetail({ defaultValues }) {
                                   style={{ paddingRight: 10 }}
                                 >
                                   <TableCell padding="none">
-                                    {row.stock}
+                                    {row.name}
                                   </TableCell>
                                   <TableCell padding="none">
-                                    {row.unit.label}
+                                    {row.unitBase}
                                   </TableCell>
                                   <TableCell padding="none">
-                                    {row.depot.label}
+                                    {row.amount}
+                                  </TableCell>
+                                  <TableCell padding="none">
+                                    {row.fee}
+                                  </TableCell>
+                                  <TableCell padding="none">
+                                    {row.fee * row.amount}
                                   </TableCell>
                                   <TableCell
                                     padding="none"
@@ -456,10 +520,74 @@ export default function MainDetail({ defaultValues }) {
                 </Grid>
                 <PrePayment
                   type={invoiceType === "BUY" ? "OUTCOME" : "INCOME"}
-                  ref={paymentRef}
                   defaultValues={payments}
+                  ref={paymentRef}
+                  onSubmit={onSubmitPayment}
                 />
-
+                <Grid container spacing={3} style={{ marginTop: 20 }}>
+                  <Grid item lg={3} xs={6}>
+                    <TextField
+                      disabled
+                      variant="outlined"
+                      label="مبلغ کل"
+                      value={totalFee}
+                      fullWidth
+                      size="small"
+                    />
+                  </Grid>
+                  <Grid item lg={3} xs={6}>
+                    <TextField
+                      disabled
+                      variant="outlined"
+                      label={`${
+                        invoiceType === "SELL" ? "جمع دریافتی" : "جمع پرداختی"
+                      }`}
+                      value={totalPayment}
+                      fullWidth
+                      size="small"
+                    />
+                  </Grid>
+                  <Grid item lg={3} xs={6}>
+                    <TextField
+                      variant="outlined"
+                      onChange={onDiscountChange}
+                      label="تخفیف"
+                      value={discount}
+                      fullWidth
+                      size="small"
+                    />
+                  </Grid>
+                  <Grid item lg={3} xs={6}>
+                    <TextField
+                      disabled
+                      variant="outlined"
+                      label="مبلغ خالص"
+                      value={pureFee}
+                      fullWidth
+                      size="small"
+                    />
+                  </Grid>
+                  <Grid item lg={3} xs={6}>
+                    <TextField
+                      disabled
+                      variant="outlined"
+                      label="مانده قبلی"
+                      value={selectedPerson ? selectedPerson.id : 0} //TODO : should be change by customer remaining dept
+                      fullWidth
+                      size="small"
+                    />
+                  </Grid>
+                  <Grid item lg={3} xs={6}>
+                    <TextField
+                      disabled
+                      variant="outlined"
+                      label="مانده نهایی"
+                      value={totalRemaining}
+                      fullWidth
+                      size="small"
+                    />
+                  </Grid>
+                </Grid>
                 <Grid
                   item
                   xs={12}
