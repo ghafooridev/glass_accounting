@@ -507,7 +507,7 @@ export default function MainDetail({ defaultValues }) {
                                     {row.name}
                                   </TableCell>
                                   <TableCell padding="none">
-                                    {Constant.UNITS_MAP[row.unitBase]}
+                                    {Constant.UNITS_MAP[row.unit]}
                                   </TableCell>
                                   <TableCell padding="none">
                                     {persianNumber(row.amount)}

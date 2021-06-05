@@ -206,6 +206,11 @@ const empoyeeTrafficChart = [
   },
 ];
 
+const trafficDayliChart = [
+  { name: "حاضرین", value: 15, color: "#536DFE" },
+  { name: "غائبین", value: 5, color: "#FF5C93" },
+];
+
 export default function Dashboard(props) {
   var classes = useStyles();
   var theme = useTheme();
@@ -239,7 +244,7 @@ export default function Dashboard(props) {
 
   return (
     <>
-      <Grid container spacing={4}>
+      <Grid container spacing={4} style={{ marginBottom: 20 }}>
         <Grid item lg={2} md={4} sm={6} xs={12}>
           <Paper
             icon="shopping_basket"
@@ -261,18 +266,6 @@ export default function Dashboard(props) {
           >
             <div className={classes.paperTitle}>
               <Typography variant="h3">ثبت فروش</Typography>
-            </div>
-          </Paper>
-        </Grid>
-        <Grid item lg={2} md={4} sm={6} xs={12}>
-          <Paper
-            icon="payments"
-            onClick={() => {
-              onClickPaper("cheque-list?type=ALL");
-            }}
-          >
-            <div className={classes.paperTitle}>
-              <Typography variant="h3">گزارش چک ها</Typography>
             </div>
           </Paper>
         </Grid>
@@ -300,78 +293,70 @@ export default function Dashboard(props) {
             </div>
           </Paper>
         </Grid>
-      </Grid>
-      <Grid container spacing={4}>
-        <Grid item lg={2} md={4} sm={6} xs={12}>
-          <Paper
-            icon="inventory_2"
-            onClick={() => {
-              onClickPaper("product-detail");
-            }}
-          >
-            <div className={classes.paperTitle}>
-              <Typography variant="h3">ثبت کالای جدید</Typography>
-            </div>
-          </Paper>
-        </Grid>
-        <Grid item lg={2} md={4} sm={6} xs={12}>
-          <Paper
-            icon="record_voice_over"
-            onClick={() => {
-              onClickPaper("customer-detail");
-            }}
-          >
-            <div className={classes.paperTitle}>
-              <Typography color="text-s" variant="h3">
-                ثبت مشتری جدید
-              </Typography>
-            </div>
-          </Paper>
-        </Grid>
-        <Grid item lg={2} md={4} sm={6} xs={12}>
-          <Paper
-            icon="manage_accounts"
-            onClick={() => {
-              onClickPaper("employee-detail");
-            }}
-          >
-            <div className={classes.paperTitle}>
-              <Typography color="text-s" variant="h3">
-                ثبت پرسنل جدید
-              </Typography>
-            </div>
-          </Paper>
-        </Grid>
-      </Grid>
-      <Grid container spacing={4}>
-        <Grid item lg={3} md={4} sm={6} xs={12}>
+        <Grid item lg={4} md={4} sm={6} xs={12}>
           <Paper
             icon="transfer_within_a_station"
             onClick={() => {
               onClickPaper("traffic");
             }}
           >
-            <div className={classes.paperTitle}>
-              <Typography color="text-s" variant="h3">
-                حضور و غیاب
-              </Typography>
-            </div>
-          </Paper>
-        </Grid>
-        <Grid item lg={3} md={4} sm={6} xs={12}>
-          <Paper
-            icon="monetization_on"
-            onClick={() => {
-              onClickPaper("cash-list");
-            }}
-          >
-            <div className={classes.paperTitle}>
-              <Typography variant="h3">صندوق</Typography>
+            <div
+              className={classes.paperTitle}
+              style={{ flexDirection: "row", justifyContent: "space-between" }}
+            >
+              <div>
+                <Typography color="text-s" variant="h3">
+                  حضور و غیاب
+                </Typography>
+                <div
+                  className={classes.performanceLegendWrapper}
+                  style={{ marginTop: 20 }}
+                >
+                  <div className={classes.legendElement}>
+                    <Dot color="secondary" />
+                    <Typography
+                      color="text"
+                      colorBrightness="secondary"
+                      className={classes.legendElementText}
+                    >
+                      غائبین
+                    </Typography>
+                  </div>
+                  <div className={classes.legendElement}>
+                    <Dot color="primary" />
+                    <Typography
+                      color="text"
+                      colorBrightness="secondary"
+                      className={classes.legendElementText}
+                    >
+                      حاضرین
+                    </Typography>
+                  </div>
+                </div>
+              </div>
+              <PieChart width={250} height={100}>
+                <Pie
+                  data={trafficDayliChart}
+                  cx={120}
+                  cy={100}
+                  startAngle={180}
+                  endAngle={0}
+                  innerRadius={60}
+                  outerRadius={80}
+                  fill="#8884d8"
+                  paddingAngle={5}
+                  dataKey="value"
+                >
+                  {trafficDayliChart.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Pie>
+                <Tooltip />
+              </PieChart>
             </div>
           </Paper>
         </Grid>
       </Grid>
-
       <Grid container spacing={4}>
         <Grid item lg={6} xs={12}>
           <Widget

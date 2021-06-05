@@ -89,15 +89,14 @@ export default function ProductList({
     setPage(0);
   };
 
-  const getProductRequest = useApi({
+  const getDepotProductRequest = useApi({
     method: "get",
-    url: `product?${convertParamsToQueryString({
+    url: `product/depot?${convertParamsToQueryString({
       page,
       order,
       orderBy,
       pageSize,
       search,
-      depotId: selectedDepot,
     })}`,
   });
 
@@ -120,7 +119,10 @@ export default function ProductList({
   };
 
   const getData = async () => {
-    const productList = await getProductRequest.execute();
+    const productList = await getDepotProductRequest.execute(
+      null,
+      selectedDepot,
+    );
     setList(productList.data);
   };
 
@@ -147,9 +149,14 @@ export default function ProductList({
 
     const feeProduct = fee.data;
     if (isEmpty(feeProduct)) {
-      setProductFee({ id: data.id, name: data.name, fee: "", amount: "" });
+      setProductFee({
+        productId: data.id,
+        name: data.name,
+        fee: "",
+        amount: "",
+      });
     } else {
-      setProductFee({ ...feeProduct, id: data.id });
+      setProductFee({ ...feeProduct, productId: data.id });
     }
   };
 
@@ -158,6 +165,7 @@ export default function ProductList({
   };
 
   const onDone = () => {
+    console.log(productFee);
     onSubmit({
       ...productFee,
       depotId: selectedDepot,
@@ -180,7 +188,7 @@ export default function ProductList({
 
   useEffect(() => {
     getDepotPicker();
-  });
+  }, []);
 
   return (
     <>
@@ -205,7 +213,7 @@ export default function ProductList({
               value={productFee?.unit}
               onChange={onChangeSelectedProduct}
               variant="outlined"
-              name="unitBase"
+              name="unit"
               fullWidth
               size="small"
             >
@@ -254,7 +262,7 @@ export default function ProductList({
           )}
         </Grid>
       </form>
-      <Divider />
+      <Divider style={{ margin: "20px 10px" }} />
       <Grid container spacing={3}>
         <Grid item lg={12} xs={12}>
           <TextField
@@ -326,7 +334,7 @@ export default function ProductList({
                 </TableRow>
               );
             })}
-            {!list.length && !getProductRequest.pending && (
+            {!list.length && !getDepotProductRequest.pending && (
               <TableRow style={{ height: 53 }}>
                 <TableCell colSpan={6} style={{ textAlign: "center" }}>
                   <Typography variant="h6">

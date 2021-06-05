@@ -140,13 +140,13 @@ const structure = [
     icon: <i className="material-icons-round">category</i>,
     permission: Constants.ALL_PERMISSIONS.FREE,
   },
-  {
-    id: 15,
-    label: "تنظیمات ",
-    link: "/app/Settings",
-    icon: <i className="material-icons-round">settings</i>,
-    permission: Constants.ALL_PERMISSIONS.FREE,
-  },
+  // {
+  //   id: 15,
+  //   label: "تنظیمات ",
+  //   link: "/app/Settings",
+  //   icon: <i className="material-icons-round">settings</i>,
+  //   permission: Constants.ALL_PERMISSIONS.FREE,
+  // },
 ];
 
 function Sidebar({ location }) {

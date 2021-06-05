@@ -83,7 +83,7 @@ export default function MainList({ onSelect, onDismiss, filter }) {
   }, [page, order, search, pageSize]);
 
   return (
-    <div style={{ marginTop: -50 }}>
+    <div style={{ marginTop: -20 }}>
       <TableTop handleSearch={onSearch} />
       <TableContainer>
         <Table className={classes.table} size={"medium"}>

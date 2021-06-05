@@ -35,6 +35,10 @@ const headCells = [
     id: "amount",
     label: "موجودی کل",
   },
+  {
+    id: "DefaultUnit",
+    label: "واحد پیش فرض",
+  },
   { id: "unit", label: " واحد شمارشی" },
 
   { id: "action" },
@@ -183,6 +187,9 @@ export default function MainList() {
                               </TableCell>
                               <TableCell padding="none">
                                 {row.totalStock}
+                              </TableCell>
+                              <TableCell padding="none">
+                                {row.defaultUnit}
                               </TableCell>
                               <TableCell padding="none">
                                 {row.unitBase}

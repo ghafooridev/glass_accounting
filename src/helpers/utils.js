@@ -14,6 +14,7 @@ import {
   purple,
   orange,
 } from "../themes/default";
+import { number } from "yup";
 
 export const convertParamsToQueryString = (params) => {
   return new URLSearchParams(pickBy(params, identity)).toString();
@@ -48,7 +49,7 @@ export const getRandomNumber = (min, max) => {
 };
 
 export const persianNumber = (en) => {
-  if (en) {
+  if (en && typeof en !== number) {
     return ("" + en).replace(/[0-9]/g, function (t) {
       return "۰۱۲۳۴۵۶۷۸۹".substr(+t, 1);
     });
