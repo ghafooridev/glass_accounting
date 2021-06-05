@@ -20,6 +20,7 @@ const MainList = () => {
   const [customerCategory, setCustomerCategory] = useState([]);
   const [depotCategory, setDepotCategory] = useState([]);
   const [productCategory, setProductCategory] = useState([]);
+  const [invoiceCategory, setInvoiceCategory] = useState([]);
   const [action, setAction] = useState();
   const [selectedCategory, setSelectedCategory] = useState({
     value: "",
@@ -72,6 +73,21 @@ const MainList = () => {
     url: "depot/category",
   });
 
+  const GetInvoiceCategoryRequest = useApi({
+    method: "get",
+    url: "invoice/category",
+  });
+
+  const EditInvoiceCategoryRequest = useApi({
+    method: "put",
+    url: `invoice/category/${selectedCategory.value}`,
+  });
+
+  const AddInvoiceCategoryRequest = useApi({
+    method: "post",
+    url: "invoice/category",
+  });
+
   const onAction = ({ name, value }) => {
     debugger;
     const types = {
@@ -104,6 +120,16 @@ const MainList = () => {
           await AddProductCategoryRequest.execute({ name });
         }
         getProductCategory();
+      },
+      invoice: async () => {
+        if (action === "edit") {
+          await EditInvoiceCategoryRequest.execute({
+            name,
+          });
+        } else {
+          await AddInvoiceCategoryRequest.execute({ name });
+        }
+        getInvoiceCategory();
       },
     };
     if (types[selectedType]) {
@@ -159,10 +185,16 @@ const MainList = () => {
     setProductCategory(productCategoryList.data);
   };
 
+  const getInvoiceCategory = async () => {
+    const invoiceCategoryList = await GetInvoiceCategoryRequest.execute();
+    setInvoiceCategory(invoiceCategoryList.data);
+  };
+
   useEffect(() => {
     getCustomerCategory();
     getDepotCategory();
     getProductCategory();
+    getInvoiceCategory();
   }, []);
 
   useEffect(() => {
@@ -299,6 +331,52 @@ const MainList = () => {
                 );
               })}
               {!productCategory.length && !getProductCategory.pending && (
+                <TableRow style={{ height: 53 }}>
+                  <TableCell colSpan={6} style={{ textAlign: "center" }}>
+                    <Typography variant="h6">
+                      داده ای برای نمایش وجود ندارد
+                    </Typography>
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Paper>
+      <Paper className={classes.paper}>
+        <TableTop
+          title="دسته بندی فاکتور ها"
+          onAdd={() => handleAdd("invoice")}
+          toolbarClass={classes.toolbar}
+          addButtonClass={classes.addButton}
+          minimal
+        />
+        <TableContainer style={{ padding: "0 10px" }}>
+          <Table
+            className={classes.table}
+            size={"medium"}
+            style={{ paddingRight: 10 }}
+          >
+            <TableBody>
+              {invoiceCategory.map((row) => {
+                return (
+                  <TableRow
+                    hover
+                    tabIndex={-1}
+                    key={row.id}
+                    style={{ paddingRight: 10 }}
+                  >
+                    <TableCell padding="none">{row.label}</TableCell>
+
+                    <TableCell padding="none" style={{ textAlign: "left" }}>
+                      <IconButton onClick={() => handleAction("invoice", row)}>
+                        <i className="material-icons-round">edit</i>
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+              {!invoiceCategory.length && !getInvoiceCategory.pending && (
                 <TableRow style={{ height: 53 }}>
                   <TableCell colSpan={6} style={{ textAlign: "center" }}>
                     <Typography variant="h6">

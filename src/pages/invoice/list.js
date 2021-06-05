@@ -31,10 +31,10 @@ import { Slide } from "@material-ui/core";
 import TableSkeleton from "../../components/Skeleton";
 
 const headCells = [
-  { id: "personType" },
+  { id: "id", label: "کد" },
   {
     id: "person",
-    label: "نام طرف",
+    label: "مشتری",
   },
   {
     id: "date",
@@ -42,7 +42,11 @@ const headCells = [
   },
   { id: "price", label: "مبلغ" },
   {
-    id: "typr",
+    id: "category",
+    label: "دسته بندی",
+  },
+  {
+    id: "type",
     label: "نوع",
   },
 
@@ -240,19 +244,28 @@ const MainList = () => {
                               key={row.id}
                               style={{ paddingRight: 10 }}
                             >
+                              <TableCell padding="none">{row.id}</TableCell>
                               <TableCell padding="none">
-                                {row.invoicename}
+                                {row.customer}
                               </TableCell>
-                              <TableCell padding="none">{row.person}</TableCell>
-                              <TableCell padding="none">{row.date}</TableCell>
+                              <TableCell padding="none">
+                                {persianNumber(
+                                  new Date(row.date).toLocaleDateString(
+                                    "fa-IR",
+                                  ),
+                                )}
+                              </TableCell>
                               <TableCell padding="none">
                                 {persianNumber(
                                   Number(row.price).toLocaleString(),
                                 )}
                               </TableCell>
                               <TableCell padding="none">
+                                {row.category}
+                              </TableCell>
+                              <TableCell padding="none">
                                 <Chip
-                                  label={Constant.PAYMENT_TYPE[row.type]}
+                                  label={Constant.INVOICE_TYPE[row.type]}
                                   className={clsx(
                                     classes.type,
                                     classes[row.type],

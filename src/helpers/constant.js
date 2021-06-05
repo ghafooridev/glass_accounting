@@ -6,6 +6,14 @@ const Constant = {
     { value: "DAYLI", label: "روزانه" },
     { value: "MONTHLY", label: "ماهانه" },
   ],
+  UNITS_MAP: {
+    KILOGRAM: "کیلوگرم",
+    GRAM: "گرم",
+    TON: "تن",
+    BOX: "بکس",
+    SHEL: "شل",
+    CUBICMETERS: "مترمکعب",
+  },
   ACTION_TYPES: {
     SHOW_ALERT: "SHOW_ALERT",
     HIDE_ALERT: "HIDE_ALERT",
@@ -49,6 +57,11 @@ const Constant = {
     OUTCOME: "پرداختی",
     ALL: "دریافتی و پرداختی",
   },
+  INVOICE_TYPE: {
+    SELL: "فروش",
+    BUY: "خرید",
+  },
+
   ALL_PERMISSIONS: {
     USER_SHOW: "USER_SHOW",
     USER_EDIT: "USER_EDIT",

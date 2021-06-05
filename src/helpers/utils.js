@@ -48,9 +48,11 @@ export const getRandomNumber = (min, max) => {
 };
 
 export const persianNumber = (en) => {
-  return ("" + en).replace(/[0-9]/g, function (t) {
-    return "۰۱۲۳۴۵۶۷۸۹".substr(+t, 1);
-  });
+  if (en) {
+    return ("" + en).replace(/[0-9]/g, function (t) {
+      return "۰۱۲۳۴۵۶۷۸۹".substr(+t, 1);
+    });
+  }
 };
 
 export const hasPermission = (permit) => {

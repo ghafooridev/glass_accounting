@@ -28,6 +28,7 @@ import CircularProgress from "../../components/CircularProgress";
 import DialogActions from "../../redux/actions/dialogAction";
 import Amount from "./amount";
 import unitAction from "../../redux/actions/unitAction";
+import { isEmpty } from "lodash";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -108,9 +109,13 @@ export default function MainDetail() {
   };
 
   const onShowDialog = (data) => {
-    const units = unitAction
+    let units;
+    const allUnits = unitAction
       .getProductUnit()
-      .filter((item) => item.value === selectedUnit)[0].children;
+      .filter((item) => item.value === selectedUnit)[0];
+    if (allUnits) {
+      units = allUnits.children;
+    }
     DialogActions.show({
       title: "موجودی اول دوره",
       component: (
@@ -165,7 +170,7 @@ export default function MainDetail() {
     const detail = await detailProductRequest.execute();
     setDetail(detail.data);
     setSelectedCategory(detail.data.categories);
-    setSelectedUnit();
+    setSelectedUnit(detail.data.unitBase);
     setAmounts(detail.data.stocks);
   };
 
@@ -296,6 +301,7 @@ export default function MainDetail() {
                 </Grid>
                 <Grid item lg={6} xs={12}>
                   <Button
+                    disabled={isEmpty(selectedUnit)}
                     variant="contained"
                     color="primary"
                     onClick={onAddAmount}

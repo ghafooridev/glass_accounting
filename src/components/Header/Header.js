@@ -13,16 +13,13 @@ import { useHistory, useLocation } from "react-router-dom";
 
 import {
   Menu as MenuIcon,
-  MailOutline as MailIcon,
   NotificationsNone as NotificationsIcon,
   Person as AccountIcon,
-  Send as SendIcon,
   ArrowForward as ArrowForwardIcon,
 } from "@material-ui/icons";
 import classNames from "classnames";
 import useStyles from "./styles";
 import { Badge, Typography } from "../Wrappers";
-import UserAvatar from "../UserAvatar/UserAvatar";
 import {
   useLayoutState,
   useLayoutDispatch,
@@ -34,31 +31,9 @@ import { useApi } from "../../hooks/useApi";
 import { persianNumber } from "../../helpers/utils";
 import clsx from "clsx";
 import Constant from "../../helpers/constant";
+import dialogAction from "../../redux/actions/dialogAction";
+import ChangePassword from "./ChangePassword";
 
-const messages = [
-  {
-    id: 0,
-    variant: "warning",
-    name: "تست",
-    message: "یادآوری چک",
-    time: "9:10",
-  },
-  {
-    id: 0,
-    variant: "warning",
-    name: "تست",
-    message: "یادآوری چک",
-    time: "9:10",
-  },
-  {
-    id: 0,
-    variant: "warning",
-    name: "تست",
-    message: "یادآوری چک",
-    time: "9:10",
-  },
-];
-//notify/cheque
 export default function Header(props) {
   var classes = useStyles();
   const history = useHistory();
@@ -86,7 +61,28 @@ export default function Header(props) {
     history.push("/app/cheque-list");
   };
 
-  const onChangePassword = () => {};
+  const onSubmitChangePassword = (data) => {
+    console.log(data);
+    dialogAction.hide();
+  };
+
+  const onDismissChangePassword = () => {
+    dialogAction.hide();
+  };
+
+  const onChangePassword = () => {
+    dialogAction.show({
+      title: "تغییر پسورد",
+      component: (
+        <ChangePassword
+          onSubmit={onSubmitChangePassword}
+          onDismiss={onDismissChangePassword}
+        />
+      ),
+      size: "xs",
+      disableCloseButton: true,
+    });
+  };
 
   useEffect(() => {
     getChequeNotify();

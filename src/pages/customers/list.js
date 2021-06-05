@@ -16,7 +16,11 @@ import TableTop from "../../components/Table/TableTop";
 import TableHeader from "../../components/Table/TableHead";
 import TablePaging from "../../components/Table/TablePaging";
 import { useApi } from "../../hooks/useApi";
-import { convertParamsToQueryString, hasPermission } from "../../helpers/utils";
+import {
+  convertParamsToQueryString,
+  hasPermission,
+  persianNumber,
+} from "../../helpers/utils";
 import DialogActions from "../../redux/actions/dialogAction";
 import styles from "./style";
 import FilterComponent from "./filter";
@@ -35,6 +39,7 @@ const headCells = [
     label: "موبایل",
   },
   { id: "phone", label: "تلفن" },
+  { id: "remaining", label: "مانده حساب" },
   { id: "status", label: "وضعیت" },
   { id: "action" },
 ];
@@ -174,8 +179,15 @@ export default function MainList() {
                               <TableCell padding="none">
                                 {row.lastName}
                               </TableCell>
-                              <TableCell padding="none">{row.mobile}</TableCell>
-                              <TableCell padding="none">{row.phone}</TableCell>
+                              <TableCell padding="none">
+                                {persianNumber(row.mobile)}
+                              </TableCell>
+                              <TableCell padding="none">
+                                {persianNumber(row.phone)}
+                              </TableCell>
+                              <TableCell padding="none">
+                                {persianNumber(row.accountRemaining)}
+                              </TableCell>
                               <TableCell padding="none">
                                 <Chip
                                   label={Constant.PERSON_STATUS[row.status]}

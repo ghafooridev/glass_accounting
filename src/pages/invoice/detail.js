@@ -14,12 +14,14 @@ import {
   TableRow,
   IconButton,
   Chip,
+  MenuItem,
+  Hidden,
 } from "@material-ui/core";
 import TableHeader from "../../components/Table/TableHead";
 import { DeleteIcon, EditIcon } from "../../components/icons";
 import { useForm, Controller } from "react-hook-form";
 import { useApi } from "../../hooks/useApi";
-import { getQueryString } from "../../helpers/utils";
+import { getQueryString, persianNumber } from "../../helpers/utils";
 import CircularProgress from "../../components/CircularProgress";
 import PersonSelector from "../payment/personSelector";
 import { DatePicker } from "@material-ui/pickers";
@@ -87,6 +89,8 @@ export default function MainDetail({ defaultValues }) {
   const [selectedPerson, setSelectedPerson] = useState();
   const { control, handleSubmit, errors, reset } = useForm();
   const [selectedDate, handleDateChange] = useState(moment());
+  const [invoiceCategory, setInvoiceCategory] = useState(3);
+  const [category, setCategory] = useState([]);
   const [drivers, setDrivers] = useState([]);
   const [products, setProducts] = useState([]);
   const [payments, setPayments] = useState({
@@ -112,6 +116,19 @@ export default function MainDetail({ defaultValues }) {
     method: "get",
     url: `invoice/${id}`,
   });
+  const invoiceCategoryRequest = useApi({
+    method: "get",
+    url: `invoice/category`,
+  });
+  const addInvoicePaymentRequest = useApi({
+    method: "post",
+    url: `payment`,
+  });
+
+  const getInvoiceCategory = async () => {
+    const detail = await invoiceCategoryRequest.execute();
+    setCategory(detail.data);
+  };
 
   const onSelectPerson = (person) => {
     setSelectedPerson(person);
@@ -142,16 +159,26 @@ export default function MainDetail({ defaultValues }) {
     const value = {
       ...data,
       products,
-      ...paymentRef.current,
       drivers,
       date: selectedDate._d,
       customerId: selectedPerson.id,
       type: invoiceType,
+      categoryId: invoiceCategory,
     };
     if (id) {
       await editInvoiceRequest.execute(value);
     } else {
-      await addInvoiceRequest.execute(value);
+      const response = await addInvoiceRequest.execute(value);
+      const invoicePayment = {
+        ...paymentRef.current,
+        invoiceId: response.id,
+        date: selectedDate._d,
+        personId: selectedPerson.id,
+        personType: "CUSTOMER",
+        type: invoiceType === "SELL" ? "INCOME" : "OUTCOME",
+        description: `بابت فاکتور به شماره  ${response.id}`,
+      };
+      addInvoicePaymentRequest.execute(invoicePayment);
     }
   };
 
@@ -175,7 +202,6 @@ export default function MainDetail({ defaultValues }) {
   };
 
   const handleDeleteDriver = (data) => {
-    console.log(data);
     setDrivers(drivers.filter((item) => item.id !== data.id));
   };
 
@@ -209,7 +235,6 @@ export default function MainDetail({ defaultValues }) {
   };
 
   const handleEditProduct = (item) => {
-    console.log(item);
     onShowProductDialog(item);
   };
 
@@ -245,7 +270,6 @@ export default function MainDetail({ defaultValues }) {
   };
 
   const onSubmitPayment = (data) => {
-    console.log("data", data);
     if (data) {
       const cashesPrice = data.cashes.reduce(
         (n, { price }) => n + Number(price),
@@ -267,7 +291,12 @@ export default function MainDetail({ defaultValues }) {
     setDiscount(e.target.value);
   };
 
+  const onChangeCategory = (e) => {
+    setInvoiceCategory(e.target.value);
+  };
+
   useEffect(() => {
+    getInvoiceCategory();
     if (id) {
       getDetail();
     }
@@ -282,7 +311,7 @@ export default function MainDetail({ defaultValues }) {
 
     setPureFee(factorPay);
     if (selectedPerson) {
-      setTotalRemaining(factorPay + selectedPerson?.id); //TODO : should be change by customer remaining dept
+      setTotalRemaining(factorPay + Number(selectedPerson?.accountRemaining));
     }
   }, [totalFee, discount, totalPayment]);
 
@@ -345,6 +374,28 @@ export default function MainDetail({ defaultValues }) {
                     style={{ width: "100%" }}
                   />
                 </Grid>
+                <Grid item lg={6} xs={12}>
+                  {!!category.length && invoiceCategory && (
+                    <TextField
+                      select
+                      label="دسته بندی"
+                      value={invoiceCategory}
+                      onChange={onChangeCategory}
+                      variant="outlined"
+                      fullWidth
+                      size="small"
+                    >
+                      {category.map((option) => (
+                        <MenuItem key={option.value} value={option.value}>
+                          {option.label}
+                        </MenuItem>
+                      ))}
+                    </TextField>
+                  )}
+                </Grid>
+                <Hidden smDown>
+                  <Grid item lg={6} xs={12} />
+                </Hidden>
                 <Grid item lg={6} xs={12}>
                   <Controller
                     control={control}
@@ -424,7 +475,7 @@ export default function MainDetail({ defaultValues }) {
                     style={{ marginLeft: 10, width: "30%" }}
                     variant="contained"
                     color="primary"
-                    onClick={onShowProductDialog}
+                    onClick={() => onShowProductDialog(null)}
                     endIcon={
                       <i className="material-icons-round">inventory_2</i>
                     }
@@ -456,16 +507,16 @@ export default function MainDetail({ defaultValues }) {
                                     {row.name}
                                   </TableCell>
                                   <TableCell padding="none">
-                                    {row.unitBase}
+                                    {Constant.UNITS_MAP[row.unitBase]}
                                   </TableCell>
                                   <TableCell padding="none">
-                                    {row.amount}
+                                    {persianNumber(row.amount)}
                                   </TableCell>
                                   <TableCell padding="none">
-                                    {row.fee}
+                                    {persianNumber(row.fee)}
                                   </TableCell>
                                   <TableCell padding="none">
-                                    {row.fee * row.amount}
+                                    {persianNumber(row.fee * row.amount)}
                                   </TableCell>
                                   <TableCell
                                     padding="none"
@@ -572,7 +623,9 @@ export default function MainDetail({ defaultValues }) {
                       disabled
                       variant="outlined"
                       label="مانده قبلی"
-                      value={selectedPerson ? selectedPerson.id : 0} //TODO : should be change by customer remaining dept
+                      value={
+                        selectedPerson ? selectedPerson.accountRemaining : 0
+                      }
                       fullWidth
                       size="small"
                     />

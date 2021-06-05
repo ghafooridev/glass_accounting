@@ -15,7 +15,6 @@ import Constant from "../../helpers/constant";
 import clsx from "clsx";
 import { getQueryString } from "../../helpers/utils";
 import CircularProgress from "../../components/CircularProgress";
-import DialogActions from "../../redux/actions/dialogAction";
 import Permission from "./permission";
 import dialogAction from "../../redux/actions/dialogAction";
 
@@ -73,7 +72,7 @@ export default function MainDetail() {
   };
 
   const onShowPermissionDialog = (data) => {
-    DialogActions.show({
+    dialogAction.show({
       title: "دسترسی ها",
       component: (
         <Permission

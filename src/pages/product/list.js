@@ -150,7 +150,7 @@ export default function MainList() {
               <div className={classes.root}>
                 <Paper className={classes.paper}>
                   <TableTop
-                    title="لیست کاربران"
+                    title="لیست کالا ها"
                     onAdd={onAdd}
                     handleSearch={onSearch}
                   />

@@ -17,6 +17,7 @@ import {
   Accordion,
   IconButt,
   MenuItem,
+  Divider,
 } from "@material-ui/core";
 import clsx from "clsx";
 import TableTop from "../../components/Table/TableTop";
@@ -54,7 +55,6 @@ export default function ProductList({
   customerId,
   defaultValues,
 }) {
-  console.log("defaultValues", defaultValues);
   const classes = styles();
   const [order, setOrder] = useState("asc");
   const [search, setSearch] = useState();
@@ -64,9 +64,11 @@ export default function ProductList({
   const [list, setList] = useState([]);
   const units = unitAction.getProductUnit();
   const [selectedProduct, setSelectedProduct] = useState(defaultValues);
+  const [depotPicker, setDepotPicker] = useState([]);
+  const [selectedDepot, setSelectedDepot] = useState(1);
   const [productFee, setProductFee] = useState(
     defaultValues || {
-      name: "",
+      name: " ",
       fee: "",
       amount: "",
     },
@@ -95,12 +97,18 @@ export default function ProductList({
       orderBy,
       pageSize,
       search,
+      depotId: selectedDepot,
     })}`,
   });
 
   const getProductFeeRequest = useApi({
     method: "get",
     url: "invoice/fee",
+  });
+
+  const getDepotRequest = useApi({
+    method: "get",
+    url: `depot/picker`,
   });
 
   const onChangeSelectedProduct = (e) => {
@@ -117,20 +125,27 @@ export default function ProductList({
   };
 
   const getProductUnitPicker = () => {
-    // TODO: return units.filter((item) => item.value === selectedProduct.unitBase)[0].children;
-    return units.filter((item) => item.value === "NUMERIC")[0].children;
+    if (!isEmpty(selectedProduct)) {
+      const allUnits = units.filter(
+        (item) => item.value === selectedProduct.unitBaseId,
+      )[0];
+
+      if (allUnits) {
+        return allUnits.children;
+      }
+      return [];
+    }
+    return [];
   };
 
   const onSelectProduct = async (data) => {
-    console.log("data", data);
     setSelectedProduct(data);
-    //TODO:  const fee = await getProductFeeRequest.execute(
-    //   null,
-    //   `${customerId}/${data.id}`,
-    // );
-    // console.log(fee.data);
-    // const feeProduct = fee.data;
-    const feeProduct = {};
+    const fee = await getProductFeeRequest.execute(
+      null,
+      `${customerId}/${data.id}`,
+    );
+
+    const feeProduct = fee.data;
     if (isEmpty(feeProduct)) {
       setProductFee({ id: data.id, name: data.name, fee: "", amount: "" });
     } else {
@@ -145,13 +160,27 @@ export default function ProductList({
   const onDone = () => {
     onSubmit({
       ...productFee,
+      depotId: selectedDepot,
       totalFee: Number(productFee.fee) * Number(productFee.amount),
     });
   };
 
+  const getDepotPicker = async () => {
+    const result = await getDepotRequest.execute();
+    setDepotPicker(result.data);
+  };
+
+  const onChangeDepot = (e) => {
+    setSelectedDepot(e.target.value);
+  };
+
   useEffect(() => {
     getData();
-  }, [page, order, search, pageSize]);
+  }, [page, order, search, pageSize, selectedDepot]);
+
+  useEffect(() => {
+    getDepotPicker();
+  });
 
   return (
     <>
@@ -163,7 +192,7 @@ export default function ProductList({
               label="نام کالا"
               name={"name"}
               onChange={onChangeSelectedProduct}
-              value={productFee?.name}
+              value={productFee.name}
               fullWidth
               size="small"
               disabled
@@ -225,9 +254,30 @@ export default function ProductList({
           )}
         </Grid>
       </form>
-
-      <TableTop handleSearch={onSearch} />
+      <Divider />
+      <Grid container spacing={3}>
+        <Grid item lg={12} xs={12}>
+          <TextField
+            select
+            label="انبار"
+            value={selectedDepot}
+            onChange={onChangeDepot}
+            variant="outlined"
+            name="depot"
+            fullWidth
+            size="small"
+          >
+            {depotPicker.map((option) => (
+              <MenuItem key={option.value} value={option.value}>
+                {option.label}
+              </MenuItem>
+            ))}
+          </TextField>
+        </Grid>
+      </Grid>
       <TableContainer>
+        <TableTop handleSearch={onSearch} />
+
         <Table className={classes.table} size={"medium"}>
           <TableHeader
             classes={classes}
