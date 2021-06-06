@@ -28,11 +28,12 @@ import {
 import { useUserState } from "../../context/UserContext";
 import { useUserDispatch, signOut } from "../../context/UserContext";
 import { useApi } from "../../hooks/useApi";
-import { persianNumber } from "../../helpers/utils";
+import { persianNumber, getDayOfWeek } from "../../helpers/utils";
 import clsx from "clsx";
 import Constant from "../../helpers/constant";
 import dialogAction from "../../redux/actions/dialogAction";
 import ChangePassword from "./ChangePassword";
+import Clock from "react-live-clock";
 
 export default function Header(props) {
   var classes = useStyles();
@@ -122,8 +123,19 @@ export default function Header(props) {
         <Typography variant="h6" weight="medium" className={classes.logotype}>
           سیستم حسابداری
         </Typography>
-        <div className={classes.grow} />
 
+        <div className={classes.grow} />
+        <div style={{ display: "flex" }}>
+          <Typography variant="h6" style={{ margin: "0 10px" }}>
+            {getDayOfWeek(new Date())}
+          </Typography>
+          <Typography variant="h6">
+            {persianNumber(new Date().toLocaleDateString("fa-IR"))}
+          </Typography>
+          <Typography variant="h6" style={{ margin: "0 10px" }}>
+            <Clock format={"HH:mm:ss"} ticking={true} timezone={"FA/Iran"} />
+          </Typography>
+        </div>
         <IconButton
           color="inherit"
           aria-haspopup="true"

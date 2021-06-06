@@ -56,6 +56,19 @@ export const persianNumber = (en) => {
   }
 };
 
+export const getDayOfWeek = (date) => {
+  const days = [
+    "یکشنبه",
+    "دوشنبه",
+    "سه شنبه",
+    "چهارشنبه",
+    "پنج شنبه",
+    "جمعه",
+    "شنبه",
+  ];
+  return days[date.getDay()];
+};
+
 export const hasPermission = (permit) => {
   if (permit === Constant.ALL_PERMISSIONS.FREE) {
     return true;
