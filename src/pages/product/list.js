@@ -21,6 +21,8 @@ import AmountBrif from "./amountBrif";
 import Constant from "../../helpers/constant";
 import { Slide } from "@material-ui/core";
 import TableSkeleton from "../../components/Skeleton";
+import Transform from "./transfer";
+import unitAction from "../../redux/actions/unitAction";
 
 const headCells = [
   {
@@ -89,8 +91,18 @@ export default function MainList() {
     url: `product`,
   });
 
+  const transferRequest = useApi({
+    method: "post",
+    url: `depot/transfer`,
+  });
+
   const onSearch = (value) => {
     setSearch(value);
+  };
+
+  const onSubmitTransfer = async (data) => {
+    await transferRequest.execute(data);
+    DialogActions.hide();
   };
 
   const handleAction = (row, type) => {
@@ -121,6 +133,34 @@ export default function MainList() {
                 DialogActions.hide();
               }}
               data={row.stocks}
+            />
+          ),
+          size: "xs",
+          confirm: false,
+          disableCloseButton: true,
+        });
+      },
+      transaction: () => {},
+
+      transfer: () => {
+        console.log(row);
+        let units;
+        const allUnits = unitAction
+          .getProductUnit()
+          .filter((item) => item.value === row.unitBaseId)[0];
+        if (allUnits) {
+          units = allUnits.children;
+        }
+        DialogActions.show({
+          title: "انتقال بین انبار ها",
+          component: (
+            <Transform
+              onDismiss={() => {
+                DialogActions.hide();
+              }}
+              onSubmit={onSubmitTransfer}
+              productId={row.id}
+              units={units}
             />
           ),
           size: "xs",
@@ -199,6 +239,11 @@ export default function MainList() {
                                 <TableRowMenu
                                   options={[
                                     { id: "amount", title: "موجودی ها" },
+                                    { id: "transaction", title: "تراکنش ها" },
+                                    {
+                                      id: "transfer",
+                                      title: "انتقال بین انبار",
+                                    },
                                     { id: "edit", title: "ویرایش" },
                                     { id: "delete", title: "حذف" },
                                   ]}

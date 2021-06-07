@@ -20,7 +20,12 @@ export default makeStyles((theme) => ({
   NODEBT: {
     backgroundColor: theme.palette.gray.main,
   },
-  DEBTIOR: {
+  DEBTOR: {
     backgroundColor: theme.palette.secondary.main,
+  },
+  rootSelect: {
+    display: "flex",
+    alignItems: "center",
+    padding: 7,
   },
 }));

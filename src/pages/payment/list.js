@@ -29,6 +29,7 @@ import clsx from "clsx";
 import { getQueryString } from "../../helpers/utils";
 import { Slide } from "@material-ui/core";
 import TableSkeleton from "../../components/Skeleton";
+import FilterComponent from "./filter";
 
 const headCells = [
   { id: "personType" },
@@ -60,6 +61,7 @@ const MainList = () => {
   const [list, setList] = useState([]);
   const [total, setTotal] = useState(0);
   const [type, setType] = useState(paymentType);
+  const [filter, setFilter] = useState();
   const history = useHistory();
 
   const handleRequestSort = (event, property) => {
@@ -87,14 +89,17 @@ const MainList = () => {
 
   const getPaymentRequest = useApi({
     method: "get",
-    url: `payment?${convertParamsToQueryString({
-      page,
-      order,
-      orderBy,
-      pageSize,
-      search,
-      type,
-    })}`,
+    url: decodeURIComponent(
+      `payment?${convertParamsToQueryString({
+        page,
+        order,
+        orderBy,
+        pageSize,
+        search,
+        type,
+        filter,
+      })}`,
+    ),
   });
 
   const deleteUseRequest = useApi({
@@ -130,6 +135,10 @@ const MainList = () => {
     setType(value);
   };
 
+  const onFilter = (data) => {
+    setFilter(data);
+  };
+
   const getTableTitle = () => {
     if (type === "INCOME") {
       return "لیست دریافتی ها";
@@ -147,7 +156,7 @@ const MainList = () => {
 
   useEffect(() => {
     getData();
-  }, [page, order, search, pageSize, type]);
+  }, [page, order, search, pageSize, type, filter]);
 
   return (
     <>
@@ -163,6 +172,7 @@ const MainList = () => {
                     title={getTableTitle()}
                     onAdd={type !== "ALL" && onAdd}
                     handleSearch={onSearch}
+                    FilterComponent={<FilterComponent onFilter={onFilter} />}
                   />
                   <div className={classes.tab}>
                     <Tabs

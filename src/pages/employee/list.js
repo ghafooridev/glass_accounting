@@ -34,7 +34,6 @@ const headCells = [
     id: "mobile",
     label: "موبایل",
   },
-  { id: "phone", label: "تلفن" },
   { id: "status", label: "وضعیت" },
   { id: "action" },
 ];
@@ -175,7 +174,6 @@ export default function MainList() {
                                 {row.lastName}
                               </TableCell>
                               <TableCell padding="none">{row.mobile}</TableCell>
-                              <TableCell padding="none">{row.phone}</TableCell>
                               <TableCell padding="none">
                                 <Chip
                                   label={Constant.PERSON_STATUS[row.status]}

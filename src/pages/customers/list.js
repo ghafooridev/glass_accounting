@@ -89,18 +89,19 @@ export default function MainList() {
     url: `customer`,
   });
 
-  const handleAction = (id, type) => {
+  const handleAction = (row, type) => {
+    console.log(row);
     const types = {
       edit: () => {
-        history.push(`/app/customer-detail?id=${id}`);
+        history.push(`/app/customer-detail?id=${row.id}`);
       },
       delete: () => {
         DialogActions.show({
           confirm: true,
           title: "ایا از حذف این رکورد مطمئن هستید ؟",
           onAction: async () => {
-            await deleteUseRequest.execute(null, id);
-            setList(list.filter((item) => item.id !== id));
+            await deleteUseRequest.execute(null, row.id);
+            setList(list.filter((item) => item.id !== row.id));
             DialogActions.hide();
           },
           size: "sm",
@@ -108,7 +109,7 @@ export default function MainList() {
         });
       },
       transaction: () => {
-        history.push(`/app/customer-transaction?id=${id}`);
+        history.push(`/app/customer-transaction?id=${row.id}`);
       },
     };
     if (types[type]) {
@@ -205,7 +206,7 @@ export default function MainList() {
                                     { id: "delete", title: "حذف" },
                                   ]}
                                   hadleAction={(type) =>
-                                    handleAction(row.id, type)
+                                    handleAction(row, type)
                                   }
                                 />
                               </TableCell>

@@ -29,6 +29,7 @@ import clsx from "clsx";
 import { getQueryString } from "../../helpers/utils";
 import { Slide } from "@material-ui/core";
 import TableSkeleton from "../../components/Skeleton";
+import FilterComponent from "./filter";
 
 const headCells = [
   { id: "id", label: "کد" },
@@ -62,6 +63,7 @@ const MainList = () => {
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(Constant.TABLE_PAGE_SIZE);
   const [list, setList] = useState([]);
+  const [filter, setFilter] = useState();
   const [total, setTotal] = useState(0);
   const [type, setType] = useState(invoiceType);
   const history = useHistory();
@@ -91,14 +93,17 @@ const MainList = () => {
 
   const getInvoiceRequest = useApi({
     method: "get",
-    url: `invoice?${convertParamsToQueryString({
-      page,
-      order,
-      orderBy,
-      pageSize,
-      search,
-      type,
-    })}`,
+    url: decodeURIComponent(
+      `invoice?${convertParamsToQueryString({
+        page,
+        order,
+        orderBy,
+        pageSize,
+        search,
+        type,
+        filter,
+      })}`,
+    ),
   });
 
   const deleteUseRequest = useApi({
@@ -149,9 +154,13 @@ const MainList = () => {
     setTotal(invoiceList.total);
   };
 
+  const onFilter = (data) => {
+    setFilter(data);
+  };
+
   useEffect(() => {
     getData();
-  }, [page, order, search, pageSize, type]);
+  }, [page, order, search, pageSize, type, filter]);
 
   return (
     <>
@@ -167,6 +176,7 @@ const MainList = () => {
                     title={getTableTitle()}
                     onAdd={type !== "ALL" && onAdd}
                     handleSearch={onSearch}
+                    FilterComponent={<FilterComponent onFilter={onFilter} />}
                   />
                   <div className={classes.tab}>
                     <Tabs

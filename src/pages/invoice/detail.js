@@ -124,6 +124,14 @@ export default function MainDetail({ defaultValues }) {
     method: "post",
     url: `payment`,
   });
+  const getPaymentInvoiceRequest = useApi({
+    method: "get",
+    url: `payment/invoice/${id}`,
+  });
+
+  const onChnageDate = (e) => {
+    handleDateChange(e);
+  };
 
   const getInvoiceCategory = async () => {
     const detail = await invoiceCategoryRequest.execute();
@@ -188,8 +196,27 @@ export default function MainDetail({ defaultValues }) {
 
   const getDetail = async () => {
     const detail = await detailInvoiceRequest.execute();
+    const payments = await getPaymentInvoiceRequest.execute();
+    const paymentsArray = {
+      cashes: payments.data.cashes,
+      banks: payments.data.banks,
+      cheques: payments.data.cheques,
+    };
+
     setDetail(detail.data);
-    setPayments(detail.data.payments);
+    setSelectedPerson(payments.data.person);
+    setPayments(paymentsArray);
+    setDrivers(detail.data.drivers);
+    setProducts(detail.data.products);
+    handleDateChange(detail.data.date);
+    setTotalFee(detail.data.totalPrice);
+    setDiscount(detail.data.discount);
+    setTotalPayment(payments.data.price);
+    setTotalRemaining(
+      detail.data.totalPrice -
+        (detail.data.discount + payments.data.price) +
+        Number(payments.data.person.accountRemaining),
+    );
   };
 
   const onSubmitDrivers = (drivers) => {
@@ -370,7 +397,7 @@ export default function MainDetail({ defaultValues }) {
                       date ? date.format("jYYYY/jMM/jDD") : ""
                     }
                     value={selectedDate}
-                    onChange={handleDateChange}
+                    onChange={onChnageDate}
                     style={{ width: "100%" }}
                   />
                 </Grid>

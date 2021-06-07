@@ -74,11 +74,9 @@ export default function MainDetail() {
   const id = getQueryString("id");
   const [detail, setDetail] = useState({});
   const [accounts, setAccounts] = useState([]);
-  const [category, setCategory] = useState([]);
   const [selectedGender, setSelectedGender] = useState("M");
   const [selectedContract, setSelectedContract] = useState("DAILY");
   const [selectedDate, setSelectedDate] = useState(moment());
-  const [employeeCategory, setEmployeeCategory] = useState(1);
   const { control, handleSubmit, errors, reset } = useForm();
 
   const addEmployeeRequest = useApi({
@@ -96,17 +94,17 @@ export default function MainDetail() {
     url: `employee/${id}`,
   });
 
-  // const employeeCategoryRequest = useApi({
-  //   method: "get",
-  //   url: `employee/category`,
-  // });
-
   const deleteAccountRequest = useApi({
     method: "delete",
     url: `account`,
   });
 
   const onSubmit = async (data) => {
+    const contract = {
+      type: selectedContract,
+      price: data.price,
+      startDate: selectedDate._d,
+    };
     const newAccounts = [];
     accounts.map((item) => {
       const newData = {
@@ -119,7 +117,12 @@ export default function MainDetail() {
       newAccounts.push(newData);
     });
 
-    const allData = { ...data, accounts: newAccounts, employeeCategory };
+    const allData = {
+      ...data,
+      accounts: newAccounts,
+      contract,
+      gender: selectedGender,
+    };
     if (id) {
       return await editEmployeeRequest.execute(allData);
     }
@@ -133,13 +136,7 @@ export default function MainDetail() {
   const getDetail = async () => {
     const detail = await detailEmployeeRequest.execute();
     setDetail(detail.data);
-    setEmployeeCategory(detail.data.employeeCategory);
     setAccounts(detail.data.personAccount);
-  };
-
-  const getEmployeeCategory = async () => {
-    // const detail = await employeeCategoryRequest.execute();
-    // setCategory(detail.data);
   };
 
   const onSubmitAccount = (data) => {
@@ -196,10 +193,6 @@ export default function MainDetail() {
     });
   };
 
-  const onChangeCategory = (e) => {
-    setEmployeeCategory(e.target.value);
-  };
-
   const handleChangeGender = (e) => {
     setSelectedGender(e.target.value);
   };
@@ -213,7 +206,6 @@ export default function MainDetail() {
   };
 
   useEffect(() => {
-    getEmployeeCategory();
     if (id) {
       getDetail();
     }
@@ -288,29 +280,7 @@ export default function MainDetail() {
                       name="lastName"
                     />
                   </Grid>
-                  <Grid item lg={6} xs={12}>
-                    <Controller
-                      control={control}
-                      render={({ onChange, value, name }) => {
-                        return (
-                          <TextField
-                            variant="outlined"
-                            label="تلفن"
-                            name={name}
-                            onChange={onChange}
-                            value={value}
-                            error={!!errors.phone}
-                            helperText={
-                              errors.phone ? errors.phone.message : ""
-                            }
-                            fullWidth
-                            size="small"
-                          />
-                        );
-                      }}
-                      name="phone"
-                    />
-                  </Grid>
+
                   <Grid item lg={6} xs={12}>
                     <Controller
                       control={control}
@@ -368,31 +338,6 @@ export default function MainDetail() {
                       />
                     </RadioGroup>
                   </Grid>
-                  {/* <Grid item lg={6} xs={12}>
-                    {!!category.length && employeeCategory && (
-                      <TextField
-                        select
-                        label="دسته بندی"
-                        value={employeeCategory}
-                        onChange={onChangeCategory}
-                        variant="outlined"
-                        error={!!errors.employeeCategory}
-                        helperText={
-                          errors.employeeCategory
-                            ? errors.employeeCategory.message
-                            : ""
-                        }
-                        fullWidth
-                        size="small"
-                      >
-                        {category.map((option) => (
-                          <MenuItem key={option.value} value={option.value}>
-                            {option.label}
-                          </MenuItem>
-                        ))}
-                      </TextField>
-                    )}
-                  </Grid> */}
 
                   <Grid item lg={6} xs={12}>
                     <TextField
@@ -417,16 +362,15 @@ export default function MainDetail() {
                       render={({ onChange, value, name }) => {
                         return (
                           <TextField
+                            type="number"
                             variant="outlined"
                             label="مبلغ قرارداد"
                             name={name}
                             onChange={onChange}
                             value={value}
-                            error={!!errors.contarctPrice}
+                            error={!!errors.price}
                             helperText={
-                              errors.contarctPrice
-                                ? errors.contarctPrice.message
-                                : ""
+                              errors.price ? errors.price.message : ""
                             }
                             fullWidth
                             size="small"
@@ -434,7 +378,7 @@ export default function MainDetail() {
                         );
                       }}
                       rules={{ required: Constant.VALIDATION.REQUIRED }}
-                      name="contarctPrice"
+                      name="price"
                     />
                   </Grid>
                   <Grid item lg={6} xs={12} className={classes.datePicker}>
