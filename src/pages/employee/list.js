@@ -101,6 +101,9 @@ export default function MainList() {
           disableCloseButton: false,
         });
       },
+      traffic: () => {
+        history.push(`/app/employee-log?id=${id}`);
+      },
       transaction: () => {
         history.push(`/app/employee-transaction?id=${id}`);
       },
@@ -187,6 +190,7 @@ export default function MainList() {
                                 <TableRowMenu
                                   options={[
                                     { id: "transaction", title: "تراکنش ها" },
+                                    { id: "traffic", title: "گزارش تردد" },
                                     { id: "edit", title: "ویرایش" },
                                     { id: "delete", title: "حذف" },
                                   ]}

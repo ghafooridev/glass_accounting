@@ -3,6 +3,8 @@ import { makeStyles } from "@material-ui/styles";
 export default makeStyles((theme) => ({
   root: {
     width: "100%",
+    flexDirection: "column",
+    display: "flex",
   },
   paper: {
     width: "100%",
@@ -10,6 +12,9 @@ export default makeStyles((theme) => ({
   },
   table: {
     minWidth: 750,
+  },
+  dateTime: {
+    display: "flex",
   },
   status: {
     color: "#fff",

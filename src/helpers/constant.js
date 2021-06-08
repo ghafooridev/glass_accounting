@@ -6,6 +6,10 @@ const Constant = {
     { value: "DAYLI", label: "روزانه" },
     { value: "MONTHLY", label: "ماهانه" },
   ],
+  TRAFFIC_STATUS: {
+    PRESENT: "حاضر",
+    APSET: "غایب",
+  },
   UNITS_MAP: {
     KILOGRAM: "کیلوگرم",
     GRAM: "گرم",

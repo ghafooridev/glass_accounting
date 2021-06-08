@@ -17,6 +17,9 @@ import { useApi } from "../../hooks/useApi";
 import { getQueryString } from "../../helpers/utils";
 import TableHeader from "../../components/Table/TableHead";
 import { convertParamsToQueryString } from "../../helpers/utils";
+import { DatePicker } from "@material-ui/pickers";
+import moment from "moment";
+import Clock from "react-live-clock";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -29,6 +32,11 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     paddingBottom: 20,
+  },
+  datePicker: {
+    "& input": {
+      padding: "10px 14px",
+    },
   },
   enter: {
     color: "#fff",
@@ -50,6 +58,16 @@ const useStyles = makeStyles((theme) => ({
     "&:hover": {
       backgroundColor: theme.palette.success.dark,
     },
+  },
+  dateTime: {
+    display: "flex",
+    flexDirection: "column",
+  },
+  clockConatiner: {
+    background: theme.palette.primary.main,
+    justifyContent: "flex-end",
+    alignItems: "center",
+    display: "flex",
   },
 }));
 
@@ -75,6 +93,7 @@ export default function MainDetail() {
   const id = getQueryString("id");
   const [search, setSearch] = useState();
   const [list, setList] = useState([]);
+  const [selectedDate, setSelectedDate] = useState(moment());
 
   const addUserRequest = useApi({
     method: "post",
@@ -116,86 +135,120 @@ export default function MainDetail() {
     setList(userList.data);
   };
 
+  const handleDateChange = (date) => {
+    setSelectedDate(date);
+  };
+
   useEffect(() => {
     getData();
   }, [search]);
 
   return (
-    <Grid item lg={6} sm={12} className={classes.root}>
-      <Paper className={classes.paper}>
-        <Typography
-          className={classes.title}
-          variant="h6"
-          id="tableTitle"
-          component="div"
-        >
-          ثبت حضور و غیاب
-        </Typography>
-
-        <Grid container spacing={3}>
-          <Grid item lg={12} xs={12}>
-            <TextField
-              variant="outlined"
-              label=" جستجوی پرسنل"
-              onChange={onChangeSearch}
-              value={search}
-              fullWidth
-              size="small"
-            />
-          </Grid>
+    <Grid container spacing={3} style={{ alignItems: "baseline" }}>
+      <Grid item lg={3} sm={12} className={classes.dateTime}>
+        <Grid item lg={12} xs={12} className={classes.clockConatiner}>
+          <Typography
+            variant="h1"
+            className={classes.clock}
+            style={{ color: "#fff", padding: 10 }}
+          >
+            <Clock format={"HH:mm:ss"} ticking={true} timezone={"IR/Iran"} />
+          </Typography>
         </Grid>
-      </Paper>
-      <div className={classes.root}>
+        <Grid item lg={12} xs={12} className={classes.datePicker}>
+          <DatePicker
+            autoOk
+            orientation="landscape"
+            variant="static"
+            openTo="date"
+            name="date"
+            label="تاریخ شروع قرارداد"
+            inputVariant="outlined"
+            okLabel="تأیید"
+            cancelLabel="لغو"
+            labelFunc={(date) => (date ? date.format("jYYYY/jMM/jDD") : "")}
+            value={selectedDate}
+            onChange={handleDateChange}
+            style={{ width: "100%" }}
+          />
+        </Grid>
+      </Grid>
+      <Grid item lg={9} sm={12} className={classes.root}>
         <Paper className={classes.paper}>
-          <TableContainer style={{ padding: "0 10px" }}>
-            <Table
-              className={classes.table}
-              size={"medium"}
-              style={{ paddingRight: 10 }}
-            >
-              <TableHeader classes={classes} headCells={headCells} />
-              <TableBody>
-                {list.map((row) => {
-                  return (
-                    <TableRow
-                      hover
-                      tabIndex={-1}
-                      key={row.id}
-                      style={{ paddingRight: 10 }}
-                    >
-                      <TableCell padding="none">{row.firstName}</TableCell>
-                      <TableCell padding="none">{row.lastName}</TableCell>
-                      <TableCell padding="none">
-                        <Chip
-                          label={"ثبت ورود"}
-                          className={classes.enter}
-                          onClick={() => onEnter(row)}
-                        />
-                      </TableCell>
-                      <TableCell padding="none">
-                        <Chip
-                          label={"ثبت خروج"}
-                          className={classes.exit}
-                          onClick={() => onExit(row)}
-                        />
+          <Typography
+            className={classes.title}
+            variant="h6"
+            id="tableTitle"
+            component="div"
+          >
+            ثبت حضور و غیاب
+          </Typography>
+
+          <Grid container spacing={3}>
+            <Grid item lg={12} xs={12}>
+              <TextField
+                variant="outlined"
+                label=" جستجوی پرسنل"
+                onChange={onChangeSearch}
+                value={search}
+                fullWidth
+                size="small"
+              />
+            </Grid>
+          </Grid>
+        </Paper>
+        <div className={classes.root}>
+          <Paper className={classes.paper}>
+            <TableContainer style={{ padding: "0 10px" }}>
+              <Table
+                className={classes.table}
+                size={"medium"}
+                style={{ paddingRight: 10 }}
+              >
+                <TableHeader classes={classes} headCells={headCells} />
+                <TableBody>
+                  {list.map((row) => {
+                    return (
+                      <TableRow
+                        hover
+                        tabIndex={-1}
+                        key={row.id}
+                        style={{ paddingRight: 10 }}
+                      >
+                        <TableCell padding="none">{row.firstName}</TableCell>
+                        <TableCell padding="none">{row.lastName}</TableCell>
+                        <TableCell padding="none">
+                          <Chip
+                            label={"ثبت ورود"}
+                            className={classes.enter}
+                            onClick={() => onEnter(row)}
+                          />
+                        </TableCell>
+                        <TableCell padding="none">
+                          <Chip
+                            label={"ثبت خروج"}
+                            className={classes.exit}
+                            onClick={() => onExit(row)}
+                          />
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                  {!list.length && !getUserRequest.pending && (
+                    <TableRow style={{ height: 53 }}>
+                      <TableCell colSpan={6} style={{ textAlign: "center" }}>
+                        <Typography variant="h6">
+                          داده ای برای نمایش وجود ندارد
+                        </Typography>
                       </TableCell>
                     </TableRow>
-                  );
-                })}
-                {!list.length && !getUserRequest.pending && (
-                  <TableRow style={{ height: 53 }}>
-                    <TableCell colSpan={6} style={{ textAlign: "center" }}>
-                      <Typography variant="h6">
-                        داده ای برای نمایش وجود ندارد
-                      </Typography>
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </Paper>
-      </div>
+                  )}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Paper>
+        </div>
+      </Grid>
     </Grid>
   );
 }
