@@ -83,7 +83,7 @@ export default function MainDetail() {
       const newData = {
         bankId: item.bank.value,
         accountCardNumber: item.accountCardNumber,
-        accountNumber: item.accounstTmp,
+        accountNumber: item.accountNumber,
         accountShaba: item.accountShaba,
         description: item.description,
       };
@@ -104,7 +104,7 @@ export default function MainDetail() {
   const getDetail = async () => {
     const detail = await detailDriverRequest.execute();
     setDetail(detail.data);
-    setAccounts(detail.data?.personAccount || []);
+    setAccounts(detail.data?.accounts || []);
   };
 
   const onSubmitAccount = (data) => {
@@ -384,7 +384,7 @@ export default function MainDetail() {
                                             marginLeft: 5,
                                           }}
                                         />
-                                        {row.bank.label}
+                                        {row.bank.name || row.bank.label}
                                       </div>
                                     </TableCell>
                                     <TableCell padding="none">

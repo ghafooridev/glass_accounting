@@ -90,7 +90,6 @@ export default function MainList() {
   });
 
   const handleAction = (row, type) => {
-    console.log(row);
     const types = {
       edit: () => {
         history.push(`/app/customer-detail?id=${row.id}`);

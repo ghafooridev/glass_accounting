@@ -102,7 +102,7 @@ export default function MainDetail() {
   const onSubmit = async (data) => {
     const contract = {
       type: selectedContract,
-      price: data.price,
+      SPH: data.SPH,
       startDate: selectedDate._d,
     };
     const newAccounts = [];
@@ -110,7 +110,7 @@ export default function MainDetail() {
       const newData = {
         bankId: item.bank.value,
         accountCardNumber: item.accountCardNumber,
-        accountNumber: item.accounstTmp,
+        accountNumber: item.accountNumber,
         accountShaba: item.accountShaba,
         description: item.description,
       };
@@ -136,7 +136,10 @@ export default function MainDetail() {
   const getDetail = async () => {
     const detail = await detailEmployeeRequest.execute();
     setDetail(detail.data);
-    setAccounts(detail.data.personAccount);
+    setAccounts(detail.data.accounts);
+    setSelectedGender(detail.data.gender);
+    setSelectedContract(detail.data.contract.type);
+    setSelectedDate(detail.data.contract.startDate);
   };
 
   const onSubmitAccount = (data) => {
@@ -368,17 +371,15 @@ export default function MainDetail() {
                             name={name}
                             onChange={onChange}
                             value={value}
-                            error={!!errors.price}
-                            helperText={
-                              errors.price ? errors.price.message : ""
-                            }
+                            error={!!errors.SPH}
+                            helperText={errors.SPH ? errors.SPH.message : ""}
                             fullWidth
                             size="small"
                           />
                         );
                       }}
                       rules={{ required: Constant.VALIDATION.REQUIRED }}
-                      name="price"
+                      name="SPH"
                     />
                   </Grid>
                   <Grid item lg={6} xs={12} className={classes.datePicker}>
@@ -443,7 +444,7 @@ export default function MainDetail() {
                                             marginLeft: 5,
                                           }}
                                         />
-                                        {row.bank.label}
+                                        {row.bank.label || row.bank.name}
                                       </div>
                                     </TableCell>
                                     <TableCell padding="none">

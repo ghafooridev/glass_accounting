@@ -19,7 +19,6 @@ import TableHeader from "../../components/Table/TableHead";
 import { convertParamsToQueryString } from "../../helpers/utils";
 import { DatePicker } from "@material-ui/pickers";
 import moment from "moment";
-import Clock from "react-live-clock";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -42,14 +41,28 @@ const useStyles = makeStyles((theme) => ({
     color: "#fff",
     backgroundColor: theme.palette.primary.main,
     "&:hover": {
-      backgroundColor: theme.palette.primary.dark,
+      backgroundColor: theme.palette.primary.main,
     },
   },
   exit: {
     color: "#fff",
     backgroundColor: theme.palette.error.main,
     "&:hover": {
-      backgroundColor: theme.palette.error.dark,
+      backgroundColor: theme.palette.error.main,
+    },
+  },
+  logedEnter: {
+    color: theme.palette.primary.main,
+    backgroundColor: theme.palette.gray.main,
+    "&:hover": {
+      backgroundColor: theme.palette.gray.main,
+    },
+  },
+  logedExit: {
+    color: theme.palette.error.main,
+    backgroundColor: theme.palette.gray.main,
+    "&:hover": {
+      backgroundColor: theme.palette.gray.main,
     },
   },
   register: {
@@ -73,12 +86,14 @@ const useStyles = makeStyles((theme) => ({
 
 const headCells = [
   {
-    id: "firstName",
-    label: "نام",
+    id: "name",
+    label: "نام و نام خانوادگی",
   },
+
+  { id: "enter", label: "ورود" },
   {
-    id: "lastName",
-    label: "نام خانوادگی",
+    id: "exit",
+    label: "خروج",
   },
   { id: "enter", label: "ورود" },
   {
@@ -95,43 +110,32 @@ export default function MainDetail() {
   const [list, setList] = useState([]);
   const [selectedDate, setSelectedDate] = useState(moment());
 
-  const addUserRequest = useApi({
+  const registerRequest = useApi({
     method: "post",
-    url: `user`,
-  });
-  const editUserRequest = useApi({
-    method: "put",
-    url: `user/${id}`,
+    url: `attendance`,
   });
 
-  const getUserRequest = useApi({
+  const getTrafficRequest = useApi({
     method: "get",
-    url: `user?${convertParamsToQueryString({
-      search,
-    })}`,
+    url: decodeURIComponent(
+      `attendance?${convertParamsToQueryString({
+        search,
+        filter: `{date:${selectedDate._d.toISOString()}}`,
+      })}`,
+    ),
   });
 
-  const onSubmit = async (data) => {
-    if (id) {
-      await editUserRequest.execute(data);
-    } else {
-      await addUserRequest.execute(data);
-    }
+  const onSubmit = async (row, type) => {
+    await registerRequest.execute({ employeeId: row.id, type });
+    getData();
   };
 
   const onChangeSearch = (e) => {
     setSearch(e.target.value);
   };
 
-  const onEnter = (row) => {
-    console.log(row);
-  };
-  const onExit = (row) => {
-    console.log(row);
-  };
-
   const getData = async () => {
-    const userList = await getUserRequest.execute();
+    const userList = await getTrafficRequest.execute();
     setList(userList.data);
   };
 
@@ -139,22 +143,150 @@ export default function MainDetail() {
     setSelectedDate(date);
   };
 
+  const getTimesElement = (row) => {
+    if (row.times.length === 0) {
+      return (
+        <>
+          <TableCell padding="none">
+            <Chip
+              label={"ثبت ورود"}
+              className={classes.enter}
+              onClick={() => onSubmit(row, "ENTER")}
+            />
+          </TableCell>
+          <TableCell padding="none"></TableCell>
+          <TableCell padding="none"></TableCell>
+          <TableCell padding="none"></TableCell>
+        </>
+      );
+    }
+    if (row.times.length === 1) {
+      return (
+        <>
+          <TableCell padding="none">
+            <Chip
+              label={row.times[0].date}
+              className={classes.logedEnter}
+              // onClick={() => onSubmit(row, "ENTER")}
+            />
+          </TableCell>
+          <TableCell padding="none">
+            <Chip
+              label={"ثبت خروج"}
+              className={classes.exit}
+              onClick={() => onSubmit(row, "EXIT")}
+            />
+          </TableCell>
+          <TableCell padding="none"></TableCell>
+          <TableCell padding="none"></TableCell>
+        </>
+      );
+    }
+    if (row.times.length === 2) {
+      return (
+        <>
+          <TableCell padding="none">
+            <Chip
+              label={row.times[0].date}
+              className={classes.logedEnter}
+              // onClick={() => onSubmit(row, "ENTER")}
+            />
+          </TableCell>
+          <TableCell padding="none">
+            <Chip
+              label={row.times[1].date}
+              className={classes.logedExit}
+              // onClick={() => onSubmit(row, "EXIT")}
+            />
+          </TableCell>
+          <TableCell padding="none">
+            <Chip
+              label={"ثبت ورود"}
+              className={classes.enter}
+              onClick={() => onSubmit(row, "ENTER")}
+            />
+          </TableCell>
+          <TableCell padding="none"></TableCell>
+        </>
+      );
+    }
+    if (row.times.length === 3) {
+      return (
+        <>
+          <TableCell padding="none">
+            <Chip
+              label={row.times[0].date}
+              className={classes.logedEnter}
+              // onClick={() => onSubmit(row, "ENTER")}
+            />
+          </TableCell>
+          <TableCell padding="none">
+            <Chip
+              label={row.times[1].date}
+              className={classes.logedExit}
+              // onClick={() => onSubmit(row, "EXIT")}
+            />
+          </TableCell>
+          <TableCell padding="none">
+            <Chip
+              label={row.times[2].date}
+              className={classes.logedEnter}
+              // onClick={() => onSubmit(row, "ENTER")}
+            />
+          </TableCell>
+          <TableCell padding="none">
+            <Chip
+              label={"ثبت خروج"}
+              className={classes.exit}
+              onClick={() => onSubmit(row, "EXIT")}
+            />
+          </TableCell>
+        </>
+      );
+    }
+    if (row.times.length === 4) {
+      return (
+        <>
+          <TableCell padding="none">
+            <Chip
+              label={row.times[0].date}
+              className={classes.logedEnter}
+              // onClick={() => onSubmit(row, "ENTER")}
+            />
+          </TableCell>
+          <TableCell padding="none">
+            <Chip
+              label={row.times[1].date}
+              className={classes.logedExit}
+              // onClick={() => onSubmit(row, "EXIT")}
+            />
+          </TableCell>
+          <TableCell padding="none">
+            <Chip
+              label={row.times[2].date}
+              className={classes.logedEnter}
+              // onClick={() => onSubmit(row, "ENTER")}
+            />
+          </TableCell>
+          <TableCell padding="none">
+            <Chip
+              label={row.times[3].date}
+              className={classes.logedExit}
+              // onClick={() => onSubmit(row, "ENTER")}
+            />
+          </TableCell>
+        </>
+      );
+    }
+  };
+
   useEffect(() => {
     getData();
-  }, [search]);
+  }, [search, selectedDate]);
 
   return (
     <Grid container spacing={3} style={{ alignItems: "baseline" }}>
       <Grid item lg={3} sm={12} className={classes.dateTime}>
-        <Grid item lg={12} xs={12} className={classes.clockConatiner}>
-          <Typography
-            variant="h1"
-            className={classes.clock}
-            style={{ color: "#fff", padding: 10 }}
-          >
-            <Clock format={"HH:mm:ss"} ticking={true} timezone={"IR/Iran"} />
-          </Typography>
-        </Grid>
         <Grid item lg={12} xs={12} className={classes.datePicker}>
           <DatePicker
             autoOk
@@ -215,26 +347,12 @@ export default function MainDetail() {
                         key={row.id}
                         style={{ paddingRight: 10 }}
                       >
-                        <TableCell padding="none">{row.firstName}</TableCell>
-                        <TableCell padding="none">{row.lastName}</TableCell>
-                        <TableCell padding="none">
-                          <Chip
-                            label={"ثبت ورود"}
-                            className={classes.enter}
-                            onClick={() => onEnter(row)}
-                          />
-                        </TableCell>
-                        <TableCell padding="none">
-                          <Chip
-                            label={"ثبت خروج"}
-                            className={classes.exit}
-                            onClick={() => onExit(row)}
-                          />
-                        </TableCell>
+                        <TableCell padding="none">{row.name}</TableCell>
+                        {getTimesElement(row)}
                       </TableRow>
                     );
                   })}
-                  {!list.length && !getUserRequest.pending && (
+                  {!list.length && !getTrafficRequest.pending && (
                     <TableRow style={{ height: 53 }}>
                       <TableCell colSpan={6} style={{ textAlign: "center" }}>
                         <Typography variant="h6">

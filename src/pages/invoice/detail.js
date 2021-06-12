@@ -433,7 +433,7 @@ export default function MainDetail({ defaultValues }) {
                           label="مبدا"
                           name={name}
                           onChange={onChange}
-                          value={value}
+                          value={value || " "}
                           error={!!errors.origin}
                           helperText={
                             errors.origin ? errors.origin.message : ""
@@ -456,7 +456,7 @@ export default function MainDetail({ defaultValues }) {
                           label="مقصد"
                           name={name}
                           onChange={onChange}
-                          value={value}
+                          value={value || " "}
                           error={!!errors.destination}
                           helperText={
                             errors.destination ? errors.destination.message : ""
@@ -582,7 +582,7 @@ export default function MainDetail({ defaultValues }) {
                           label="توضیحات"
                           name={name}
                           onChange={onChange}
-                          value={value}
+                          value={value || " "}
                           error={!!errors.description}
                           helperText={
                             errors.description ? errors.description.message : ""
@@ -630,7 +630,7 @@ export default function MainDetail({ defaultValues }) {
                       variant="outlined"
                       onChange={onDiscountChange}
                       label="تخفیف"
-                      value={discount}
+                      value={discount || " "}
                       fullWidth
                       size="small"
                     />

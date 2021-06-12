@@ -47,7 +47,7 @@ const headCells = [
   { id: "action" },
 ];
 
-const MainList = ({ customer }) => {
+const MainList = () => {
   const customerId = getQueryString("id");
   const classes = styles();
   const [order, setOrder] = useState("asc");
@@ -80,7 +80,7 @@ const MainList = ({ customer }) => {
 
   const getPaymentRequest = useApi({
     method: "get",
-    url: `payment?${convertParamsToQueryString({
+    url: `payment/person/customer?${convertParamsToQueryString({
       page,
       order,
       orderBy,
@@ -119,13 +119,18 @@ const MainList = ({ customer }) => {
   };
 
   const getTableTitle = () => {
-    return `لیست تراکنش های ${customer}`;
+    if (list.length)
+      return (
+        <div>
+          لیست تراکنش های <b style={{ fontWeight: "bold" }}>{list[0].person}</b>
+        </div>
+      );
   };
 
   const getData = async () => {
-    const paymentList = await getPaymentRequest.execute(null, customerId);
-    setList(paymentList.data);
-    setTotal(paymentList.total);
+    const list = await getPaymentRequest.execute(null, customerId);
+    setList(list.data);
+    setTotal(list.total);
   };
 
   useEffect(() => {

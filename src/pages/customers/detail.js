@@ -91,7 +91,7 @@ export default function MainDetail() {
       const newData = {
         bankId: item.bank.value,
         accountCardNumber: item.accountCardNumber,
-        accountNumber: item.accounstTmp,
+        accountNumber: item.accountNumber,
         accountShaba: item.accountShaba,
         description: item.description,
       };
@@ -113,7 +113,7 @@ export default function MainDetail() {
     const detail = await detailCustomerRequest.execute();
     setDetail(detail.data);
     setCustomerCategory(detail.data.customerCategory);
-    setAccounts(detail.data.personAccount);
+    setAccounts(detail.data.accounts);
   };
 
   const getCustomerCategory = async () => {
@@ -373,7 +373,7 @@ export default function MainDetail() {
                                         }}
                                       >
                                         <img
-                                          src={`${Constant.API_ADDRESS}/${row.bank.logo}`}
+                                          src={`${Constant.API_ADDRESS}${row.bank.logo}`}
                                           alt={row.bank.label}
                                           style={{
                                             width: 25,
@@ -382,7 +382,7 @@ export default function MainDetail() {
                                             marginLeft: 5,
                                           }}
                                         />
-                                        {row.bank.label}
+                                        {row.bank.name || row.bank.label}
                                       </div>
                                     </TableCell>
                                     <TableCell padding="none">
