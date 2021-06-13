@@ -79,7 +79,7 @@ const structure = [
       {
         label: "لیست چک ها",
         link: "/app/cheque-list",
-        permission: Constants.ALL_PERMISSIONS.CHEQUE_SHOW,
+        permission: Constants.ALL_PERMISSIONS.PAYMENT_SHOW,
       },
     ],
   },
@@ -131,6 +131,13 @@ const structure = [
     label: " حضور و غیاب",
     link: "/app/traffic",
     icon: <i className="material-icons-round">transfer_within_a_station</i>,
+    permission: Constants.ALL_PERMISSIONS.FREE,
+  },
+  {
+    id: 14,
+    label: "لیست شماره حساب ها",
+    link: "/app/accountsNumber",
+    icon: <i className="material-icons-round">payment</i>,
     permission: Constants.ALL_PERMISSIONS.FREE,
   },
   {

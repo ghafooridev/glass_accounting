@@ -207,7 +207,7 @@ const empoyeeTrafficChart = [
 ];
 
 const trafficDayliChart = [
-  { name: "حاضرین", value: 15, color: "#536DFE" },
+  { name: "حاضرین", value: 15, color: "#00989D" },
   { name: "غائبین", value: 5, color: "#FF5C93" },
 ];
 

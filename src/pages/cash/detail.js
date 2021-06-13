@@ -187,6 +187,7 @@ export default function MainDetail({ defaultValues }) {
                     render={({ onChange, value, name }) => {
                       return (
                         <TextField
+                        disabled={!!id}
                           variant="outlined"
                           label="موجودی "
                           type="number"

@@ -1,4 +1,4 @@
-export const primary = "#536DFE";
+export const primary = "#00989D";
 export const secondary = "#FF5C93";
 export const warning = "#FFC260";
 export const success = "#3CD4A0";

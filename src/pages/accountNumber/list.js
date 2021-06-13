@@ -8,50 +8,47 @@ import {
   TableRow,
   Paper,
   Typography,
-  Chip,
 } from "@material-ui/core";
-import clsx from "clsx";
 import TableRowMenu from "../../components/Table/TableRowMenu";
 import TableTop from "../../components/Table/TableTop";
 import TableHeader from "../../components/Table/TableHead";
 import TablePaging from "../../components/Table/TablePaging";
 import { useApi } from "../../hooks/useApi";
-import {
-  convertParamsToQueryString,
-  hasPermission,
-  persianNumber,
-} from "../../helpers/utils";
+import { convertParamsToQueryString, hasPermission } from "../../helpers/utils";
 import DialogActions from "../../redux/actions/dialogAction";
 import styles from "./style";
-import FilterComponent from "./filter";
 import Constant from "../../helpers/constant";
+import Transfer from "./transfer";
 import { Slide } from "@material-ui/core";
 import TableSkeleton from "../../components/Skeleton";
 
 const headCells = [
   {
-    id: "firstName",
-    label: "نام",
+    id: "name",
+    label: "نام شخص",
   },
-  { id: "lastName", label: "نام خانوادگی" },
   {
-    id: "mobile",
-    label: "موبایل",
+    id: "type",
+    label: "نوع",
   },
-  { id: "phone", label: "تلفن" },
-  { id: "remaining", label: "مانده حساب" },
-  { id: "status", label: "وضعیت" },
+  {
+    id: "logo",
+    label: "بانک",
+  },
+  { id: "cardNumber", label: "شماره کارت" },
+  { id: "accountNumber", label: "شماره حساب" },
   { id: "action" },
 ];
 
-export default function MainList() {
+const MainList = () => {
   const classes = styles();
   const [order, setOrder] = useState("asc");
+  const [orderBy, setOrderBy] = useState("name");
   const [search, setSearch] = useState();
-  const [orderBy, setOrderBy] = useState("firstName");
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(Constant.TABLE_PAGE_SIZE);
   const [list, setList] = useState([]);
+  const [total, setTotal] = useState(0);
   const history = useHistory();
 
   const handleRequestSort = (event, property) => {
@@ -69,13 +66,15 @@ export default function MainList() {
     setPage(0);
   };
 
-  const onAdd = () => {
-    history.push("/app/customer-detail");
+ 
+
+  const onSearch = (value) => {
+    setSearch(value);
   };
 
-  const getCustomerRequest = useApi({
+  const getCashRequest = useApi({
     method: "get",
-    url: `customer?${convertParamsToQueryString({
+    url: `cashdesk?${convertParamsToQueryString({
       page,
       order,
       orderBy,
@@ -84,22 +83,38 @@ export default function MainList() {
     })}`,
   });
 
-  const deleteUseRequest = useApi({
+  const deleteCashRequest = useApi({
     method: "delete",
-    url: `customer`,
+    url: `cashdesk`,
   });
 
+  const transferCashDesk = useApi({
+    method: "post",
+    url: "cashdesk/transfer",
+  });
+
+  const onDismissTransfer = () => {
+    DialogActions.hide();
+  };
+
+  const onSubmitTransfer = async (data) => {
+    await transferCashDesk.execute(data);
+    getData();
+    DialogActions.hide();
+  };
+
   const handleAction = (row, type) => {
+    console.log(row);
     const types = {
       edit: () => {
-        history.push(`/app/customer-detail?id=${row.id}`);
+        history.push(`/app/cash-detail?id=${row.id}`);
       },
       delete: () => {
         DialogActions.show({
           confirm: true,
           title: "ایا از حذف این رکورد مطمئن هستید ؟",
           onAction: async () => {
-            await deleteUseRequest.execute(null, row.id);
+            await deleteCashRequest.execute(null, row.id);
             setList(list.filter((item) => item.id !== row.id));
             DialogActions.hide();
           },
@@ -107,8 +122,20 @@ export default function MainList() {
           disableCloseButton: false,
         });
       },
-      transaction: () => {
-        history.push(`/app/customer-transaction?id=${row.id}`);
+      transfer: () => {
+        DialogActions.show({
+          title: "انتقال بین صندوق ها",
+          component: (
+            <Transfer
+              onSubmit={onSubmitTransfer}
+              onDismiss={onDismissTransfer}
+              source={row.id}
+            />
+          ),
+          size: "xs",
+          confirm: false,
+          disableCloseButton: false,
+        });
       },
     };
     if (types[type]) {
@@ -116,37 +143,29 @@ export default function MainList() {
     }
   };
 
-  const onSearch = (value) => {
-    setSearch(value);
-  };
-
-  const onFilter = (data) => {
-    console.log(data);
-  };
-
   const getData = async () => {
-    const customerList = await getCustomerRequest.execute();
-    setList(customerList.data);
+    const cashList = await getCashRequest.execute();
+    setList(cashList.data);
+    setTotal(cashList.total);
   };
 
   useEffect(() => {
     getData();
   }, [page, order, search, pageSize]);
-
+  console.log(getCashRequest);
   return (
     <>
       {hasPermission(Constant.ALL_PERMISSIONS.CASH_LIST) && (
         <Slide direction="down" in={true}>
           <div>
-            {getCustomerRequest.pending ? (
+            {getCashRequest.pending ? (
               <TableSkeleton headCount={headCells} />
             ) : (
               <div className={classes.root}>
                 <Paper className={classes.paper}>
                   <TableTop
-                    title="لیست مشتریان"
+                    title="لیست صندوق ها"
                     onAdd={onAdd}
-                    FilterComponent={<FilterComponent onFilter={onFilter} />}
                     handleSearch={onSearch}
                   />
                   <TableContainer style={{ padding: "0 10px" }}>
@@ -163,7 +182,6 @@ export default function MainList() {
                         rowCount={list.length}
                         headCells={headCells}
                       />
-
                       <TableBody>
                         {list.map((row) => {
                           return (
@@ -173,34 +191,25 @@ export default function MainList() {
                               key={row.id}
                               style={{ paddingRight: 10 }}
                             >
+                              <TableCell padding="none">{row.name}</TableCell>
                               <TableCell padding="none">
-                                {row.firstName}
+                                {row.type === "CASH" ? "نقدی" : "بانکی"}
                               </TableCell>
                               <TableCell padding="none">
-                                {row.lastName}
+                                {row.bank && (
+                                  <img
+                                    style={{ width: 40, height: 40 }}
+                                    alt={row.bank.name}
+                                    src={`${Constant.API_ADDRESS}/${row.bank.logo}`}
+                                  />
+                                )}
                               </TableCell>
-                              <TableCell padding="none">
-                                {persianNumber(row.mobile)}
-                              </TableCell>
-                              <TableCell padding="none">
-                                {persianNumber(row.phone)}
-                              </TableCell>
-                              <TableCell padding="none">
-                                {persianNumber(row.accountRemaining)?.replace("-","")}
-                              </TableCell>
-                              <TableCell padding="none">
-                                <Chip
-                                  label={Constant.PERSON_STATUS[row.status]}
-                                  className={clsx(
-                                    classes.status,
-                                    classes[row.status],
-                                  )}
-                                />
-                              </TableCell>
+                              <TableCell padding="none">{row.amount}</TableCell>
+
                               <TableCell padding="none">
                                 <TableRowMenu
                                   options={[
-                                    { id: "transaction", title: "تراکنش ها" },
+                                    { id: "transfer", title: "انتقال" },
                                     { id: "edit", title: "ویرایش" },
                                     { id: "delete", title: "حذف" },
                                   ]}
@@ -212,7 +221,7 @@ export default function MainList() {
                             </TableRow>
                           );
                         })}
-                        {!list.length && !getCustomerRequest.pending && (
+                        {!list.length && !getCashRequest.pending && (
                           <TableRow style={{ height: 53 }}>
                             <TableCell
                               colSpan={6}
@@ -228,7 +237,7 @@ export default function MainList() {
                     </Table>
                   </TableContainer>
                   <TablePaging
-                    count={list.length}
+                    count={total}
                     handleChangePage={handleChangePage}
                     handleChangeRowsPerPage={handleChangeRowsPerPage}
                     page={page}
@@ -242,4 +251,6 @@ export default function MainList() {
       )}
     </>
   );
-}
+};
+
+export default MainList;

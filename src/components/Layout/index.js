@@ -33,6 +33,7 @@ import Traffic from "../../pages/traffic";
 import TrafficDetail from "../../pages/traffic/register";
 import { useLayoutState } from "../../context/LayoutContext";
 import EmployeeLog from "../../pages/employee/log";
+import AccountsNumber from "../../pages/accountNumber"
 
 function Layout(props) {
   var classes = useStyles();
@@ -94,6 +95,8 @@ function Layout(props) {
 
               <Route path="/app/traffic" component={Traffic} />
               <Route path="/app/traffic-detail" component={TrafficDetail} />
+              <Route path="/app/accountNumber" component={AccountsNumber} />
+              
             </Switch>
           </div>
         </Router>
