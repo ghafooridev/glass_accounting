@@ -81,6 +81,11 @@ const structure = [
         link: "/app/cheque-list",
         permission: Constants.ALL_PERMISSIONS.PAYMENT_SHOW,
       },
+      {
+        label: "لیست شماره حساب ها",
+        link: "/app/accountNumber",
+        permission: Constants.ALL_PERMISSIONS.FREE,
+      },
     ],
   },
   {
@@ -133,13 +138,7 @@ const structure = [
     icon: <i className="material-icons-round">transfer_within_a_station</i>,
     permission: Constants.ALL_PERMISSIONS.FREE,
   },
-  {
-    id: 14,
-    label: "لیست شماره حساب ها",
-    link: "/app/accountsNumber",
-    icon: <i className="material-icons-round">payment</i>,
-    permission: Constants.ALL_PERMISSIONS.FREE,
-  },
+
   {
     id: 14,
     label: "دسته بندی ها ",

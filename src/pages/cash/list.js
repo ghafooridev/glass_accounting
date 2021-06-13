@@ -106,7 +106,6 @@ const MainList = () => {
   };
 
   const handleAction = (row, type) => {
-    console.log(row);
     const types = {
       edit: () => {
         history.push(`/app/cash-detail?id=${row.id}`);
@@ -154,7 +153,7 @@ const MainList = () => {
   useEffect(() => {
     getData();
   }, [page, order, search, pageSize]);
-  console.log(getCashRequest);
+ 
   return (
     <>
       {hasPermission(Constant.ALL_PERMISSIONS.CASH_LIST) && (

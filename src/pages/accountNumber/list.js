@@ -8,6 +8,8 @@ import {
   TableRow,
   Paper,
   Typography,
+  Tab,
+  Tabs,
 } from "@material-ui/core";
 import TableRowMenu from "../../components/Table/TableRowMenu";
 import TableTop from "../../components/Table/TableTop";
@@ -18,7 +20,7 @@ import { convertParamsToQueryString, hasPermission } from "../../helpers/utils";
 import DialogActions from "../../redux/actions/dialogAction";
 import styles from "./style";
 import Constant from "../../helpers/constant";
-import Transfer from "./transfer";
+import Detail from "./detail";
 import { Slide } from "@material-ui/core";
 import TableSkeleton from "../../components/Skeleton";
 
@@ -36,11 +38,15 @@ const headCells = [
     label: "بانک",
   },
   { id: "cardNumber", label: "شماره کارت" },
-  { id: "accountNumber", label: "شماره حساب" },
   { id: "action" },
 ];
+const PERSON_TYPE = {
+  EMPLOYEE: "پرسنل",
+  CUSTOMER: "مشتری",
+  DRIVER: "راننده",
+};
 
-const MainList = () => {
+const AccountsNumber = () => {
   const classes = styles();
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("name");
@@ -50,7 +56,7 @@ const MainList = () => {
   const [list, setList] = useState([]);
   const [total, setTotal] = useState(0);
   const history = useHistory();
-
+  const [person, setPerson] = useState("ALL");
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
@@ -66,108 +72,80 @@ const MainList = () => {
     setPage(0);
   };
 
- 
-
   const onSearch = (value) => {
     setSearch(value);
   };
 
-  const getCashRequest = useApi({
+  const getCardRequest = useApi({
     method: "get",
-    url: `cashdesk?${convertParamsToQueryString({
+    url: `account?${convertParamsToQueryString({
       page,
       order,
       orderBy,
       pageSize,
       search,
+      personType: person,
     })}`,
   });
 
-  const deleteCashRequest = useApi({
-    method: "delete",
-    url: `cashdesk`,
-  });
-
-  const transferCashDesk = useApi({
-    method: "post",
-    url: "cashdesk/transfer",
-  });
-
-  const onDismissTransfer = () => {
+  const onDismissDetail = () => {
     DialogActions.hide();
   };
 
-  const onSubmitTransfer = async (data) => {
-    await transferCashDesk.execute(data);
-    getData();
-    DialogActions.hide();
-  };
-
-  const handleAction = (row, type) => {
-    console.log(row);
-    const types = {
-      edit: () => {
-        history.push(`/app/cash-detail?id=${row.id}`);
-      },
-      delete: () => {
-        DialogActions.show({
-          confirm: true,
-          title: "ایا از حذف این رکورد مطمئن هستید ؟",
-          onAction: async () => {
-            await deleteCashRequest.execute(null, row.id);
-            setList(list.filter((item) => item.id !== row.id));
-            DialogActions.hide();
-          },
-          size: "sm",
-          disableCloseButton: false,
-        });
-      },
-      transfer: () => {
-        DialogActions.show({
-          title: "انتقال بین صندوق ها",
-          component: (
-            <Transfer
-              onSubmit={onSubmitTransfer}
-              onDismiss={onDismissTransfer}
-              source={row.id}
-            />
-          ),
-          size: "xs",
-          confirm: false,
-          disableCloseButton: false,
-        });
-      },
-    };
-    if (types[type]) {
-      types[type]();
-    }
+  const handleDetail = (row) => {
+    DialogActions.show({
+      title: `حساب های ${row.personName}`,
+      component: <Detail onDismiss={onDismissDetail} detail={row} />,
+      size: "sm",
+      confirm: false,
+      disableCloseButton: false,
+    });
   };
 
   const getData = async () => {
-    const cashList = await getCashRequest.execute();
-    setList(cashList.data);
-    setTotal(cashList.total);
+    const cardList = await getCardRequest.execute();
+    setList(cardList.data);
+    setTotal(cardList.total);
+  };
+
+  const onChangeTab = (e, value) => {
+    setPerson(value);
   };
 
   useEffect(() => {
     getData();
-  }, [page, order, search, pageSize]);
-  console.log(getCashRequest);
+  }, [page, order, search, pageSize, person]);
+
   return (
     <>
       {hasPermission(Constant.ALL_PERMISSIONS.CASH_LIST) && (
         <Slide direction="down" in={true}>
           <div>
-            {getCashRequest.pending ? (
+            {getCardRequest.pending ? (
               <TableSkeleton headCount={headCells} />
             ) : (
               <div className={classes.root}>
                 <Paper className={classes.paper}>
                   <TableTop
-                    title="لیست صندوق ها"
-                    onAdd={onAdd}
+                    title="لیست حساب های بانکی"
                     handleSearch={onSearch}
                   />
+                  <div className={classes.tab}>
+                    <Tabs
+                      value={person}
+                      onChange={onChangeTab}
+                      indicatorColor="primary"
+                      textColor="primary"
+                      centered
+                      variant="fullWidth"
+                    >
+                      <Tab label="کل اشخاص " value="ALL" />
+                      <Tab label="مشتریان" value="CUSTOMER" />
+                      <Tab label="پرسنل" value="EMPLOYEE" />
+                      <Tab label="رانندگان" value="DRIVER" />
+                    </Tabs>
+                  </div>
+
                   <TableContainer style={{ padding: "0 10px" }}>
                     <Table
                       className={classes.table}
@@ -191,37 +169,38 @@ const MainList = () => {
                               key={row.id}
                               style={{ paddingRight: 10 }}
                             >
-                              <TableCell padding="none">{row.name}</TableCell>
                               <TableCell padding="none">
-                                {row.type === "CASH" ? "نقدی" : "بانکی"}
+                                {row.personName}
+                              </TableCell>
+                              <TableCell padding="none">
+                                {PERSON_TYPE[row.personType]}
                               </TableCell>
                               <TableCell padding="none">
                                 {row.bank && (
                                   <img
-                                    style={{ width: 40, height: 40 }}
+                                    style={{ width: 30, height: 30 }}
                                     alt={row.bank.name}
                                     src={`${Constant.API_ADDRESS}/${row.bank.logo}`}
                                   />
                                 )}
                               </TableCell>
-                              <TableCell padding="none">{row.amount}</TableCell>
+                              <TableCell padding="none">
+                                {row.accountCardNumber}
+                              </TableCell>
 
                               <TableCell padding="none">
-                                <TableRowMenu
-                                  options={[
-                                    { id: "transfer", title: "انتقال" },
-                                    { id: "edit", title: "ویرایش" },
-                                    { id: "delete", title: "حذف" },
-                                  ]}
-                                  hadleAction={(type) =>
-                                    handleAction(row, type)
-                                  }
-                                />
+                                <i
+                                  className="material-icons-round"
+                                  style={{ cursor: "pointer" }}
+                                  onClick={() => handleDetail(row)}
+                                >
+                                  link
+                                </i>
                               </TableCell>
                             </TableRow>
                           );
                         })}
-                        {!list.length && !getCashRequest.pending && (
+                        {!list.length && !getCardRequest.pending && (
                           <TableRow style={{ height: 53 }}>
                             <TableCell
                               colSpan={6}
@@ -253,4 +232,4 @@ const MainList = () => {
   );
 };
 
-export default MainList;
+export default AccountsNumber;
