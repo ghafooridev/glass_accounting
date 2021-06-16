@@ -8,48 +8,65 @@ import {
   TableRow,
   Paper,
   Typography,
+  Tab,
+  Tabs,
 } from "@material-ui/core";
-import TableRowMenu from "../../components/Table/TableRowMenu";
 import TableTop from "../../components/Table/TableTop";
 import TableHeader from "../../components/Table/TableHead";
 import TablePaging from "../../components/Table/TablePaging";
 import { useApi } from "../../hooks/useApi";
-import { convertParamsToQueryString, hasPermission } from "../../helpers/utils";
-import DialogActions from "../../redux/actions/dialogAction";
+import {
+  getQueryString,
+  convertParamsToQueryString,
+  hasPermission,
+  persianNumber,
+} from "../../helpers/utils";
 import styles from "./style";
 import Constant from "../../helpers/constant";
-import Transfer from "./transfer";
+import PaymentDetail from "./paymentDetail";
+import DialogActions from "../../redux/actions/dialogAction";
 import { Slide } from "@material-ui/core";
 import TableSkeleton from "../../components/Skeleton";
 
 const headCells = [
   {
+    id: "date",
+    label: "تاریخ",
+  },
+  {
     id: "name",
-    label: "نام صندوق",
+    label: "نام شخص",
   },
   {
     id: "type",
     label: "نوع",
   },
   {
-    id: "logo",
-    label: "بانک",
+    id: "price",
+    label: "مبلغ",
   },
-  { id: "amount", label: "موجودی" },
 
   { id: "action" },
 ];
 
-const MainList = () => {
+const types = {
+  CASH: "نقد",
+  CHEQUE: "چک",
+  BANK: "بانک",
+};
+
+const PaymentReport = () => {
   const classes = styles();
   const [order, setOrder] = useState("asc");
-  const [orderBy, setOrderBy] = useState("name");
+  const [orderBy, setOrderBy] = useState("price");
   const [search, setSearch] = useState();
   const [page, setPage] = useState(0);
+  const cashId = getQueryString("cashId");
   const [pageSize, setPageSize] = useState(Constant.TABLE_PAGE_SIZE);
   const [list, setList] = useState([]);
   const [total, setTotal] = useState(0);
   const history = useHistory();
+  const [type, setPerson] = useState("CASH");
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -66,112 +83,84 @@ const MainList = () => {
     setPage(0);
   };
 
-  const onAdd = () => {
-    history.push("/app/cash-detail");
-  };
-
   const onSearch = (value) => {
     setSearch(value);
   };
 
-  const getCashRequest = useApi({
+  const getPaymentByCashRequest = useApi({
     method: "get",
-    url: `cashdesk?${convertParamsToQueryString({
+    url: `payment/cashdesk?${convertParamsToQueryString({
       page,
       order,
       orderBy,
       pageSize,
       search,
+      type,
     })}`,
   });
 
-  const deleteCashRequest = useApi({
-    method: "delete",
-    url: `cashdesk`,
-  });
-
-  const transferCashDesk = useApi({
-    method: "post",
-    url: "cashdesk/transfer",
-  });
-
-  const onDismissTransfer = () => {
+  const onDismissDetail = () => {
     DialogActions.hide();
   };
 
-  const onSubmitTransfer = async (data) => {
-    await transferCashDesk.execute(data);
-    getData();
-    DialogActions.hide();
-  };
-
-  const handleAction = (row, type) => {
-    const types = {
-      transaction: () => {
-        history.push(`/app/cash-transaction?cashId=${row.id}`);
-      },
-      edit: () => {
-        history.push(`/app/cash-detail?id=${row.id}`);
-      },
-      delete: () => {
-        DialogActions.show({
-          confirm: true,
-          title: "ایا از حذف این رکورد مطمئن هستید ؟",
-          onAction: async () => {
-            await deleteCashRequest.execute(null, row.id);
-            setList(list.filter((item) => item.id !== row.id));
-            DialogActions.hide();
-          },
-          size: "sm",
-          disableCloseButton: false,
-        });
-      },
-      transfer: () => {
-        DialogActions.show({
-          title: "انتقال بین صندوق ها",
-          component: (
-            <Transfer
-              onSubmit={onSubmitTransfer}
-              onDismiss={onDismissTransfer}
-              source={row.id}
-            />
-          ),
-          size: "xs",
-          confirm: false,
-          disableCloseButton: false,
-        });
-      },
-    };
-    if (types[type]) {
-      types[type]();
-    }
+  const handleDetail = (row) => {
+    console.log(row);
+    DialogActions.show({
+      title: `${
+        row.paymentType === "INCOME" ? "جزییات دریافت" : "جزییات پرداخت"
+      } `,
+      component: (
+        <PaymentDetail onDismiss={onDismissDetail} data={row} type={row.type} />
+      ),
+      size: "sm",
+      confirm: false,
+      disableCloseButton: false,
+    });
   };
 
   const getData = async () => {
-    const cashList = await getCashRequest.execute();
-    setList(cashList.data);
-    setTotal(cashList.total);
+    const paymentList = await getPaymentByCashRequest.execute(null, cashId);
+    setList(paymentList.data);
+    setTotal(paymentList.total);
+  };
+
+  const onChangeTab = (e, value) => {
+    setPerson(value);
   };
 
   useEffect(() => {
     getData();
-  }, [page, order, search, pageSize]);
+  }, [page, order, search, pageSize, type]);
 
   return (
     <>
       {hasPermission(Constant.ALL_PERMISSIONS.CASH_LIST) && (
         <Slide direction="down" in={true}>
           <div>
-            {getCashRequest.pending ? (
+            {getPaymentByCashRequest.pending ? (
               <TableSkeleton headCount={headCells} />
             ) : (
               <div className={classes.root}>
                 <Paper className={classes.paper}>
                   <TableTop
-                    title="لیست صندوق ها"
-                    onAdd={onAdd}
+                    title="لیست حساب های بانکی"
                     handleSearch={onSearch}
                   />
+                  <div className={classes.tab}>
+                    <Tabs
+                      value={type}
+                      onChange={onChangeTab}
+                      indicatorColor="primary"
+                      textColor="primary"
+                      centered
+                      variant="fullWidth"
+                    >
+                      <Tab label="نقدی" value="CASH" />
+                      <Tab label="بانکی" value="BANK" />
+                      <Tab label="چک" value="CHEQUE" />
+                    </Tabs>
+                  </div>
+
                   <TableContainer style={{ padding: "0 10px" }}>
                     <Table
                       className={classes.table}
@@ -195,38 +184,36 @@ const MainList = () => {
                               key={row.id}
                               style={{ paddingRight: 10 }}
                             >
-                              <TableCell padding="none">{row.name}</TableCell>
                               <TableCell padding="none">
-                                {row.type === "CASH" ? "نقدی" : "بانکی"}
-                              </TableCell>
-                              <TableCell padding="none">
-                                {row.bank && (
-                                  <img
-                                    style={{ width: 40, height: 40 }}
-                                    alt={row.bank.name}
-                                    src={`${Constant.API_ADDRESS}/${row.bank.logo}`}
-                                  />
+                                {persianNumber(
+                                  new Date(row.date).toLocaleDateString(
+                                    "fa-IR",
+                                  ),
                                 )}
                               </TableCell>
-                              <TableCell padding="none">{row.amount}</TableCell>
+                              <TableCell padding="none"> {row.name}</TableCell>
+                              <TableCell padding="none">
+                                {types[row.type]}
+                              </TableCell>
+                              <TableCell padding="none">
+                                {persianNumber(
+                                  Number(row.price).toLocaleString(),
+                                )}
+                              </TableCell>
 
                               <TableCell padding="none">
-                                <TableRowMenu
-                                  options={[
-                                    { id: "transaction", title: "تراکنش" },
-                                    { id: "transfer", title: "انتقال" },
-                                    { id: "edit", title: "ویرایش" },
-                                    { id: "delete", title: "حذف" },
-                                  ]}
-                                  hadleAction={(type) =>
-                                    handleAction(row, type)
-                                  }
-                                />
+                                <i
+                                  className="material-icons-round"
+                                  style={{ cursor: "pointer" }}
+                                  onClick={() => handleDetail(row)}
+                                >
+                                  feed
+                                </i>
                               </TableCell>
                             </TableRow>
                           );
                         })}
-                        {!list.length && !getCashRequest.pending && (
+                        {!list.length && !getPaymentByCashRequest.pending && (
                           <TableRow style={{ height: 53 }}>
                             <TableCell
                               colSpan={6}
@@ -258,4 +245,4 @@ const MainList = () => {
   );
 };
 
-export default MainList;
+export default PaymentReport;

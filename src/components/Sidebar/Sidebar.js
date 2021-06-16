@@ -86,6 +86,11 @@ const structure = [
         link: "/app/accountNumber",
         permission: Constants.ALL_PERMISSIONS.FREE,
       },
+      {
+        label: "لیست وام ها",
+        link: "/app/loan-list",
+        permission: Constants.ALL_PERMISSIONS.FREE,
+      },
     ],
   },
   {

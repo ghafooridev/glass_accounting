@@ -1,7 +1,15 @@
 import React, { Fragment, useEffect, useRef, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
-import { Grid, Paper, Typography, TextField, Button } from "@material-ui/core";
+import {
+  Grid,
+  Paper,
+  Typography,
+  TextField,
+  Button,
+  FormControlLabel,
+  Checkbox,
+} from "@material-ui/core";
 import Constant from "../../helpers/constant";
 import { useForm, Controller } from "react-hook-form";
 import { useApi } from "../../hooks/useApi";
@@ -42,8 +50,11 @@ export default function MainDetail({ defaultValues }) {
   const classes = useStyles();
   const history = useHistory();
   const id = getQueryString("id");
+
   const paymentType = getQueryString("type");
+  const loan = getQueryString("loan");
   const [detail, setDetail] = useState({});
+  const [isLoan, setIsLoan] = useState(loan);
   const [selectedPerson, setSelectedPerson] = useState();
   const { control, handleSubmit, errors, reset } = useForm();
   const [selectedDate, setSelectedDate] = useState(moment());
@@ -101,9 +112,10 @@ export default function MainDetail({ defaultValues }) {
       personId: selectedPerson.id,
       description: data.description,
       date: selectedDate._d,
+      isLoan,
       ...paymentRef.current,
     };
-
+    debugger;
     if (id) {
       await editPaymentRequest.execute(value);
     } else {
@@ -122,6 +134,7 @@ export default function MainDetail({ defaultValues }) {
     setSelectedPerson(person);
     setSelectedDate(date);
     setPayments({ banks, cashes, cheques });
+    setIsLoan(detail.data.isLoan);
   };
 
   const getDetailTitle = () => {
@@ -143,6 +156,9 @@ export default function MainDetail({ defaultValues }) {
       return `${selectedPerson.firstName} ${selectedPerson.lastName}`;
     }
     return "";
+  };
+  const handleChangeIsloan = (e) => {
+    setIsLoan(e.target.checked);
   };
 
   useEffect(() => {
@@ -204,6 +220,21 @@ export default function MainDetail({ defaultValues }) {
                     value={selectedDate}
                     onChange={handleDateChange}
                     style={{ width: "100%" }}
+                  />
+                </Grid>
+                <Grid item lg={6} xs={12}>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={isLoan}
+                        onChange={handleChangeIsloan}
+                        // name={item.value}
+                        color="primary"
+                      />
+                    }
+                    label={
+                      paymentType === "INCOME" ? "پرداخت قسط" : "اعطای وام"
+                    }
                   />
                 </Grid>
                 <Grid item xs={12}>

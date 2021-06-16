@@ -21,6 +21,7 @@ const MainList = () => {
   const [depotCategory, setDepotCategory] = useState([]);
   const [productCategory, setProductCategory] = useState([]);
   const [invoiceCategory, setInvoiceCategory] = useState([]);
+  const [driverCategory, setDriverCategory] = useState([]);
   const [action, setAction] = useState();
   const [selectedCategory, setSelectedCategory] = useState({
     value: "",
@@ -88,6 +89,21 @@ const MainList = () => {
     url: "invoice/category",
   });
 
+  const GetDriverCategoryRequest = useApi({
+    method: "get",
+    url: "driver/category",
+  });
+
+  const EditDriverCategoryRequest = useApi({
+    method: "put",
+    url: `driver/category/${selectedCategory.value}`,
+  });
+
+  const AddDriverCategoryRequest = useApi({
+    method: "post",
+    url: "driver/category",
+  });
+
   const onAction = ({ name, value }) => {
     debugger;
     const types = {
@@ -131,6 +147,16 @@ const MainList = () => {
         }
         getInvoiceCategory();
       },
+      driver: async () => {
+        if (action === "edit") {
+          await EditDriverCategoryRequest.execute({
+            name,
+          });
+        } else {
+          await AddDriverCategoryRequest.execute({ name });
+        }
+        getDriverCategory();
+      },
     };
     if (types[selectedType]) {
       onDismiss();
@@ -144,7 +170,6 @@ const MainList = () => {
   };
 
   const handleAction = (type, item) => {
-    console.log(type, item);
     setAction("edit");
     setSelectedType(type);
     setSelectedCategory(item);
@@ -190,11 +215,17 @@ const MainList = () => {
     setInvoiceCategory(invoiceCategoryList.data);
   };
 
+  const getDriverCategory = async () => {
+    const driverCategoryList = await GetDriverCategoryRequest.execute();
+    setDriverCategory(driverCategoryList.data);
+  };
+
   useEffect(() => {
     getCustomerCategory();
     getDepotCategory();
     getProductCategory();
     getInvoiceCategory();
+    getDriverCategory();
   }, []);
 
   useEffect(() => {
@@ -377,6 +408,52 @@ const MainList = () => {
                 );
               })}
               {!invoiceCategory.length && !getInvoiceCategory.pending && (
+                <TableRow style={{ height: 53 }}>
+                  <TableCell colSpan={6} style={{ textAlign: "center" }}>
+                    <Typography variant="h6">
+                      داده ای برای نمایش وجود ندارد
+                    </Typography>
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Paper>
+      <Paper className={classes.paper}>
+        <TableTop
+          title="دسته بندی رانندگان ها"
+          onAdd={() => handleAdd("driver")}
+          toolbarClass={classes.toolbar}
+          addButtonClass={classes.addButton}
+          minimal
+        />
+        <TableContainer style={{ padding: "0 10px" }}>
+          <Table
+            className={classes.table}
+            size={"medium"}
+            style={{ paddingRight: 10 }}
+          >
+            <TableBody>
+              {driverCategory.map((row) => {
+                return (
+                  <TableRow
+                    hover
+                    tabIndex={-1}
+                    key={row.id}
+                    style={{ paddingRight: 10 }}
+                  >
+                    <TableCell padding="none">{row.label}</TableCell>
+
+                    <TableCell padding="none" style={{ textAlign: "left" }}>
+                      <IconButton onClick={() => handleAction("driver", row)}>
+                        <i className="material-icons-round">edit</i>
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+              {!driverCategory.length && !getDriverCategory.pending && (
                 <TableRow style={{ height: 53 }}>
                   <TableCell colSpan={6} style={{ textAlign: "center" }}>
                     <Typography variant="h6">

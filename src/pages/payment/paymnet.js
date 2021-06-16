@@ -67,7 +67,7 @@ const Payment = ({ onSubmit, onDismiss, defaultValues, paymentType, type }) => {
         bankId: selectedBank,
         cashDesk: getSelectedCash(),
         bank: getSelectedBank(),
-        bankTransactionType: selectedTransaction,
+        transactionType: selectedTransaction,
         isUpdate: !!defaultValues,
       };
     } else {

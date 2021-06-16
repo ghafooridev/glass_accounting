@@ -28,6 +28,10 @@ const headCells = [
     id: "firstName",
     label: "نام",
   },
+  {
+    id: "category",
+    label: "دسته بندی",
+  },
   { id: "lastName", label: "نام خانوادگی" },
 
   { id: "status", label: "وضعیت" },
@@ -120,6 +124,7 @@ export default function MainList({ onSelect, onDismiss }) {
                 >
                   <TableCell padding="none">{row.firstName}</TableCell>
                   <TableCell padding="none">{row.lastName}</TableCell>
+                  <TableCell padding="none">{row.category}</TableCell>
                   <TableCell padding="none">{row.mobile}</TableCell>
                   <TableCell padding="none">{row.carName}</TableCell>
                   <TableCell padding="none">

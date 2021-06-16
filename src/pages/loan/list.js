@@ -9,41 +9,48 @@ import {
   Paper,
   Typography,
 } from "@material-ui/core";
-import TableRowMenu from "../../components/Table/TableRowMenu";
 import TableTop from "../../components/Table/TableTop";
 import TableHeader from "../../components/Table/TableHead";
 import TablePaging from "../../components/Table/TablePaging";
 import { useApi } from "../../hooks/useApi";
-import { convertParamsToQueryString, hasPermission } from "../../helpers/utils";
+import {
+  convertParamsToQueryString,
+  hasPermission,
+  persianNumber,
+} from "../../helpers/utils";
 import DialogActions from "../../redux/actions/dialogAction";
 import styles from "./style";
 import Constant from "../../helpers/constant";
-import Transfer from "./transfer";
+import Detail from "./detail";
 import { Slide } from "@material-ui/core";
 import TableSkeleton from "../../components/Skeleton";
 
 const headCells = [
   {
     id: "name",
-    label: "نام صندوق",
+    label: "نام شخص",
   },
   {
-    id: "type",
-    label: "نوع",
+    id: "Date",
+    label: "تاریخ",
   },
   {
-    id: "logo",
-    label: "بانک",
+    id: "price",
+    label: "مانده وام",
   },
-  { id: "amount", label: "موجودی" },
-
+  { id: "personType", label: "نوع شخص" },
   { id: "action" },
 ];
+const PERSON_TYPE = {
+  EMPLOYEE: "پرسنل",
+  CUSTOMER: "مشتری",
+  DRIVER: "راننده",
+};
 
 const MainList = () => {
   const classes = styles();
   const [order, setOrder] = useState("asc");
-  const [orderBy, setOrderBy] = useState("name");
+  const [orderBy, setOrderBy] = useState("date");
   const [search, setSearch] = useState();
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(Constant.TABLE_PAGE_SIZE);
@@ -66,17 +73,17 @@ const MainList = () => {
     setPage(0);
   };
 
-  const onAdd = () => {
-    history.push("/app/cash-detail");
-  };
-
   const onSearch = (value) => {
     setSearch(value);
   };
 
-  const getCashRequest = useApi({
+  const onAdd = () => {
+    history.push(`/app/payment-detail?type=OUTCOME&loan=true`);
+  };
+
+  const getLoanRequest = useApi({
     method: "get",
-    url: `cashdesk?${convertParamsToQueryString({
+    url: `loan?${convertParamsToQueryString({
       page,
       order,
       orderBy,
@@ -85,72 +92,24 @@ const MainList = () => {
     })}`,
   });
 
-  const deleteCashRequest = useApi({
-    method: "delete",
-    url: `cashdesk`,
-  });
-
-  const transferCashDesk = useApi({
-    method: "post",
-    url: "cashdesk/transfer",
-  });
-
-  const onDismissTransfer = () => {
+  const onDismissDetail = () => {
     DialogActions.hide();
   };
 
-  const onSubmitTransfer = async (data) => {
-    await transferCashDesk.execute(data);
-    getData();
-    DialogActions.hide();
-  };
-
-  const handleAction = (row, type) => {
-    const types = {
-      transaction: () => {
-        history.push(`/app/cash-transaction?cashId=${row.id}`);
-      },
-      edit: () => {
-        history.push(`/app/cash-detail?id=${row.id}`);
-      },
-      delete: () => {
-        DialogActions.show({
-          confirm: true,
-          title: "ایا از حذف این رکورد مطمئن هستید ؟",
-          onAction: async () => {
-            await deleteCashRequest.execute(null, row.id);
-            setList(list.filter((item) => item.id !== row.id));
-            DialogActions.hide();
-          },
-          size: "sm",
-          disableCloseButton: false,
-        });
-      },
-      transfer: () => {
-        DialogActions.show({
-          title: "انتقال بین صندوق ها",
-          component: (
-            <Transfer
-              onSubmit={onSubmitTransfer}
-              onDismiss={onDismissTransfer}
-              source={row.id}
-            />
-          ),
-          size: "xs",
-          confirm: false,
-          disableCloseButton: false,
-        });
-      },
-    };
-    if (types[type]) {
-      types[type]();
-    }
+  const handleDetail = (row) => {
+    // DialogActions.show({
+    //   title: `حساب های ${row.personName}`,
+    //   component: <Detail onDismiss={onDismissDetail} detail={row} />,
+    //   size: "sm",
+    //   confirm: false,
+    //   disableCloseButton: false,
+    // });
   };
 
   const getData = async () => {
-    const cashList = await getCashRequest.execute();
-    setList(cashList.data);
-    setTotal(cashList.total);
+    const cardList = await getLoanRequest.execute();
+    setList(cardList.data);
+    setTotal(cardList.total);
   };
 
   useEffect(() => {
@@ -162,16 +121,17 @@ const MainList = () => {
       {hasPermission(Constant.ALL_PERMISSIONS.CASH_LIST) && (
         <Slide direction="down" in={true}>
           <div>
-            {getCashRequest.pending ? (
+            {getLoanRequest.pending ? (
               <TableSkeleton headCount={headCells} />
             ) : (
               <div className={classes.root}>
                 <Paper className={classes.paper}>
                   <TableTop
-                    title="لیست صندوق ها"
+                    title="لیست وام ها"
                     onAdd={onAdd}
                     handleSearch={onSearch}
                   />
+
                   <TableContainer style={{ padding: "0 10px" }}>
                     <Table
                       className={classes.table}
@@ -195,38 +155,38 @@ const MainList = () => {
                               key={row.id}
                               style={{ paddingRight: 10 }}
                             >
-                              <TableCell padding="none">{row.name}</TableCell>
                               <TableCell padding="none">
-                                {row.type === "CASH" ? "نقدی" : "بانکی"}
+                                {row.personName}
                               </TableCell>
                               <TableCell padding="none">
-                                {row.bank && (
-                                  <img
-                                    style={{ width: 40, height: 40 }}
-                                    alt={row.bank.name}
-                                    src={`${Constant.API_ADDRESS}/${row.bank.logo}`}
-                                  />
+                                {persianNumber(
+                                  new Date(row.date).toLocaleDateString(
+                                    "fa-IR",
+                                  ),
                                 )}
                               </TableCell>
-                              <TableCell padding="none">{row.amount}</TableCell>
+                              <TableCell padding="none">
+                                {persianNumber(
+                                  Number(row.price).toLocaleString(),
+                                )}
+                              </TableCell>
+                              <TableCell padding="none">
+                                {PERSON_TYPE[row.personType]}
+                              </TableCell>
 
                               <TableCell padding="none">
-                                <TableRowMenu
-                                  options={[
-                                    { id: "transaction", title: "تراکنش" },
-                                    { id: "transfer", title: "انتقال" },
-                                    { id: "edit", title: "ویرایش" },
-                                    { id: "delete", title: "حذف" },
-                                  ]}
-                                  hadleAction={(type) =>
-                                    handleAction(row, type)
-                                  }
-                                />
+                                <i
+                                  className="material-icons-round"
+                                  style={{ cursor: "pointer" }}
+                                  onClick={() => handleDetail(row)}
+                                >
+                                  link
+                                </i>
                               </TableCell>
                             </TableRow>
                           );
                         })}
-                        {!list.length && !getCashRequest.pending && (
+                        {!list.length && !getLoanRequest.pending && (
                           <TableRow style={{ height: 53 }}>
                             <TableCell
                               colSpan={6}

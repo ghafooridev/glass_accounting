@@ -434,7 +434,7 @@ const PrePayment = React.forwardRef((props, ref) => {
                                   {row.price}
                                 </TableCell>
                                 <TableCell padding="none">
-                                  {row.bankTransactionType}
+                                  {row.transactionType}
                                 </TableCell>
                                 <TableCell padding="none">
                                   {row.bank?.label}

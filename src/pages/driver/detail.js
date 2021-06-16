@@ -13,6 +13,7 @@ import {
   TableCell,
   TableRow,
   IconButton,
+  MenuItem,
 } from "@material-ui/core";
 import TableHeader from "../../components/Table/TableHead";
 import { DeleteIcon, EditIcon } from "../../components/icons";
@@ -57,6 +58,8 @@ export default function MainDetail() {
   const id = getQueryString("id");
   const [detail, setDetail] = useState({});
   const [accounts, setAccounts] = useState([]);
+  const [category, setCategory] = useState([]);
+  const [driverCategory, setDriverCategory] = useState(1);
   const { control, handleSubmit, errors, reset } = useForm();
 
   const addDriverRequest = useApi({
@@ -70,6 +73,11 @@ export default function MainDetail() {
   const detailDriverRequest = useApi({
     method: "get",
     url: `driver/${id}`,
+  });
+
+  const driverCategoryRequest = useApi({
+    method: "get",
+    url: `driver/category`,
   });
 
   const deleteAccountRequest = useApi({
@@ -90,7 +98,11 @@ export default function MainDetail() {
       newAccounts.push(newData);
     });
 
-    const allData = { ...data, accounts: newAccounts };
+    const allData = {
+      ...data,
+      accounts: newAccounts,
+      categoryId: driverCategory,
+    };
     if (id) {
       return await editDriverRequest.execute(allData);
     }
@@ -104,7 +116,13 @@ export default function MainDetail() {
   const getDetail = async () => {
     const detail = await detailDriverRequest.execute();
     setDetail(detail.data);
+    setDriverCategory(detail.data.driverCategory);
     setAccounts(detail.data?.accounts || []);
+  };
+
+  const getDriverCategory = async () => {
+    const detail = await driverCategoryRequest.execute();
+    setCategory(detail.data);
   };
 
   const onSubmitAccount = (data) => {
@@ -161,7 +179,12 @@ export default function MainDetail() {
     });
   };
 
+  const onChangeCategory = (e) => {
+    setDriverCategory(e.target.value);
+  };
+
   useEffect(() => {
+    getDriverCategory();
     if (id) {
       getDetail();
     }
@@ -291,6 +314,57 @@ export default function MainDetail() {
                       }}
                       name="mobile"
                     />
+                  </Grid>
+                  <Grid item lg={6} xs={12}>
+                    <Controller
+                      control={control}
+                      render={({ onChange, value, name }) => {
+                        return (
+                          <TextField
+                            variant="outlined"
+                            label="مانده از قبل"
+                            name={name}
+                            onChange={onChange}
+                            value={value}
+                            error={!!errors.accountRemaining}
+                            helperText={
+                              errors.accountRemaining
+                                ? errors.accountRemaining.message
+                                : ""
+                            }
+                            fullWidth
+                            size="small"
+                          />
+                        );
+                      }}
+                      rules={{ required: Constant.VALIDATION.REQUIRED }}
+                      name="accountRemaining"
+                    />
+                  </Grid>
+                  <Grid item lg={6} xs={12}>
+                    {!!category.length && driverCategory && (
+                      <TextField
+                        select
+                        label="دسته بندی"
+                        value={driverCategory}
+                        onChange={onChangeCategory}
+                        variant="outlined"
+                        error={!!errors.driverCategory}
+                        helperText={
+                          errors.driverCategory
+                            ? errors.driverCategory.message
+                            : ""
+                        }
+                        fullWidth
+                        size="small"
+                      >
+                        {category.map((option) => (
+                          <MenuItem key={option.value} value={option.value}>
+                            {option.label}
+                          </MenuItem>
+                        ))}
+                      </TextField>
+                    )}
                   </Grid>
                   <Grid item lg={6} xs={12}>
                     <Controller

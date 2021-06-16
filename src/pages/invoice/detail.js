@@ -93,6 +93,7 @@ export default function MainDetail({ defaultValues }) {
   const [category, setCategory] = useState([]);
   const [drivers, setDrivers] = useState([]);
   const [products, setProducts] = useState([]);
+  const [invoicePerson, setInvoicePerson] = useState(" ");
   const [payments, setPayments] = useState({
     cashes: [],
     banks: [],
@@ -140,6 +141,11 @@ export default function MainDetail({ defaultValues }) {
 
   const onSelectPerson = (person) => {
     setSelectedPerson(person);
+    setInvoicePerson(
+      selectedPerson
+        ? `${selectedPerson.firstName} ${selectedPerson.lastName}`
+        : "",
+    );
     dialogAction.hide();
   };
 
@@ -169,7 +175,7 @@ export default function MainDetail({ defaultValues }) {
       products,
       drivers,
       date: selectedDate._d,
-      customerId: selectedPerson.id,
+      customerId: selectedPerson ? selectedPerson.id : 1,
       type: invoiceType,
       categoryId: invoiceCategory,
     };
@@ -181,7 +187,7 @@ export default function MainDetail({ defaultValues }) {
         ...paymentRef.current,
         invoiceId: response.id,
         date: selectedDate._d,
-        personId: selectedPerson.id,
+        personId: selectedPerson ? selectedPerson.id : 1,
         personType: "CUSTOMER",
         type: invoiceType === "SELL" ? "INCOME" : "OUTCOME",
         description: `بابت فاکتور به شماره  ${response.id}`,
@@ -217,6 +223,9 @@ export default function MainDetail({ defaultValues }) {
         (detail.data.discount + payments.data.price) +
         Number(payments.data.person.accountRemaining),
     );
+    if (detail.data.customerId === 1) {
+      setInvoicePerson(detail.data.globalCustomer);
+    }
   };
 
   const onSubmitDrivers = (drivers) => {
@@ -272,7 +281,7 @@ export default function MainDetail({ defaultValues }) {
         <Product
           onSubmit={onSubmitProduct}
           onDismiss={onDismissProduct}
-          customerId={selectedPerson?.id}
+          customerId={selectedPerson ? selectedPerson.id : 1}
           defaultValues={data}
         />
       ),
@@ -320,6 +329,10 @@ export default function MainDetail({ defaultValues }) {
 
   const onChangeCategory = (e) => {
     setInvoiceCategory(e.target.value);
+  };
+
+  const onChangeInvoicePerson = (e) => {
+    setInvoicePerson(e.target.value);
   };
 
   useEffect(() => {
@@ -375,12 +388,8 @@ export default function MainDetail({ defaultValues }) {
                   <TextField
                     variant="outlined"
                     name={"personName"}
-                    value={
-                      selectedPerson
-                        ? `${selectedPerson.firstName} ${selectedPerson.lastName}`
-                        : ""
-                    }
-                    disabled
+                    onChange={onChangeInvoicePerson}
+                    value={invoicePerson}
                     style={{ width: "70%" }}
                     size="small"
                   />
@@ -498,7 +507,7 @@ export default function MainDetail({ defaultValues }) {
 
                 <Grid item lg={6} xs={12} style={{ display: "flex" }}>
                   <Button
-                    disabled={isEmpty(selectedPerson)}
+                    // disabled={isEmpty(selectedPerson)}
                     style={{ marginLeft: 10, width: "30%" }}
                     variant="contained"
                     color="primary"

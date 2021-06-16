@@ -1,28 +1,39 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Grid, TextField, MenuItem, Button, Divider } from "@material-ui/core";
-import Constant from "../../helpers/constant";
-
-const personType = [
-  {
-    label: "بدهکار",
-    value: Constant.PERSON_STATUS.DEBTIOR,
-  },
-  { label: "بستانکار", value: Constant.PERSON_STATUS.NODEBT },
-  { label: "طلبکار", value: Constant.PERSON_STATUS.CREDITOR },
-];
+import { useApi } from "../../hooks/useApi";
 
 const Filter = ({ onFilter }) => {
-  const [filterData, setFilterData] = useState({ name: "", status: "" });
+  const [filterData, setFilterData] = useState();
+  const [category, setCategory] = useState([]);
+  const [driverCategory, setDriverCategory] = useState(1);
+
+  const driverCategoryRequest = useApi({
+    method: "get",
+    url: `driver/category`,
+  });
 
   const handleChange = (prop) => (event) => {
-    setFilterData({ ...filterData, [prop]: event.target.value });
+    setFilterData(event.target.value);
+  };
+
+  const getDriverCategory = async () => {
+    const detail = await driverCategoryRequest.execute();
+    setCategory(detail.data);
+  };
+
+  const onChangeCategory = (e) => {
+    setDriverCategory(e.target.value);
   };
 
   const onSubmit = () => {
     if (typeof onFilter === "function") {
-      onFilter(filterData);
+      onFilter(`{ name: ${filterData}, category: ${driverCategory} }`);
     }
   };
+
+  useEffect(() => {
+    getDriverCategory();
+  }, []);
 
   return (
     <Grid container spacing={3} alignItems="center" style={{ padding: 10 }}>
@@ -31,28 +42,31 @@ const Filter = ({ onFilter }) => {
           variant="outlined"
           label="نام"
           onChange={handleChange("name")}
-          value={filterData.name}
+          value={filterData}
           fullWidth
           size="small"
         />
       </Grid>
       <Grid item lg={3} xs={12}>
-        <TextField
-          select
-          label="وضعیت"
-          onChange={handleChange("status")}
-          value={filterData.status}
-          variant="outlined"
-          fullWidth
-          size="small"
-        >
-          {personType.map((option) => (
-            <MenuItem key={option.value} value={option.value}>
-              {option.label}
-            </MenuItem>
-          ))}
-        </TextField>
+        {!!category.length && driverCategory && (
+          <TextField
+            select
+            label="دسته بندی"
+            value={driverCategory}
+            onChange={onChangeCategory}
+            variant="outlined"
+            fullWidth
+            size="small"
+          >
+            {category.map((option) => (
+              <MenuItem key={option.value} value={option.value}>
+                {option.label}
+              </MenuItem>
+            ))}
+          </TextField>
+        )}
       </Grid>
+
       <Grid item lg={3} xs={12}>
         <Button variant="contained" color="primary" onClick={onSubmit}>
           تایید

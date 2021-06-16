@@ -312,6 +312,32 @@ export default function MainDetail() {
                     />
                   </Grid>
                   <Grid item lg={6} xs={12}>
+                    <Controller
+                      control={control}
+                      render={({ onChange, value, name }) => {
+                        return (
+                          <TextField
+                            variant="outlined"
+                            label="مانده از قبل"
+                            name={name}
+                            onChange={onChange}
+                            value={value}
+                            error={!!errors.accountRemaining}
+                            helperText={
+                              errors.accountRemaining
+                                ? errors.accountRemaining.message
+                                : ""
+                            }
+                            fullWidth
+                            size="small"
+                          />
+                        );
+                      }}
+                      rules={{ required: Constant.VALIDATION.REQUIRED }}
+                      name="accountRemaining"
+                    />
+                  </Grid>
+                  <Grid item lg={6} xs={12}>
                     {!!category.length && customerCategory && (
                       <TextField
                         select

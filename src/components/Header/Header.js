@@ -133,7 +133,11 @@ export default function Header(props) {
             {persianNumber(new Date().toLocaleDateString("fa-IR"))}
           </Typography>
           <Typography variant="h6" style={{ margin: "0 10px" }}>
-            <Clock format={"HH:mm:ss"} ticking={true} timezone={"FA/Iran"} />
+            <Clock
+              format={"HH:mm:ss"}
+              ticking={true}
+              timezone={"Asia/Tehran"}
+            />
           </Typography>
         </div>
         <IconButton

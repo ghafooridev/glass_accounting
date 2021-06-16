@@ -30,6 +30,10 @@ const headCells = [
   },
   { id: "lastName", label: "نام خانوادگی" },
   {
+    id: "firstName",
+    label: "نام",
+  },
+  {
     id: "mobile",
     label: "موبایل",
   },
@@ -42,6 +46,7 @@ export default function MainList() {
   const classes = styles();
   const [order, setOrder] = useState("asc");
   const [search, setSearch] = useState();
+  const [filter, setFilter] = useState();
   const [orderBy, setOrderBy] = useState("firstName");
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(Constant.TABLE_PAGE_SIZE);
@@ -69,13 +74,16 @@ export default function MainList() {
 
   const getDriverRequest = useApi({
     method: "get",
-    url: `driver?${convertParamsToQueryString({
-      page,
-      order,
-      orderBy,
-      pageSize,
-      search,
-    })}`,
+    url: decodeURIComponent(
+      `driver?${convertParamsToQueryString({
+        page,
+        order,
+        orderBy,
+        pageSize,
+        search,
+        filter,
+      })}`,
+    ),
   });
 
   const deleteUseRequest = useApi({
@@ -115,7 +123,7 @@ export default function MainList() {
   };
 
   const onFilter = (data) => {
-    console.log(data);
+    setFilter(data);
   };
 
   const getData = async () => {
@@ -125,7 +133,7 @@ export default function MainList() {
 
   useEffect(() => {
     getData();
-  }, [page, order, search, pageSize]);
+  }, [page, order, search, pageSize, filter]);
 
   return (
     <>
@@ -172,6 +180,9 @@ export default function MainList() {
                               </TableCell>
                               <TableCell padding="none">
                                 {row.lastName}
+                              </TableCell>
+                              <TableCell padding="none">
+                                {row.category.name}
                               </TableCell>
                               <TableCell padding="none">{row.mobile}</TableCell>
                               <TableCell padding="none">{row.phone}</TableCell>

@@ -34,6 +34,9 @@ import TrafficDetail from "../../pages/traffic/register";
 import { useLayoutState } from "../../context/LayoutContext";
 import EmployeeLog from "../../pages/employee/log";
 import AccountsNumber from "../../pages/accountNumber/list";
+import CashPaymentReport from "../../pages/cash/paymentReport";
+import LoanList from "../../pages/loan";
+import LoanDetail from "../../pages/loan/detail";
 
 function Layout(props) {
   var classes = useStyles();
@@ -74,9 +77,19 @@ function Layout(props) {
 
               <Route path="/app/cash-list" component={CashList} />
               <Route path="/app/cash-detail" component={CashDetail} />
+              <Route
+                path="/app/cash-transaction"
+                component={CashPaymentReport}
+              />
 
               <Route path="/app/cheque-list" component={ChequeList} />
               <Route path="/app/cheque-detail" component={ChequeDetail} />
+
+              <Route path="/app/cheque-list" component={ChequeList} />
+              <Route path="/app/cheque-detail" component={ChequeDetail} />
+
+              <Route path="/app/loan-list" component={LoanList} />
+              <Route path="/app/loan-detail" component={LoanDetail} />
 
               <Route path="/app/invoice-list" component={InvoiceList} />
               <Route path="/app/invoice-detail" component={InvoiceDetail} />
