@@ -1,6 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Grid, TextField, Button, MenuItem } from "@material-ui/core";
+import {
+  Grid,
+  TextField,
+  Button,
+  MenuItem,
+  IconButton,
+  Collapse,
+} from "@material-ui/core";
 import { useApi } from "../../hooks/useApi";
+import Autocomplete from "@material-ui/lab/Autocomplete";
 
 export default function MainDetail({ productId, units, onSubmit, onDismiss }) {
   const [selectedUnit, setSelectedUnit] = useState(units[0].value);
@@ -9,11 +17,31 @@ export default function MainDetail({ productId, units, onSubmit, onDismiss }) {
   const [amount, setAmount] = useState();
   const [description, setDescription] = useState();
   const [depotPicker, setDepotPicker] = useState([]);
+  const [driverPicker, setDriverPicker] = useState([]);
+  const [isAddDriver, setIsAddDriver] = useState(false);
+  const [category, setCategory] = useState([]);
+  const [driverCategory, setDriverCategory] = useState(1);
+  const [newDriver, setNewDriver] = useState();
 
   const getDepotRequest = useApi({
     method: "get",
     url: `depot/picker`,
   });
+
+  const getDriversRequest = useApi({
+    method: "get",
+    url: "driver",
+  });
+
+  const driverCategoryRequest = useApi({
+    method: "get",
+    url: `driver/category`,
+  });
+
+  const getDriverCategory = async () => {
+    const detail = await driverCategoryRequest.execute();
+    setCategory(detail.data);
+  };
 
   const onDone = () => {
     onSubmit({
@@ -23,7 +51,14 @@ export default function MainDetail({ productId, units, onSubmit, onDismiss }) {
       amount,
       unit: selectedUnit,
       description,
+      isAddDriver,
+      newDriver,
     });
+  };
+
+  const getDrivers = async () => {
+    const customerList = await getDriversRequest.execute();
+    setDriverPicker(customerList.data);
   };
 
   const onChange = (e, type) => {
@@ -43,10 +78,26 @@ export default function MainDetail({ productId, units, onSubmit, onDismiss }) {
       unit: () => {
         setSelectedUnit(e.target.value);
       },
+      driverName: () => {
+        setNewDriver({ ...newDriver, driverName: e.target.value });
+      },
+      driverCarName: () => {
+        setNewDriver({ ...newDriver, driverCarName: e.target.value });
+      },
+      driverCarPelak: () => {
+        setNewDriver({ ...newDriver, driverCarPelak: e.target.value });
+      },
+      driverCategory: () => {
+        setNewDriver({ ...newDriver, driverCategory: e.target.value });
+      },
     };
     if (types[type]) {
       return types[type]();
     }
+  };
+
+  const onChangeDriver = (e, value) => {
+    setDriverPicker(value);
   };
 
   const getDepotPicker = async () => {
@@ -54,7 +105,13 @@ export default function MainDetail({ productId, units, onSubmit, onDismiss }) {
     setDepotPicker(result.data);
   };
 
+  const onAddDriver = () => {
+    setIsAddDriver(!isAddDriver);
+  };
+
   useEffect(() => {
+    getDriverCategory();
+    getDrivers();
     getDepotPicker();
   }, []);
 
@@ -139,6 +196,88 @@ export default function MainDetail({ productId, units, onSubmit, onDismiss }) {
             size="small"
           />
         </Grid>
+        <Grid item xs={12} style={{ display: "flex", alignItems: "center" }}>
+          <Autocomplete
+            id="combo-box-demo"
+            onChange={onChangeDriver}
+            options={driverPicker}
+            getOptionLabel={(option) =>
+              `${option.firstName} ${option.lastName}`
+            }
+            fullWidth
+            size="small"
+            renderInput={(params) => (
+              <TextField {...params} label="انتخاب راننده" variant="outlined" />
+            )}
+          />
+          <IconButton
+            color="primary"
+            style={{ marginRight: 10 }}
+            onClick={onAddDriver}
+          >
+            <i className="material-icons-round">
+              {isAddDriver ? "clear" : "add"}
+            </i>
+          </IconButton>
+        </Grid>
+
+        <Collapse in={isAddDriver}>
+          <Grid container spacing={3}>
+            <Grid item xs={12} style={{ margin: "0 10px" }}>
+              <TextField
+                variant="outlined"
+                label="نام راننده"
+                onChange={(e) => onChange(e, "driverName")}
+                value={newDriver?.driverName}
+                fullWidth
+                size="small"
+              />
+            </Grid>
+
+            <Grid item xs={12} style={{ margin: "0 10px" }}>
+              <TextField
+                variant="outlined"
+                label="نام ماشین"
+                onChange={(e) => onChange(e, "driverCarName")}
+                value={newDriver?.driverCarName}
+                fullWidth
+                size="small"
+              />
+            </Grid>
+
+            <Grid item xs={12} style={{ margin: "0 10px" }}>
+              <TextField
+                variant="outlined"
+                label="پلاک"
+                onChange={(e) => onChange(e, "driverCarPelak")}
+                value={newDriver?.driverCarPelak}
+                fullWidth
+                size="small"
+              />
+            </Grid>
+
+            <Grid item xs={12} style={{ margin: "0 10px" }}>
+              {!!category.length && driverCategory && (
+                <TextField
+                  select
+                  label="دسته بندی"
+                  value={driverCategory}
+                  onChange={(e) => onChange(e, "driverCategory")}
+                  variant="outlined"
+                  fullWidth
+                  size="small"
+                >
+                  {category.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                      {option.label}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              )}
+            </Grid>
+          </Grid>
+        </Collapse>
+
         <Grid
           item
           xs={12}

@@ -106,16 +106,16 @@ const structure = [
     id: 9,
     label: "اشخاص",
     icon: <i className="material-icons-round">account_circle</i>,
-    permission:
-      Constants.ALL_PERMISSIONS.CUSTOMER_SHOW ||
-      Constants.ALL_PERMISSIONS.USER_SHOW ||
-      Constants.ALL_PERMISSIONS.EMPLOYEE_SHOW ||
-      Constants.ALL_PERMISSIONS.DRIVER_EDIT,
+    // permission:
+    //   Constants.ALL_PERMISSIONS.CUSTOMER_SHOW ||
+    //   Constants.ALL_PERMISSIONS.USER_SHOW ||
+    //   Constants.ALL_PERMISSIONS.EMPLOYEE_SHOW ||
+    //   Constants.ALL_PERMISSIONS.DRIVER_EDIT,
     children: [
       {
         label: "کاربران",
         link: "/app/user-list",
-        permission: Constants.ALL_PERMISSIONS.USER_SHOW,
+        permission: Constants.ALL_PERMISSIONS.FREE,
       },
       {
         label: "مشتریان",

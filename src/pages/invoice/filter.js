@@ -30,7 +30,6 @@ const Filter = ({ onFilter }) => {
   };
 
   const onChnageDate = (e, type) => {
-    console.log(e, type);
     if (type === "from") {
       handleFromDateChange(e);
     } else {

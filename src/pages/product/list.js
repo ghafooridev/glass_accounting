@@ -96,12 +96,22 @@ export default function MainList() {
     url: `depot/transfer`,
   });
 
+  const addDriverRequest = useApi({
+    method: "post",
+    url: `driver`,
+  });
+
   const onSearch = (value) => {
     setSearch(value);
   };
 
   const onSubmitTransfer = async (data) => {
-    await transferRequest.execute(data);
+    if (data.isAddDriver) {
+      await addDriverRequest.execute(data.newDriver);
+      await transferRequest.execute(data);
+    } else {
+      await transferRequest.execute(data);
+    }
     DialogActions.hide();
   };
 
