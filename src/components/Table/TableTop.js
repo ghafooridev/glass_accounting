@@ -8,8 +8,8 @@ import {
   Tooltip,
   TextField,
   Button,
+  Collapse,
 } from "@material-ui/core";
-
 import SearchIcon from "@material-ui/icons/SearchRounded";
 
 const useToolbarStyles = makeStyles((theme) => ({
@@ -38,39 +38,75 @@ const useToolbarStyles = makeStyles((theme) => ({
 
 const TableTop = (props) => {
   const classes = useToolbarStyles();
-  const { title, onAdd } = props;
+  const {
+    title,
+    onAdd,
+    FilterComponent,
+    handleSearch,
+    toolbarClass,
+    addButtonClass,
+    minimal,
+  } = props;
   const [showSearchText, setShowSearchText] = useState(false);
+  const [showFilterBox, setShowFilterBox] = useState(false);
+  const [searchText, setSearchText] = useState();
 
+  const onChangeSearch = (event) => {
+    const { value } = event.target;
+    setSearchText(value);
+    handleSearch(value);
+  };
   return (
-    <Toolbar className={clsx(classes.root, {})}>
-      <Typography
-        className={classes.title}
-        variant="h6"
-        id="tableTitle"
-        component="div"
-      >
-        {title}
-      </Typography>
-      <div className={classes.box}>
-        {showSearchText && (
-          <TextField size="small" label="جستجو" variant="outlined" />
-        )}
-        <Tooltip title="جستجو در جدول">
-          <IconButton
-            aria-label="filter list"
-            onClick={() => setShowSearchText(!showSearchText)}
-          >
-            <SearchIcon />
-          </IconButton>
-        </Tooltip>
-        {typeof onAdd === "function" && (
-          <Button variant="contained" color="primary" onClick={onAdd}>
-            افزودن
-            <span class="material-icons-round">add</span>
-          </Button>
-        )}
-      </div>
-    </Toolbar>
+    <>
+      <Toolbar className={clsx(classes.root, toolbarClass)}>
+        <Typography variant="h6" id="tableTitle" component="div">
+          {title}
+        </Typography>
+        <div className={classes.box}>
+          {showSearchText && (
+            <TextField
+              value={searchText}
+              size="small"
+              label="جستجو"
+              variant="outlined"
+              onChange={onChangeSearch}
+            />
+          )}
+          {handleSearch && (
+            <Tooltip title="جستجو در جدول">
+              <IconButton
+                aria-label="filter list"
+                onClick={() => setShowSearchText(!showSearchText)}
+              >
+                <SearchIcon />
+              </IconButton>
+            </Tooltip>
+          )}
+          {FilterComponent && (
+            <Tooltip title="فیلتر">
+              <IconButton onClick={() => setShowFilterBox(!showFilterBox)}>
+                <i class="material-icons-round">filter_alt</i>
+              </IconButton>
+            </Tooltip>
+          )}
+
+          {typeof onAdd === "function" && (
+            <Button
+              variant={minimal ? "" : "contained"}
+              color={minimal ? "" : "primary"}
+              className={addButtonClass}
+              onClick={onAdd}
+            >
+              {minimal ? "" : "افزودن"}
+              <span class="material-icons-round" style={{ color: "white" }}>
+                add
+              </span>
+            </Button>
+          )}
+        </div>
+      </Toolbar>
+      <Collapse in={showFilterBox}>{FilterComponent}</Collapse>
+    </>
   );
 };
 

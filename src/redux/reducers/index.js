@@ -1,12 +1,12 @@
 import { combineReducers } from "redux";
-import user from "./UserReducer";
 import alert from "./AlertReducer";
 import dialog from "./dialogReducer";
+import unit from "./unitReducer";
 
 const appReducer = combineReducers({
-  user,
   alert,
   dialog,
+  unit,
 });
 
 const rootReducer = (state, action) => {

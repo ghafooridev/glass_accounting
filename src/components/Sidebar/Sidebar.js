@@ -1,27 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Drawer, IconButton, List } from "@material-ui/core";
-import {
-  Home as HomeIcon,
-  Group,
-  FormatSize as TypographyIcon,
-  FilterNone as UIElementsIcon,
-  BorderAll as TableIcon,
-  QuestionAnswer as SupportIcon,
-  LibraryBooks as LibraryIcon,
-  HelpOutline as FAQIcon,
-  ArrowBack as ArrowBackIcon,
-} from "@material-ui/icons";
+import { ArrowForward as ArrowForwardIcon } from "@material-ui/icons";
 import { useTheme } from "@material-ui/styles";
 import { withRouter } from "react-router-dom";
 import classNames from "classnames";
-
-// styles
 import useStyles from "./styles";
-
-// components
 import SidebarLink from "./components/SidebarLink/SidebarLink";
-
-// context
+import Constants from "../../helpers/constant";
 import {
   useLayoutState,
   useLayoutDispatch,
@@ -29,47 +14,150 @@ import {
 } from "../../context/LayoutContext";
 
 const structure = [
-  { id: 0, label: "داشبورد", link: "/app/dashboard", icon: <HomeIcon /> },
+  {
+    id: 0,
+    label: "داشبورد",
+    link: "/app/dashboard",
+    icon: <i className="material-icons-round">home</i>,
+    permission: Constants.ALL_PERMISSIONS.FREE,
+  },
   {
     id: 1,
     label: "کالاها",
-    link: "/app/products",
-    icon: <TypographyIcon />,
+    link: "/app/product-list",
+    icon: <i className="material-icons-round">inventory_2</i>,
+    permission: Constants.ALL_PERMISSIONS.PRODCUT_SHOW,
   },
   {
     id: 2,
-    label: "خرید",
-    link: "/app/sells",
-    icon: <LibraryIcon />,
+    label: "انبار ها",
+    link: "/app/depot-list",
+    icon: <i className="material-icons-round">storefront</i>,
+    permission: Constants.ALL_PERMISSIONS.DEPOT_SHOW,
   },
   {
     id: 3,
-    label: "فروش",
-    link: "/app/buys",
-    icon: <SupportIcon />,
+    label: "صندوق ها",
+    link: "/app/cash-list",
+    icon: <i className="material-icons-round">account_balance_wallet</i>,
+    permission: Constants.ALL_PERMISSIONS.CASH_DESK_SHOW,
   },
   {
     id: 4,
-    label: "گردش مالی",
-    icon: <UIElementsIcon />,
+    type: "divider",
+    permission: Constants.ALL_PERMISSIONS.INVOICE_SHOW,
+  },
+  {
+    id: 5,
+    label: "فاکتور ها",
+    icon: <i className="material-icons-round">receipt</i>,
+    permission: Constants.ALL_PERMISSIONS.INVOICE_SHOW,
     children: [
-      { label: "گردش کلی", link: "/app/ui/icond" },
-      { label: "لیست دریافتی ها", link: "/app/ui/icons" },
-      { label: "لیست پرداختی ها", link: "/app/ui/charts" },
-      { label: "لیست چک ها", link: "/app/ui/maps" },
+      { label: "کل فاکتور ها", link: "/app/invoice-list?type=ALL" },
+      { label: "فاکتور خرید", link: "/app/invoice-list?type=BUY" },
+      { label: "فاکتور فروش", link: "/app/invoice-list?type=SELL" },
     ],
   },
-  { id: 5, type: "divider" },
-  { id: 6, label: "کاربران", link: "/app/users", icon: <TableIcon /> },
-  { id: 7, label: "مشتریان", link: "/app/customers", icon: <TableIcon /> },
+  {
+    id: 6,
+    type: "divider",
+    permission:
+      Constants.ALL_PERMISSIONS.PAYMENT_SHOW ||
+      Constants.ALL_PERMISSIONS.CHEQUE_SHOW,
+  },
+  {
+    id: 7,
+    label: "گزارشات مالی",
+    icon: <i className="material-icons-round">monetization_on</i>,
+    permission:
+      Constants.ALL_PERMISSIONS.PAYMENT_SHOW ||
+      Constants.ALL_PERMISSIONS.CHEQUE_SHOW,
+    children: [
+      { label: "گردش کل", link: "/app/payment-list?type=ALL" },
+      { label: "لیست دریافتی ها", link: "/app/payment-list?type=INCOME" },
+      { label: "لیست پرداختی ها", link: "/app/payment-list?type=OUTCOME" },
+      {
+        label: "لیست چک ها",
+        link: "/app/cheque-list",
+        permission: Constants.ALL_PERMISSIONS.PAYMENT_SHOW,
+      },
+      {
+        label: "لیست شماره حساب ها",
+        link: "/app/accountNumber",
+        permission: Constants.ALL_PERMISSIONS.FREE,
+      },
+      {
+        label: "لیست وام ها",
+        link: "/app/loan-list",
+        permission: Constants.ALL_PERMISSIONS.FREE,
+      },
+    ],
+  },
   {
     id: 8,
-    label: "کارگران",
-    link: "/app/employee",
-    icon: <Group />,
+    type: "divider",
+    permission:
+      Constants.ALL_PERMISSIONS.CUSTOMER_SHOW ||
+      Constants.ALL_PERMISSIONS.USER_SHOW ||
+      Constants.ALL_PERMISSIONS.EMPLOYEE_SHOW ||
+      Constants.ALL_PERMISSIONS.DRIVER_EDIT,
   },
-  { id: 9, type: "divider" },
-  { id: 10, label: "تنظیمات ", link: "/app/Settings", icon: <TableIcon /> },
+  {
+    id: 9,
+    label: "اشخاص",
+    icon: <i className="material-icons-round">account_circle</i>,
+    // permission:
+    //   Constants.ALL_PERMISSIONS.CUSTOMER_SHOW ||
+    //   Constants.ALL_PERMISSIONS.USER_SHOW ||
+    //   Constants.ALL_PERMISSIONS.EMPLOYEE_SHOW ||
+    //   Constants.ALL_PERMISSIONS.DRIVER_EDIT,
+    children: [
+      {
+        label: "کاربران",
+        link: "/app/user-list",
+        permission: Constants.ALL_PERMISSIONS.FREE,
+      },
+      {
+        label: "مشتریان",
+        link: "/app/customer-list",
+        permission: Constants.ALL_PERMISSIONS.CUSTOMER_SHOW,
+      },
+      {
+        label: "پرسنل",
+        link: "/app/employee-list",
+        permission: Constants.ALL_PERMISSIONS.EMPLOYEE_SHOW,
+      },
+      {
+        label: "راننده گان",
+        link: "/app/driver-list",
+        permission: Constants.ALL_PERMISSIONS.DRIVER_EDIT,
+      },
+    ],
+  },
+
+  { id: 13, type: "divider", permission: Constants.ALL_PERMISSIONS.FREE },
+  {
+    id: 14,
+    label: " حضور و غیاب",
+    link: "/app/traffic",
+    icon: <i className="material-icons-round">transfer_within_a_station</i>,
+    permission: Constants.ALL_PERMISSIONS.FREE,
+  },
+
+  {
+    id: 14,
+    label: "دسته بندی ها ",
+    link: "/app/Category",
+    icon: <i className="material-icons-round">category</i>,
+    permission: Constants.ALL_PERMISSIONS.FREE,
+  },
+  // {
+  //   id: 15,
+  //   label: "تنظیمات ",
+  //   link: "/app/Settings",
+  //   icon: <i className="material-icons-round">settings</i>,
+  //   permission: Constants.ALL_PERMISSIONS.FREE,
+  // },
 ];
 
 function Sidebar({ location }) {
@@ -109,7 +197,7 @@ function Sidebar({ location }) {
       <div className={classes.toolbar} />
       <div className={classes.mobileBackButton}>
         <IconButton onClick={() => toggleSidebar(layoutDispatch)}>
-          <ArrowBackIcon
+          <ArrowForwardIcon
             classes={{
               root: classNames(classes.headerIcon, classes.headerIconCollapse),
             }}
@@ -137,6 +225,7 @@ function Sidebar({ location }) {
 
     if (isSmallScreen && isPermanent) {
       setPermanent(false);
+      toggleSidebar(layoutDispatch);
     } else if (!isSmallScreen && !isPermanent) {
       setPermanent(true);
     }

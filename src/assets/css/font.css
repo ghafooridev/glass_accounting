@@ -4,3 +4,14 @@
   src: url("../font/IRANSansWeb.eot?#iefix") format("embedded-opentype"),
     url("../font/IRANSansWeb.woff") format("woff");
 }
+
+*::-webkit-scrollbar {
+  width: 4px;
+}
+*::-webkit-scrollbar-track {
+  borderradius: 10px;
+}
+*::-webkit-scrollbar-thumb {
+  background-color: #00989D;
+  border-radius: 5px;
+}

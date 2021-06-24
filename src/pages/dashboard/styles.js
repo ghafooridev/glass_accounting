@@ -52,8 +52,8 @@ export default makeStyles((theme) => ({
   progressBarPrimary: {
     backgroundColor: theme.palette.primary.main,
   },
-  progressBarWarning: {
-    backgroundColor: theme.palette.warning.main,
+  progressBarSecondary: {
+    backgroundColor: theme.palette.secondary.main,
   },
   performanceLegendWrapper: {
     display: "flex",

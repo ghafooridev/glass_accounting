@@ -13,22 +13,29 @@ import { LayoutProvider } from "./context/LayoutContext";
 import { UserProvider } from "./context/UserContext";
 import store from "./redux/store";
 import RTLProvider from "./themes/RTL";
+import jMoment from "moment-jalaali";
+import JalaliUtils from "@date-io/jalaali";
+import { MuiPickersUtilsProvider } from "@material-ui/pickers";
+
+jMoment.loadPersian({ dialect: "persian-modern", usePersianDigits: true });
 
 ReactDOM.render(
-  <Provider store={store}>
-    <LayoutProvider>
-      <UserProvider>
-        <ThemeProvider theme={Themes.default}>
-          <RTLProvider>
-            <CssBaseline />
-            <App />
-            <Alert />
-            <Dialog />
-          </RTLProvider>
-        </ThemeProvider>
-      </UserProvider>
-    </LayoutProvider>
-  </Provider>,
+  <MuiPickersUtilsProvider utils={JalaliUtils} locale="fa">
+    <Provider store={store}>
+      <LayoutProvider>
+        <UserProvider>
+          <ThemeProvider theme={Themes.default}>
+            <RTLProvider>
+              <CssBaseline />
+              <App />
+              <Alert />
+              <Dialog />
+            </RTLProvider>
+          </ThemeProvider>
+        </UserProvider>
+      </LayoutProvider>
+    </Provider>
+  </MuiPickersUtilsProvider>,
   document.getElementById("root"),
 );
 

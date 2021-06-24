@@ -6,21 +6,22 @@ import AlertAction from "../redux/actions/AlertAction";
 
 const http = axios.create({
   baseURL: constants.API_ADDRESS,
-  headers: {},
-  adapter: cacheAdapterEnhancer(axios.defaults.adapter),
+  headers: {
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Credentials": "true",
+  },
+  // adapter: cacheAdapterEnhancer(axios.defaults.adapter),
 });
 
-// Request interceptor for API calls
 // http.interceptors.request.use(
 //   async (config) => {
-//     const accessToken = storageService.getItem(constants.ACCESS_TOKEN);
-
-//     config.headers = {
-//       Authorization: `Bearer ${accessToken}`,
-//       "Cache-Control": "no-cache",
-//       Accept: "application/json",
-//     };
-//     return config;
+//     // const accessToken = storageService.getItem(constants.ACCESS_TOKEN);
+//     // config.headers = {
+//     //   Authorization: `Bearer ${accessToken}`,
+//     //   "Cache-Control": "no-cache",
+//     //   Accept: "application/json",
+//     // };
+//     // return config;
 //   },
 //   (error) => {
 //     Promise.reject(error);
@@ -28,21 +29,24 @@ const http = axios.create({
 // );
 
 http.interceptors.response.use(
-  (config) => {
+  (result) => {
     // Do something before request is sent
-    console.log("success", config);
-    return config;
+    const { method, url } = result.config;
+    if (method !== "get") {
+      if (url !== "user/login") {
+        AlertAction.show({
+          type: "success",
+          text: "اطلاعات با موفقیت ثبت شد",
+        });
+      }
+    }
+    return result;
   },
   async (error) => {
-    // error Object
-    // {
-    // code: ExcepionsEnum;
-    // message: string;
-    // }
-    console.log("error", error.response);
+    const { code } = error.response.data.error;
     AlertAction.show({
-      type: "success",
-      text: "hey",
+      type: "error",
+      text: constants.ERROR_MESSAGE[code],
     });
 
     // TODO : handle 4xx error here and calling refresh token

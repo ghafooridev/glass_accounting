@@ -5,6 +5,7 @@ const initialState = {
   title: "",
   size: "md",
   disableCloseButton: false,
+  confirm: false,
   onAction: () => {},
 };
 

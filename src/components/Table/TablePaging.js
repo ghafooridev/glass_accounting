@@ -14,14 +14,14 @@ function TablePaging(props) {
   return (
     <TablePagination
       style={{ display: "flex" }}
-      rowsPerPageOptions={[5, 10, 25]}
+      rowsPerPageOptions={[10, 25, 50]}
       component="div"
       count={count}
       rowsPerPage={rowsPerPage}
       page={page}
       onChangePage={handleChangePage}
       onChangeRowsPerPage={handleChangeRowsPerPage}
-      labelRowsPerPage="تعداد ردیف در هر صفحه"
+      labelRowsPerPage="تعداد ردیف "
       backIconButtonText="صفحه قبل"
       nextIconButtonText="صفحه بعد"
       labelDisplayedRows={({ from, to, count }) =>

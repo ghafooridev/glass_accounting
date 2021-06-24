@@ -1,13 +1,11 @@
-import tinycolor from "tinycolor2";
-
-const primary = "#536DFE";
-const secondary = "#FF5C93";
-const warning = "#FFC260";
-const success = "#3CD4A0";
-const info = "#9013FE";
-
-const lightenRate = 7.5;
-const darkenRate = 15;
+export const primary = "#00989D";
+export const secondary = "#FF5C93";
+export const warning = "#FFC260";
+export const success = "#3CD4A0";
+export const info = "#9013FE";
+export const gray = "#B9B9B9";
+export const orange = "#F95700FF";
+export const purple = "#E69A8DFF";
 
 const defaultTheme = {
   direction: "rtl",
@@ -15,29 +13,40 @@ const defaultTheme = {
   palette: {
     primary: {
       main: primary,
-      light: tinycolor(primary).lighten(lightenRate).toHexString(),
-      dark: tinycolor(primary).darken(darkenRate).toHexString(),
+      light: "#dcf0fa",
+      dark: primary,
     },
     secondary: {
       main: secondary,
-      light: tinycolor(secondary).lighten(lightenRate).toHexString(),
-      dark: tinycolor(secondary).darken(darkenRate).toHexString(),
+      light: secondary,
+      dark: secondary,
+      contrastText: "#FFFFFF",
+    },
+    danger: {
+      main: secondary,
+      light: secondary,
+      dark: secondary,
       contrastText: "#FFFFFF",
     },
     warning: {
       main: warning,
-      light: tinycolor(warning).lighten(lightenRate).toHexString(),
-      dark: tinycolor(warning).darken(darkenRate).toHexString(),
+      light: warning,
+      dark: warning,
     },
     success: {
       main: success,
-      light: tinycolor(success).lighten(lightenRate).toHexString(),
-      dark: tinycolor(success).darken(darkenRate).toHexString(),
+      light: success,
+      dark: "#388e3c",
     },
     info: {
       main: info,
-      light: tinycolor(info).lighten(lightenRate).toHexString(),
-      dark: tinycolor(info).darken(darkenRate).toHexString(),
+      light: info,
+      dark: info,
+    },
+    gray: {
+      main: gray,
+      light: gray,
+      dark: gray,
     },
     text: {
       primary: "#6E6E6E",
@@ -96,7 +105,7 @@ const defaultTheme = {
     },
     MuiTableRow: {
       root: {
-        height: 56,
+        height: 45,
       },
     },
     MuiTableCell: {

@@ -1,7 +1,7 @@
 import { makeStyles } from "@material-ui/styles";
 import { fade } from "@material-ui/core/styles/colorManipulator";
 
-export default makeStyles(theme => ({
+export default makeStyles((theme) => ({
   logotype: {
     color: "white",
     marginLeft: theme.spacing(2.5),
@@ -100,7 +100,7 @@ export default makeStyles(theme => ({
   headerMenuButtonSandwich: {
     marginLeft: 9,
     [theme.breakpoints.down("sm")]: {
-      marginLeft: 0
+      marginLeft: 0,
     },
     padding: theme.spacing(0.5),
   },
@@ -115,11 +115,13 @@ export default makeStyles(theme => ({
     color: "white",
   },
   profileMenu: {
-    minWidth: 265,
+    minWidth: 165,
   },
   profileMenuUser: {
     display: "flex",
-    flexDirection: "column",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     padding: theme.spacing(2),
   },
   profileMenuItem: {
@@ -128,9 +130,9 @@ export default makeStyles(theme => ({
   profileMenuIcon: {
     marginRight: theme.spacing(2),
     color: theme.palette.text.hint,
-    '&:hover': {
+    "&:hover": {
       color: theme.palette.primary.main,
-    }
+    },
   },
   profileMenuLink: {
     fontSize: 16,
@@ -140,6 +142,8 @@ export default makeStyles(theme => ({
     },
   },
   messageNotification: {
+    width: "500px",
+    justifyContent: "space-between",
     height: "auto",
     display: "flex",
     alignItems: "center",
@@ -167,9 +171,25 @@ export default makeStyles(theme => ({
     marginLeft: theme.spacing(2),
   },
   purchaseBtn: {
-    [theme.breakpoints.down('sm')]: {
-      display: 'none'
+    [theme.breakpoints.down("sm")]: {
+      display: "none",
     },
-    marginRight: theme.spacing(3)
-  }
+    marginRight: theme.spacing(3),
+  },
+
+  chip: {
+    color: "#fff",
+  },
+  allIcon: {
+    color: theme.palette.primary.main,
+  },
+  INCOME: {
+    backgroundColor: theme.palette.success.main,
+  },
+  incomeIcon: {
+    color: theme.palette.success.main,
+  },
+  OUTCOME: {
+    backgroundColor: theme.palette.danger.main,
+  },
 }));

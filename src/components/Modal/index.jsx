@@ -1,7 +1,7 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import dialogAction from "../../redux/actions/dialogAction";
-import { Grid, Dialog, Typography } from "@material-ui/core";
+import { Grid, Dialog, Typography, Button } from "@material-ui/core";
 import { styles } from "./Modal.Style";
 
 const Modal = function () {
@@ -13,10 +13,12 @@ const Modal = function () {
     onAction,
     size,
     disableCloseButton,
+    confirm,
+    name,
   } = useSelector((state) => state.dialog);
 
   const onClose = function () {
-    dialogAction.hide();
+    dialogAction.hide(name);
   };
 
   return (
@@ -40,9 +42,18 @@ const Modal = function () {
           </i>
         )}
       </Grid>
-      <Grid item xs={12} className={classes.container}>
-        {component && React.cloneElement(component, { onAction })}
-      </Grid>
+      {!confirm && (
+        <Grid item xs={12} className={classes.container}>
+          {component && React.cloneElement(component, { onAction })}
+        </Grid>
+      )}
+      {confirm && (
+        <Grid item xs={12} className={classes.confirm}>
+          <Button variant="contained" color="primary" onClick={onAction}>
+            تایید
+          </Button>
+        </Grid>
+      )}
     </Dialog>
   );
 };

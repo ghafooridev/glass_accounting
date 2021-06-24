@@ -9,7 +9,7 @@ import {
 } from "@material-ui/core";
 
 function TableHeader(props) {
-  const { classes, order, orderBy, onRequestSort, headCells } = props;
+  const { order, orderBy, onRequestSort, headCells } = props;
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
   };
@@ -31,11 +31,6 @@ function TableHeader(props) {
               onClick={createSortHandler(headCell.id)}
             >
               <Typography variant="h6">{headCell.label}</Typography>
-              {orderBy === headCell.id ? (
-                <span className={classes.visuallyHidden}>
-                  {order === "desc" ? "sorted descending" : "sorted ascending"}
-                </span>
-              ) : null}
             </TableSortLabel>
           </TableCell>
         ))}
