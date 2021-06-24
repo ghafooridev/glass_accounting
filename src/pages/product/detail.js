@@ -23,7 +23,7 @@ import { DeleteIcon, EditIcon } from "../../components/icons";
 import { useForm, Controller } from "react-hook-form";
 import { useApi } from "../../hooks/useApi";
 import Constant from "../../helpers/constant";
-import { getQueryString } from "../../helpers/utils";
+import { getQueryString, persianNumber } from "../../helpers/utils";
 import CircularProgress from "../../components/CircularProgress";
 import DialogActions from "../../redux/actions/dialogAction";
 import Amount from "./amount";
@@ -322,6 +322,7 @@ export default function MainDetail() {
 
                           <TableBody>
                             {amounts.map((row) => {
+                              console.log(row);
                               return (
                                 <TableRow
                                   hover
@@ -330,11 +331,17 @@ export default function MainDetail() {
                                   style={{ paddingRight: 10 }}
                                 >
                                   <TableCell padding="none">
-                                    {row.stock}
+                                    {row.perUnit
+                                      ? `${persianNumber(
+                                          row.stock,
+                                        )}*${persianNumber(row.perUnit)}`
+                                      : persianNumber(row.stock)}
                                   </TableCell>
+
                                   <TableCell padding="none">
                                     {row.unit.label}
                                   </TableCell>
+
                                   <TableCell padding="none">
                                     {row.depot.label}
                                   </TableCell>

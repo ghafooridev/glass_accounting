@@ -9,6 +9,9 @@ const Account = ({ onSubmit, onDismiss, defaultValues, units }) => {
   const [depotPicker, setDepotPicker] = useState([]);
   const [seletedUnit, setSelectedUnit] = useState(units[0].value);
   const [seletedDepot, setSelectedDepot] = useState(1);
+  const [showPerUnit, setShowPerUnit] = useState(
+    defaultValues ? !!defaultValues.perUnit : false,
+  );
   const { control, handleSubmit, errors, reset } = useForm();
 
   const getDepotRequest = useApi({
@@ -30,6 +33,13 @@ const Account = ({ onSubmit, onDismiss, defaultValues, units }) => {
   };
 
   const onChangeUnit = (e) => {
+    setSelectedUnit(e.target.value);
+
+    const { value } = e.target;
+
+    const targetUnit = units.filter((item) => item.value === value)[0];
+    setShowPerUnit(targetUnit.perUnit);
+
     setSelectedUnit(e.target.value);
   };
 
@@ -111,6 +121,37 @@ const Account = ({ onSubmit, onDismiss, defaultValues, units }) => {
           ))}
         </TextField>
       </Grid>
+      {showPerUnit && (
+        <Grid item xs={12}>
+          <Controller
+            control={control}
+            render={({ onChange, value, name }) => {
+              return (
+                <TextField
+                  variant="outlined"
+                  label="مقدار در واحد"
+                  name={name}
+                  onChange={onChange}
+                  value={value}
+                  error={!!errors.perUnit}
+                  helperText={errors.perUnit ? errors.perUnit.message : ""}
+                  fullWidth
+                  size="small"
+                  type="number"
+                />
+              );
+            }}
+            rules={{
+              required: Constant.VALIDATION.REQUIRED,
+              min: {
+                value: 0,
+                message: Constant.VALIDATION.POSITIVE_NUMBER,
+              },
+            }}
+            name="perUnit"
+          />
+        </Grid>
+      )}
       <Grid item xs={12}>
         <TextField
           select

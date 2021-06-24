@@ -149,7 +149,7 @@ export default function Header(props) {
           }}
           className={classes.headerMenuButton}
         >
-          <Badge badgeContent={cheques.length} color="secondary">
+          <Badge badgeContent={cheques?.length} color="secondary">
             <NotificationsIcon classes={{ root: classes.headerIcon }} />
           </Badge>
         </IconButton>
@@ -181,7 +181,7 @@ export default function Header(props) {
             </Button>
           </div>
           <Divider />
-          {cheques.map((message) => (
+          {cheques?.map((message) => (
             <MenuItem key={message.id} className={classes.messageNotification}>
               <Typography variant="h6">
                 {persianNumber(

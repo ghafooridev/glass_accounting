@@ -20,6 +20,7 @@ import styles from "./style";
 import Constant from "../../helpers/constant";
 import { Slide } from "@material-ui/core";
 import TableSkeleton from "../../components/Skeleton";
+import AmountBrif from "./amountBrif";
 
 const headCells = [
   {
@@ -85,18 +86,35 @@ const MainList = () => {
     url: `depot`,
   });
 
-  const handleAction = (id, type) => {
+  const handleAction = (row, type) => {
     const types = {
+      amount: () => {
+        DialogActions.show({
+          title: "موجودی در انبار ها",
+          component: (
+            <AmountBrif
+              onSubmit={() => {
+                DialogActions.hide();
+              }}
+              depotId={row.id}
+            />
+          ),
+          size: "xs",
+          confirm: false,
+          disableCloseButton: true,
+        });
+      },
+
       edit: () => {
-        history.push(`/app/depot-detail?id=${id}`);
+        history.push(`/app/depot-detail?id=${row.id}`);
       },
       delete: () => {
         DialogActions.show({
           confirm: true,
           title: "ایا از حذف این رکورد مطمئن هستید ؟",
           onAction: async () => {
-            await deleteUseRequest.execute(null, id);
-            setList(list.filter((item) => item.id !== id));
+            await deleteUseRequest.execute(null, row.id);
+            setList(list.filter((item) => item.id !== row.id));
             DialogActions.hide();
           },
           size: "sm",
@@ -166,11 +184,12 @@ const MainList = () => {
                               <TableCell padding="none">
                                 <TableRowMenu
                                   options={[
+                                    { id: "amount", title: "موجودی" },
                                     { id: "edit", title: "ویرایش" },
                                     { id: "delete", title: "حذف" },
                                   ]}
                                   hadleAction={(type) =>
-                                    handleAction(row.id, type)
+                                    handleAction(row, type)
                                   }
                                 />
                               </TableCell>

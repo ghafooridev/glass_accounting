@@ -19,6 +19,6 @@ export default {
   },
 
   getProductUnit() {
-    return store.getState().unit;
+    return JSON.parse(Storage.getItem(Constant.STORAGE.PRODUCT_UNITS));
   },
 };

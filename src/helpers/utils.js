@@ -40,7 +40,7 @@ export const getRandomColorFromTheme = () => {
     gray,
   ];
   var color = colors[Math.floor(Math.random() * colors.length)];
-  console.log(color);
+
   return color;
 };
 

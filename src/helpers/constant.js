@@ -17,6 +17,7 @@ const Constant = {
     BOX: "بکس",
     SHEL: "شل",
     CUBICMETERS: "مترمکعب",
+    PALLET: "پالت",
   },
   ACTION_TYPES: {
     SHOW_ALERT: "SHOW_ALERT",

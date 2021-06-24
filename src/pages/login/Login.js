@@ -19,13 +19,13 @@ function Login(props) {
   const userDispatch = useUserDispatch();
   const loginRequest = useApi({
     method: "post",
-    url: "user/login",
+    url: "auth/login",
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const [usernameValue, setUsernameValue] = useState("ali");
-  const [passwordValue, setPasswordValue] = useState("123456");
+  const [usernameValue, setUsernameValue] = useState("");
+  const [passwordValue, setPasswordValue] = useState("");
 
   const onPressEnter = function (event) {
     if (event.which === 13 && passwordValue && usernameValue) {

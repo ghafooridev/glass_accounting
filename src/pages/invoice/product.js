@@ -6,20 +6,12 @@ import {
   TableCell,
   TableRow,
   Typography,
-  Chip,
   Button,
   Grid,
-  Paper,
   TextField,
-  ButtonGroup,
-  AccordionSummary,
-  AccordionDetails,
-  Accordion,
-  IconButt,
   MenuItem,
   Divider,
 } from "@material-ui/core";
-import clsx from "clsx";
 import TableTop from "../../components/Table/TableTop";
 import TableHeader from "../../components/Table/TableHead";
 import TablePaging from "../../components/Table/TablePaging";
@@ -27,7 +19,7 @@ import { useApi } from "../../hooks/useApi";
 import { convertParamsToQueryString } from "../../helpers/utils";
 import styles from "./style";
 import Constant from "../../helpers/constant";
-import { useForm, Controller } from "react-hook-form";
+import { v4 as uuid } from "uuid";
 import unitAction from "../../redux/actions/unitAction";
 import isEmpty from "lodash.isempty";
 
@@ -54,6 +46,7 @@ export default function ProductList({
   onDismiss,
   customerId,
   defaultValues,
+  action,
 }) {
   const classes = styles();
   const [order, setOrder] = useState("asc");
@@ -62,6 +55,9 @@ export default function ProductList({
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(Constant.TABLE_PAGE_SIZE);
   const [list, setList] = useState([]);
+  const [showPerUnit, setShowPerUnit] = useState(
+    defaultValues ? !!defaultValues.perUnit : false,
+  );
   const units = unitAction.getProductUnit();
   const [selectedProduct, setSelectedProduct] = useState(defaultValues);
   const [depotPicker, setDepotPicker] = useState([]);
@@ -73,7 +69,6 @@ export default function ProductList({
       amount: "",
     },
   );
-
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
@@ -111,7 +106,20 @@ export default function ProductList({
   });
 
   const onChangeSelectedProduct = (e) => {
-    setProductFee({ ...productFee, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+
+    if (name === "unit") {
+      const allUnits = units.filter(
+        (item) => item.value === selectedProduct?.unitBaseId,
+      )[0].children;
+      const targetUnit = allUnits.filter((item) => item.value === value)[0];
+      setShowPerUnit(targetUnit.perUnit);
+    }
+    setProductFee({
+      ...productFee,
+      [name]: value,
+      unitBaseId: selectedProduct?.unitBaseId,
+    });
   };
 
   const onSearch = (value) => {
@@ -142,13 +150,7 @@ export default function ProductList({
 
   const onSelectProduct = async (data) => {
     setSelectedProduct(data);
-    const fee = await getProductFeeRequest.execute(
-      null,
-      `${customerId}/${data.id}`,
-    );
-
-    const feeProduct = fee.data;
-    if (isEmpty(feeProduct)) {
+    if (customerId === 1) {
       setProductFee({
         productId: data.id,
         name: data.name,
@@ -156,7 +158,22 @@ export default function ProductList({
         amount: "",
       });
     } else {
-      setProductFee({ ...feeProduct, productId: data.id });
+      const fee = await getProductFeeRequest.execute(
+        null,
+        `${customerId}/${data.id}`,
+      );
+
+      const feeProduct = fee.data;
+      if (isEmpty(feeProduct)) {
+        setProductFee({
+          productId: data.id,
+          name: data.name,
+          fee: "",
+          amount: "",
+        });
+      } else {
+        setProductFee({ ...feeProduct, productId: data.id });
+      }
     }
   };
 
@@ -165,12 +182,16 @@ export default function ProductList({
   };
 
   const onDone = () => {
-    console.log(productFee);
-    onSubmit({
+    const newId = uuid();
+    const data = {
+      id: defaultValues ? defaultValues.id : newId,
+      action,
       ...productFee,
       depotId: selectedDepot,
       totalFee: Number(productFee.fee) * Number(productFee.amount),
-    });
+    };
+
+    onSubmit(data);
   };
 
   const getDepotPicker = async () => {
@@ -224,6 +245,20 @@ export default function ProductList({
               ))}
             </TextField>
           </Grid>
+          {showPerUnit && (
+            <Grid item lg={6} xs={12}>
+              <TextField
+                variant="outlined"
+                label="مقدار در واحد"
+                name={"perUnit"}
+                onChange={onChangeSelectedProduct}
+                value={productFee?.perUnit}
+                fullWidth
+                size="small"
+                type="number"
+              />
+            </Grid>
+          )}
           <Grid item lg={6} xs={12}>
             <TextField
               variant="outlined"
@@ -314,6 +349,7 @@ export default function ProductList({
                   <TableCell padding="none">
                     {selectedProduct?.id === row.id ? (
                       <Button
+                        disabled={!!defaultValues}
                         variant="contained"
                         className={classes.selectedButton}
                         onClick={() => onDeselectProduct(row)}
@@ -323,6 +359,7 @@ export default function ProductList({
                       </Button>
                     ) : (
                       <Button
+                        disabled={!!defaultValues}
                         variant="contained"
                         color="primary"
                         onClick={() => onSelectProduct(row)}

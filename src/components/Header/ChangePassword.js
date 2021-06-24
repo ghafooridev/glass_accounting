@@ -3,19 +3,35 @@ import { Grid, TextField, Button, InputAdornment } from "@material-ui/core";
 import { useForm, Controller } from "react-hook-form";
 import clsx from "clsx";
 import Constant from "../../helpers/constant";
+import { useApi } from "../../hooks/useApi";
+import storageService from "../../services/storage";
 
 const MainDetail = ({ onSubmit, onDismiss }) => {
   const { control, handleSubmit, errors, reset } = useForm();
   const [isPassword, setIsPassword] = useState(true);
   const passwordRef = useRef(null);
+
+  const changePasswordRequest = useApi({
+    method: "put",
+    url: `user/password/change`,
+  });
+
   const onChangeViewClick = function () {
     setIsPassword(!isPassword);
   };
 
   const onDone = (data) => {
+    const { id } = JSON.parse(
+      storageService.getItem(Constant.STORAGE.CURRENT_USER),
+    );
+    changePasswordRequest.execute({
+      id,
+      oldPassword: data.prePassword,
+      newPassword: data.password,
+    });
     onSubmit(data);
   };
-  console.log(errors);
+
   return (
     <form onSubmit={handleSubmit(onDone)}>
       <Grid container spacing={3}>

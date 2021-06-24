@@ -231,7 +231,7 @@ export default function Dashboard(props) {
     const { cashDesks } = dashboardChart;
     const newCashDesks = [];
 
-    cashDesks.map((item) => {
+    cashDesks?.map((item) => {
       newCashDesks.push({ ...item, color: getRandomColorFromTheme() });
     });
 

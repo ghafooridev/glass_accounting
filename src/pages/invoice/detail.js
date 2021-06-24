@@ -178,6 +178,7 @@ export default function MainDetail({ defaultValues }) {
       customerId: selectedPerson ? selectedPerson.id : 1,
       type: invoiceType,
       categoryId: invoiceCategory,
+      globalCustomer: invoicePerson,
     };
     if (id) {
       await editInvoiceRequest.execute(value);
@@ -258,7 +259,14 @@ export default function MainDetail({ defaultValues }) {
   };
 
   const onSubmitProduct = (product) => {
-    setProducts([...products, product]);
+    if (product.action === "edit") {
+      const index = products.findIndex((item) => item.id === product.id);
+      const ProductsTmp = [...products];
+      ProductsTmp[index] = product;
+      setProducts(ProductsTmp);
+    } else {
+      setProducts([...products, product]);
+    }
     dialogAction.hide();
   };
 
@@ -271,10 +279,10 @@ export default function MainDetail({ defaultValues }) {
   };
 
   const handleEditProduct = (item) => {
-    onShowProductDialog(item);
+    onShowProductDialog("edit", item);
   };
 
-  const onShowProductDialog = (data) => {
+  const onShowProductDialog = (type, data) => {
     dialogAction.show({
       title: "انتخاب کالا",
       component: (
@@ -283,6 +291,7 @@ export default function MainDetail({ defaultValues }) {
           onDismiss={onDismissProduct}
           customerId={selectedPerson ? selectedPerson.id : 1}
           defaultValues={data}
+          action={type}
         />
       ),
       size: "lg",
@@ -511,7 +520,7 @@ export default function MainDetail({ defaultValues }) {
                     style={{ marginLeft: 10, width: "30%" }}
                     variant="contained"
                     color="primary"
-                    onClick={() => onShowProductDialog(null)}
+                    onClick={() => onShowProductDialog("add")}
                     endIcon={
                       <i className="material-icons-round">inventory_2</i>
                     }
@@ -546,7 +555,11 @@ export default function MainDetail({ defaultValues }) {
                                     {Constant.UNITS_MAP[row.unit]}
                                   </TableCell>
                                   <TableCell padding="none">
-                                    {persianNumber(row.amount)}
+                                    {row.perUnit
+                                      ? `${persianNumber(
+                                          row.amount,
+                                        )}*${persianNumber(row.perUnit)}`
+                                      : persianNumber(row.amount)}
                                   </TableCell>
                                   <TableCell padding="none">
                                     {persianNumber(row.fee)}
