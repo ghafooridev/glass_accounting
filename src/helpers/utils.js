@@ -49,7 +49,7 @@ export const getRandomNumber = (min, max) => {
 };
 
 export const persianNumber = (en) => {
-  if (en && typeof en !== number) {
+  if ((en || en === 0) && typeof en !== number) {
     return ("" + en).replace(/[0-9]/g, function (t) {
       return "۰۱۲۳۴۵۶۷۸۹".substr(+t, 1);
     });

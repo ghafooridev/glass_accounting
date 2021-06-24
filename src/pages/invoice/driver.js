@@ -21,20 +21,17 @@ import Constant from "../../helpers/constant";
 
 const headCells = [
   {
-    id: "type",
-    label: "نوع شخص",
-  },
-  {
     id: "firstName",
     label: "نام",
   },
+  { id: "lastName", label: "نام خانوادگی" },
   {
     id: "category",
     label: "دسته بندی",
   },
-  { id: "lastName", label: "نام خانوادگی" },
+  { id: "mobile", label: "موبایل" },
+  { id: "carName", label: "ماشین" },
 
-  { id: "status", label: "وضعیت" },
   { id: "action" },
 ];
 
@@ -124,7 +121,7 @@ export default function MainList({ onSelect, onDismiss }) {
                 >
                   <TableCell padding="none">{row.firstName}</TableCell>
                   <TableCell padding="none">{row.lastName}</TableCell>
-                  <TableCell padding="none">{row.category}</TableCell>
+                  <TableCell padding="none">{row.category.name}</TableCell>
                   <TableCell padding="none">{row.mobile}</TableCell>
                   <TableCell padding="none">{row.carName}</TableCell>
                   <TableCell padding="none">

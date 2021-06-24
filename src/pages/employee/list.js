@@ -141,7 +141,7 @@ export default function MainList() {
               <div className={classes.root}>
                 <Paper className={classes.paper}>
                   <TableTop
-                    title="لیست مشتریان"
+                    title="لیست پرسنل"
                     onAdd={onAdd}
                     FilterComponent={<FilterComponent onFilter={onFilter} />}
                     handleSearch={onSearch}

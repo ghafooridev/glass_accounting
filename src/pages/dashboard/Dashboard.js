@@ -536,7 +536,7 @@ export default function Dashboard(props) {
           <Widget title="موجودی صندوق ها" upperTitle className={classes.card}>
             <Grid container spacing={2}>
               {pieChart.length && (
-                <Grid item xs={8}>
+                <Grid item sm={8} xs={12}>
                   <div style={{ width: "100%", height: "330px" }}>
                     <div style={{ width: "100%", height: "100%" }}>
                       <ResponsiveContainer width="100%" height="100%">
@@ -561,7 +561,7 @@ export default function Dashboard(props) {
                   </div>
                 </Grid>
               )}
-              <Grid item xs={4}>
+              <Grid item sm={4} xs={12}>
                 <div className={classes.pieChartLegendWrapper}>
                   {pieChart.map(({ name, amount, color }, index) => (
                     <div key={color} className={classes.legendItemContainer}>

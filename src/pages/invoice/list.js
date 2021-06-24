@@ -32,7 +32,7 @@ import TableSkeleton from "../../components/Skeleton";
 import FilterComponent from "./filter";
 
 const headCells = [
-  { id: "id", label: "کد" },
+  { id: "id", label: "شماره" },
   {
     id: "person",
     label: "مشتری",
@@ -256,7 +256,9 @@ const MainList = () => {
                             >
                               <TableCell padding="none">{row.id}</TableCell>
                               <TableCell padding="none">
-                                {row.customer}
+                                {row.globalCustomer
+                                  ? row.globalCustomer
+                                  : row.customer}
                               </TableCell>
                               <TableCell padding="none">
                                 {persianNumber(
