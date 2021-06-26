@@ -721,7 +721,7 @@ export default function MainDetail({ defaultValues }) {
                   <Button variant="contained" color="primary" type="submit">
                     تایید
                   </Button>
-                  <Button
+                  {/* <Button
                     variant="outlined"
                     color="primary"
                     type="button"
@@ -731,7 +731,7 @@ export default function MainDetail({ defaultValues }) {
                     onClick={onOtherPayments}
                   >
                     پرداخت متفرقه
-                  </Button>
+                  </Button> */}
                   <Button
                     variant="contained"
                     color="secondary"
