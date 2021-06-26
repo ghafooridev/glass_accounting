@@ -136,13 +136,13 @@ const structure = [
   },
 
   { id: 13, type: "divider", permission: Constants.ALL_PERMISSIONS.FREE },
-  {
-    id: 14,
-    label: " حضور و غیاب",
-    link: "/app/traffic",
-    icon: <i className="material-icons-round">transfer_within_a_station</i>,
-    permission: Constants.ALL_PERMISSIONS.FREE,
-  },
+  // {
+  //   id: 14,
+  //   label: " حضور و غیاب",
+  //   link: "/app/traffic",
+  //   icon: <i className="material-icons-round">transfer_within_a_station</i>,
+  //   permission: Constants.ALL_PERMISSIONS.FREE,
+  // },
 
   {
     id: 14,

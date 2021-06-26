@@ -258,8 +258,8 @@ export default function MainDetail({ defaultValues }) {
     });
   };
 
-  const onSubmitProduct = (product) => {
-    if (product.action === "edit") {
+  const onSubmitProduct = (product, type) => {
+    if (type === "edit") {
       const index = products.findIndex((item) => item.id === product.id);
       const ProductsTmp = [...products];
       ProductsTmp[index] = product;
@@ -353,18 +353,18 @@ export default function MainDetail({ defaultValues }) {
   };
 
   const onOtherPayments = () => {
-    dialogAction.show({
-      title: "انتخاب کالا",
-      component: (
-        <OtherPayments
-          onSubmit={onSubmitOtherPayments}
-          onDismiss={onDismissOtherPayments}
-        />
-      ),
-      size: "lg",
-      confirm: false,
-      disableCloseButton: true,
-    });
+    // dialogAction.show({
+    //   title: "انتخاب کالا",
+    //   component: (
+    //     <OtherPayments
+    //       onSubmit={onSubmitOtherPayments}
+    //       onDismiss={onDismissOtherPayments}
+    //     />
+    //   ),
+    //   size: "lg",
+    //   confirm: false,
+    //   disableCloseButton: true,
+    // });
   };
 
   useEffect(() => {

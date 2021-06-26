@@ -185,13 +185,12 @@ export default function ProductList({
     const newId = uuid();
     const data = {
       id: defaultValues ? defaultValues.id : newId,
-      action,
       ...productFee,
       depotId: selectedDepot,
       totalFee: Number(productFee.fee) * Number(productFee.amount),
     };
 
-    onSubmit(data);
+    onSubmit(data, action);
   };
 
   const getDepotPicker = async () => {
