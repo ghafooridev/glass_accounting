@@ -690,18 +690,20 @@ export default function MainDetail({ defaultValues }) {
                       size="small"
                     />
                   </Grid>
-                  <Grid item lg={3} xs={6}>
-                    <TextField
-                      disabled
-                      variant="outlined"
-                      label="مانده قبلی"
-                      value={
-                        selectedPerson ? selectedPerson.accountRemaining : 0
-                      }
-                      fullWidth
-                      size="small"
-                    />
-                  </Grid>
+                  {selectedPerson && (
+                    <Grid item lg={3} xs={6}>
+                      <TextField
+                        disabled
+                        variant="outlined"
+                        label="مانده قبلی"
+                        value={
+                          selectedPerson ? selectedPerson.accountRemaining : 0
+                        }
+                        fullWidth
+                        size="small"
+                      />
+                    </Grid>
+                  )}
                   <Grid item lg={3} xs={6}>
                     <TextField
                       disabled
