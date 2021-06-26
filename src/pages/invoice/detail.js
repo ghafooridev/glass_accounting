@@ -27,7 +27,7 @@ import PersonSelector from "../payment/personSelector";
 import { DatePicker } from "@material-ui/pickers";
 import moment from "moment";
 import dialogAction from "../../redux/actions/dialogAction";
-import isEmpty from "lodash.isempty";
+import OtherPayments from "./OtherPayments";
 import PrePayment from "../payment/prePayment";
 import Drivers from "./driver";
 import Product from "./product";
@@ -342,6 +342,29 @@ export default function MainDetail({ defaultValues }) {
 
   const onChangeInvoicePerson = (e) => {
     setInvoicePerson(e.target.value);
+  };
+
+  const onDismissOtherPayments = () => {
+    dialogAction.hide();
+  };
+
+  const onSubmitOtherPayments = (data) => {
+    console.log(data);
+  };
+
+  const onOtherPayments = () => {
+    dialogAction.show({
+      title: "انتخاب کالا",
+      component: (
+        <OtherPayments
+          onSubmit={onSubmitOtherPayments}
+          onDismiss={onDismissOtherPayments}
+        />
+      ),
+      size: "lg",
+      confirm: false,
+      disableCloseButton: true,
+    });
   };
 
   useEffect(() => {
@@ -697,6 +720,17 @@ export default function MainDetail({ defaultValues }) {
                 >
                   <Button variant="contained" color="primary" type="submit">
                     تایید
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    type="button"
+                    endIcon={
+                      <i className="material-icons-round">attach_money</i>
+                    }
+                    onClick={onOtherPayments}
+                  >
+                    پرداخت متفرقه
                   </Button>
                   <Button
                     variant="contained"

@@ -179,6 +179,7 @@ export default function MainDetail() {
   };
 
   const handleDeleteAmount = (id) => {
+    console.log(amounts, id);
     DialogActions.show({
       confirm: true,
       title: "ایا از حذف این رکورد مطمئن هستید ؟",
