@@ -22,6 +22,8 @@ export default function MainDetail({ productId, units, onSubmit, onDismiss }) {
   const [category, setCategory] = useState([]);
   const [driverCategory, setDriverCategory] = useState(1);
   const [newDriver, setNewDriver] = useState();
+  const [showPerUnit, setShowPerUnit] = useState(false);
+  const [perUnit, setPerUnit] = useState();
 
   const getDepotRequest = useApi({
     method: "get",
@@ -49,6 +51,7 @@ export default function MainDetail({ productId, units, onSubmit, onDismiss }) {
       destinationDepotId: selectedDestination,
       productId,
       amount,
+      perUnit,
       unit: selectedUnit,
       description,
       isAddDriver,
@@ -77,6 +80,11 @@ export default function MainDetail({ productId, units, onSubmit, onDismiss }) {
       },
       unit: () => {
         setSelectedUnit(e.target.value);
+        console.log(units, e.target.value);
+        const targetUnit = units.filter(
+          (item) => item.value === e.target.value,
+        )[0];
+        setShowPerUnit(targetUnit.perUnit);
       },
       driverName: () => {
         setNewDriver({ ...newDriver, driverName: e.target.value });
@@ -89,6 +97,9 @@ export default function MainDetail({ productId, units, onSubmit, onDismiss }) {
       },
       driverCategory: () => {
         setNewDriver({ ...newDriver, driverCategory: e.target.value });
+      },
+      perUnit: () => {
+        setPerUnit(e.target.value);
       },
     };
     if (types[type]) {
@@ -154,18 +165,7 @@ export default function MainDetail({ productId, units, onSubmit, onDismiss }) {
             ))}
           </TextField>
         </Grid>
-        <Grid item xs={12}>
-          <TextField
-            type="number"
-            variant="outlined"
-            label="مقدار"
-            name={"amount"}
-            onChange={(e) => onChange(e, "amount")}
-            value={amount}
-            fullWidth
-            size="small"
-          />
-        </Grid>
+
         <Grid item xs={12}>
           <TextField
             select
@@ -184,6 +184,33 @@ export default function MainDetail({ productId, units, onSubmit, onDismiss }) {
             ))}
           </TextField>
         </Grid>
+
+        <Grid item xs={12}>
+          <TextField
+            type="number"
+            variant="outlined"
+            label="مقدار"
+            name={"amount"}
+            onChange={(e) => onChange(e, "amount")}
+            value={amount}
+            fullWidth
+            size="small"
+          />
+        </Grid>
+        {showPerUnit && (
+          <Grid item xs={12}>
+            <TextField
+              variant="outlined"
+              label="مقدار در واحد"
+              name={"perUnit"}
+              onChange={(e) => onChange(e, "perUnit")}
+              value={perUnit}
+              fullWidth
+              size="small"
+              type="number"
+            />
+          </Grid>
+        )}
         <Grid item xs={12}>
           <TextField
             multiline

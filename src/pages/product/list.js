@@ -33,10 +33,7 @@ const headCells = [
     id: "category",
     label: "دسته بندی",
   },
-  {
-    id: "amount",
-    label: "موجودی کل",
-  },
+
   {
     id: "DefaultUnit",
     label: "واحد پیش فرض",
@@ -153,7 +150,6 @@ export default function MainList() {
       transaction: () => {},
 
       transfer: () => {
-        console.log(row);
         let units;
         const allUnits = unitAction
           .getProductUnit()
@@ -235,9 +231,7 @@ export default function MainList() {
                               <TableCell padding="none">
                                 {row.categories.join(",")}
                               </TableCell>
-                              <TableCell padding="none">
-                                {row.totalStock}
-                              </TableCell>
+
                               <TableCell padding="none">
                                 {row.defaultUnit}
                               </TableCell>

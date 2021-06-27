@@ -46,7 +46,7 @@ http.interceptors.response.use(
     const { code } = error.response.data.error;
     AlertAction.show({
       type: "error",
-      text: constants.ERROR_MESSAGE[code],
+      text: "خطایی رخ داده است",
     });
 
     // TODO : handle 4xx error here and calling refresh token

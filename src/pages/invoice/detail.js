@@ -254,8 +254,8 @@ export default function MainDetail({ defaultValues }) {
     });
   };
 
-  const onSubmitProduct = (product) => {
-    if (product.action === "edit") {
+  const onSubmitProduct = (product, type) => {
+    if (type === "edit") {
       const index = products.findIndex((item) => item.id === product.id);
       const ProductsTmp = [...products];
       ProductsTmp[index] = product;
@@ -349,18 +349,18 @@ export default function MainDetail({ defaultValues }) {
   };
 
   const onOtherPayments = () => {
-    dialogAction.show({
-      title: "انتخاب کالا",
-      component: (
-        <OtherPayments
-          onSubmit={onSubmitOtherPayments}
-          onDismiss={onDismissOtherPayments}
-        />
-      ),
-      size: "lg",
-      confirm: false,
-      disableCloseButton: true,
-    });
+    // dialogAction.show({
+    //   title: "انتخاب کالا",
+    //   component: (
+    //     <OtherPayments
+    //       onSubmit={onSubmitOtherPayments}
+    //       onDismiss={onDismissOtherPayments}
+    //     />
+    //   ),
+    //   size: "lg",
+    //   confirm: false,
+    //   disableCloseButton: true,
+    // });
   };
 
   useEffect(() => {
@@ -686,18 +686,20 @@ export default function MainDetail({ defaultValues }) {
                       size="small"
                     />
                   </Grid>
-                  <Grid item lg={3} xs={6}>
-                    <TextField
-                      disabled
-                      variant="outlined"
-                      label="مانده قبلی"
-                      value={
-                        selectedPerson ? selectedPerson.accountRemaining : 0
-                      }
-                      fullWidth
-                      size="small"
-                    />
-                  </Grid>
+                  {selectedPerson && (
+                    <Grid item lg={3} xs={6}>
+                      <TextField
+                        disabled
+                        variant="outlined"
+                        label="مانده قبلی"
+                        value={
+                          selectedPerson ? selectedPerson.accountRemaining : 0
+                        }
+                        fullWidth
+                        size="small"
+                      />
+                    </Grid>
+                  )}
                   <Grid item lg={3} xs={6}>
                     <TextField
                       disabled
@@ -717,7 +719,7 @@ export default function MainDetail({ defaultValues }) {
                   <Button variant="contained" color="primary" type="submit">
                     تایید
                   </Button>
-                  <Button
+                  {/* <Button
                     variant="outlined"
                     color="primary"
                     type="button"
@@ -727,7 +729,7 @@ export default function MainDetail({ defaultValues }) {
                     onClick={onOtherPayments}
                   >
                     پرداخت متفرقه
-                  </Button>
+                  </Button> */}
                   <Button
                     variant="contained"
                     color="secondary"
