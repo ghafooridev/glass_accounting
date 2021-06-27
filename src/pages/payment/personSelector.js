@@ -19,11 +19,7 @@ import { convertParamsToQueryString } from "../../helpers/utils";
 import styles from "./style";
 import Constant from "../../helpers/constant";
 
-const headCells = [
-  {
-    id: "type",
-    label: "نوع شخص",
-  },
+const headCellsCustomer = [
   {
     id: "firstName",
     label: "نام",
@@ -31,6 +27,11 @@ const headCells = [
   { id: "lastName", label: "نام خانوادگی" },
 
   { id: "status", label: "وضعیت" },
+  { id: "action" },
+];
+const headCellsPerson = [
+  { id: "lastName", label: "نام و نام خانوادگی" },
+
   { id: "action" },
 ];
 
@@ -59,8 +60,7 @@ export default function MainList({ onSelect, onDismiss, filter }) {
   };
 
   const onSelectPerson = (data) => {
-    const person = { id: data.value, name: data.label, type: data.personType };
-    onSelect(person);
+    onSelect(data);
   };
 
   const getCustomerRequest = useApi({
@@ -98,7 +98,9 @@ export default function MainList({ onSelect, onDismiss, filter }) {
             orderBy={orderBy}
             onRequestSort={handleRequestSort}
             rowCount={list.length}
-            headCells={headCells}
+            headCells={
+              filter === "person" ? headCellsPerson : headCellsCustomer
+            }
           />
 
           <TableBody>
@@ -107,17 +109,29 @@ export default function MainList({ onSelect, onDismiss, filter }) {
                 <TableRow
                   hover
                   tabIndex={-1}
-                  key={row.value}
+                  key={filter === "customer" ? row.id : row.value}
                   style={{ paddingRight: 10 }}
                 >
-                  <TableCell padding="none">{row.label}</TableCell>
+                  {filter === "person" && (
+                    <TableCell padding="none">{row.label}</TableCell>
+                  )}
 
-                  <TableCell padding="none">
-                    <Chip
-                      label={Constant.PERSON_STATUS[row.personType]}
-                      className={clsx(classes.status, classes[row.personType])}
-                    />
-                  </TableCell>
+                  {filter === "customer" && (
+                    <TableCell padding="none">{row.firstName}</TableCell>
+                  )}
+                  {filter === "customer" && (
+                    <TableCell padding="none">{row.lastName}</TableCell>
+                  )}
+
+                  {filter === "customer" && (
+                    <TableCell padding="none">
+                      <Chip
+                        label={Constant.PERSON_STATUS[row.status]}
+                        className={clsx(classes.status, classes[row.status])}
+                      />
+                    </TableCell>
+                  )}
+
                   <TableCell padding="none">
                     <Button
                       variant="contained"

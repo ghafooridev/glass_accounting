@@ -109,7 +109,7 @@ export default function MainDetail({ defaultValues }) {
     const value = {
       type: paymentType,
       personType: "CUSTOMER", //TODO : we should change it later . give this data from person selector component
-      personId: selectedPerson.id,
+      personId: selectedPerson.value,
       description: data.description,
       date: selectedDate._d,
       isLoan,
@@ -153,7 +153,7 @@ export default function MainDetail({ defaultValues }) {
 
   const getPersonName = () => {
     if (selectedPerson) {
-      return `${selectedPerson.name}`;
+      return `${selectedPerson.label}`;
     }
     return "";
   };

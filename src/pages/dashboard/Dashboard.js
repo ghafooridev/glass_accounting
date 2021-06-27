@@ -185,27 +185,23 @@ export default function Dashboard(props) {
   };
 
   const getPieChartData = async () => {
-    const dashboardChart = await getDashboardRequest.execute();
-    const cashDesks = dashboardChart.data;
-    const newCashDesks = [];
-
-    cashDesks?.map((item) => {
-      newCashDesks.push({ ...item, color: getRandomColorFromTheme() });
-    });
-
-    setPieChart(newCashDesks);
+    // const dashboardChart = await getDashboardRequest.execute();
+    // const cashDesks = dashboardChart.data;
+    // const newCashDesks = [];
+    // cashDesks?.map((item) => {
+    //   newCashDesks.push({ ...item, color: getRandomColorFromTheme() });
+    // });
+    //  setPieChart(newCashDesks);
   };
 
   const getPaymentChart = async () => {
-    const chart = await getPaymentRequest.execute();
-
-    setPaymentChart(chart.data);
+    //const chart = await getPaymentRequest.execute();
+    // setPaymentChart(chart.data);
   };
 
   const getFactorChart = async () => {
-    const chart = await getFactorRequest.execute();
-
-    setFactorChart(chart.data);
+    //const chart = await getFactorRequest.execute();
+    // setFactorChart(chart.data);
   };
 
   useEffect(() => {
