@@ -58,6 +58,11 @@ export default function MainList({ onSelect, onDismiss, filter }) {
     setPage(0);
   };
 
+  const onSelectPerson = (data) => {
+    const person = { id: data.value, name: data.label, type: data.personType };
+    onSelect(person);
+  };
+
   const getCustomerRequest = useApi({
     method: "get",
     url: `${filter}?${convertParamsToQueryString({
@@ -102,23 +107,22 @@ export default function MainList({ onSelect, onDismiss, filter }) {
                 <TableRow
                   hover
                   tabIndex={-1}
-                  key={row.id}
+                  key={row.value}
                   style={{ paddingRight: 10 }}
                 >
-                  <TableCell padding="none">{row.firstName}</TableCell>
-                  <TableCell padding="none">{row.lastName}</TableCell>
-                  <TableCell padding="none">{row.mobile}</TableCell>
+                  <TableCell padding="none">{row.label}</TableCell>
+
                   <TableCell padding="none">
                     <Chip
-                      label={Constant.PERSON_STATUS[row.status]}
-                      className={clsx(classes.status, classes[row.status])}
+                      label={Constant.PERSON_STATUS[row.personType]}
+                      className={clsx(classes.status, classes[row.personType])}
                     />
                   </TableCell>
                   <TableCell padding="none">
                     <Button
                       variant="contained"
                       color="primary"
-                      onClick={() => onSelect(row)}
+                      onClick={() => onSelectPerson(row)}
                     >
                       انتخاب شخص
                     </Button>

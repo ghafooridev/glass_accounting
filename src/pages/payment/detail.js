@@ -96,7 +96,7 @@ export default function MainDetail({ defaultValues }) {
         <PersonSelector
           onSelect={onSelectPerson}
           onDismiss={onDismissPerson}
-          filter={Constant.PERSON_TYPE.CUSTOMER}
+          filter={Constant.PERSON_TYPE.PERSON}
         />
       ),
       size: "lg",
@@ -153,7 +153,7 @@ export default function MainDetail({ defaultValues }) {
 
   const getPersonName = () => {
     if (selectedPerson) {
-      return `${selectedPerson.firstName} ${selectedPerson.lastName}`;
+      return `${selectedPerson.name}`;
     }
     return "";
   };

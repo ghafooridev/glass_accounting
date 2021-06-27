@@ -33,6 +33,7 @@ const Constant = {
     CUSTOMER: "customer",
     USER: "user",
     DRIVER: "driver",
+    PERSON: "person",
   },
   STORAGE: {
     CURRENT_USER: "CURRENT_USER",

@@ -46,6 +46,7 @@ export default function MainList() {
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(Constant.TABLE_PAGE_SIZE);
   const [list, setList] = useState([]);
+  const [filter, setFilter] = useState();
   const history = useHistory();
 
   const handleRequestSort = (event, property) => {
@@ -75,6 +76,7 @@ export default function MainList() {
       orderBy,
       pageSize,
       search,
+      filter,
     })}`,
   });
 
@@ -118,7 +120,7 @@ export default function MainList() {
   };
 
   const onFilter = (data) => {
-    console.log(data);
+    setFilter(data);
   };
 
   const getData = async () => {
@@ -128,7 +130,7 @@ export default function MainList() {
 
   useEffect(() => {
     getData();
-  }, [page, order, search, pageSize]);
+  }, [page, order, search, pageSize, filter]);
 
   return (
     <>

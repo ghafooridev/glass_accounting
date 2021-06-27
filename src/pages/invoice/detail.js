@@ -141,11 +141,7 @@ export default function MainDetail({ defaultValues }) {
 
   const onSelectPerson = (person) => {
     setSelectedPerson(person);
-    setInvoicePerson(
-      selectedPerson
-        ? `${selectedPerson.firstName} ${selectedPerson.lastName}`
-        : "",
-    );
+    setInvoicePerson(selectedPerson ? `${selectedPerson.name}` : "");
     dialogAction.hide();
   };
 
