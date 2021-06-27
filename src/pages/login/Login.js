@@ -10,6 +10,7 @@ import {
 import { withRouter } from "react-router-dom";
 import useStyles from "./styles";
 import logo from "./logo.svg";
+import back from "./111.jpg";
 import { useUserDispatch, loginUser } from "../../context/UserContext";
 import { useApi } from "../../hooks/useApi";
 import unitAcion from "../../redux/actions/unitAction";
@@ -48,9 +49,10 @@ function Login(props) {
   return (
     <Grid container className={classes.container}>
       <div className={classes.logotypeContainer}>
+        <img src={back} alt="logo" className={classes.backgroundImage} />
         <img src={logo} alt="logo" className={classes.logotypeImage} />
         <Typography className={classes.logotypeText}>
-          سیستم جامع حسابداری
+          سیستم مدیریت مالی
         </Typography>
       </div>
       <div className={classes.formContainer}>

@@ -1,20 +1,13 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
-import {
-  Grid,
-  LinearProgress,
-  Select,
-  OutlinedInput,
-  MenuItem,
-} from "@material-ui/core";
+import { Grid, IconButton } from "@material-ui/core";
+import MUIToolTip from "@material-ui/core/Tooltip";
 import { useTheme } from "@material-ui/styles";
 import {
   ResponsiveContainer,
-  ComposedChart,
   AreaChart,
   LineChart,
   CartesianGrid,
-  Legend,
   Tooltip,
   Line,
   Area,
@@ -38,20 +31,11 @@ import { Typography } from "../../components/Wrappers";
 import Dot from "../../components/Sidebar/components/Dot";
 
 import Paper from "../../components/Paper";
-import {
-  persianNumber,
-  getRandomColor,
-  getRandomColorFromTheme,
-} from "../../helpers/utils";
+import { persianNumber, getRandomColorFromTheme } from "../../helpers/utils";
 import { useApi } from "../../hooks/useApi";
 import { useEffect } from "react";
-
-const CashDeskCahrt = [
-  { name: "صندوق 1", amount: 525200, color: "primary" },
-  { name: "صندوق 2", amount: 476100, color: "secondary" },
-];
-
-const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
+import { DatePicker } from "@material-ui/pickers";
+import moment from "moment";
 
 const RADIAN = Math.PI / 180;
 const renderCustomizedLabel = ({
@@ -209,6 +193,16 @@ export default function Dashboard(props) {
   var theme = useTheme();
   const history = useHistory();
   const [pieChart, setPieChart] = useState([]);
+  const [showFilterBoxPayment, setShowFilterBoxPayment] = useState(false);
+  const [showFilterBoxFactor, setShowFilterBoxFactor] = useState(false);
+  const [selectedFromDateFactor, handleFromDateChangeFactor] = useState(
+    moment(),
+  );
+  const [selectedToDateFactor, handleToDateChangeFactor] = useState(moment());
+  const [selectedFromDatePayment, handleFromDateChangePayment] = useState(
+    moment(),
+  );
+  const [selectedToDatePayment, handleToDateChangePayment] = useState(moment());
 
   const getDashboardRequest = useApi({
     method: "get",
@@ -217,6 +211,22 @@ export default function Dashboard(props) {
 
   const onClickPaper = (type) => {
     history.push(`/app/${type}`);
+  };
+
+  const onChnageDateFactor = (e, type) => {
+    if (type === "from") {
+      handleFromDateChangeFactor(e);
+    } else {
+      handleToDateChangeFactor(e);
+    }
+  };
+
+  const onChnageDatePayment = (e, type) => {
+    if (type === "from") {
+      handleFromDateChangePayment(e);
+    } else {
+      handleToDateChangePayment(e);
+    }
   };
 
   const getPieChartData = async () => {
@@ -238,7 +248,7 @@ export default function Dashboard(props) {
   return (
     <>
       <Grid container spacing={4} style={{ marginBottom: 20 }}>
-        <Grid item lg={2} md={4} sm={6} xs={12}>
+        <Grid item lg={3} md={4} sm={6} xs={12}>
           <Paper
             icon="shopping_basket"
             onClick={() => {
@@ -250,7 +260,7 @@ export default function Dashboard(props) {
             </div>
           </Paper>
         </Grid>
-        <Grid item lg={2} md={4} sm={6} xs={12}>
+        <Grid item lg={3} md={4} sm={6} xs={12}>
           <Paper
             icon="sell"
             onClick={() => {
@@ -262,7 +272,7 @@ export default function Dashboard(props) {
             </div>
           </Paper>
         </Grid>
-        <Grid item lg={2} md={4} sm={6} xs={12}>
+        <Grid item lg={3} md={4} sm={6} xs={12}>
           <Paper
             icon="move_to_inbox"
             onClick={() => {
@@ -274,7 +284,7 @@ export default function Dashboard(props) {
             </div>
           </Paper>
         </Grid>
-        <Grid item lg={2} md={4} sm={6} xs={12}>
+        <Grid item lg={3} md={4} sm={6} xs={12}>
           <Paper
             icon="unarchive"
             onClick={() => {
@@ -283,69 +293,6 @@ export default function Dashboard(props) {
           >
             <div className={classes.paperTitle}>
               <Typography variant="h3">ثبت پرداخت</Typography>
-            </div>
-          </Paper>
-        </Grid>
-        <Grid item lg={4} md={4} sm={6} xs={12}>
-          <Paper
-            icon="transfer_within_a_station"
-            onClick={() => {
-              onClickPaper("traffic");
-            }}
-          >
-            <div
-              className={classes.paperTitle}
-              style={{ flexDirection: "row", justifyContent: "space-between" }}
-            >
-              <div>
-                <Typography color="text-s" variant="h3">
-                  حضور و غیاب
-                </Typography>
-                <div
-                  className={classes.performanceLegendWrapper}
-                  style={{ marginTop: 20 }}
-                >
-                  <div className={classes.legendElement}>
-                    <Dot color="secondary" />
-                    <Typography
-                      color="text"
-                      colorBrightness="secondary"
-                      className={classes.legendElementText}
-                    >
-                      غائبین
-                    </Typography>
-                  </div>
-                  <div className={classes.legendElement}>
-                    <Dot color="primary" />
-                    <Typography
-                      color="text"
-                      colorBrightness="secondary"
-                      className={classes.legendElementText}
-                    >
-                      حاضرین
-                    </Typography>
-                  </div>
-                </div>
-              </div>
-              <PieChart width={250} height={100}>
-                <Pie
-                  data={trafficDayliChart}
-                  cx={120}
-                  cy={100}
-                  startAngle={180}
-                  endAngle={0}
-                  innerRadius={60}
-                  outerRadius={80}
-                  fill="#8884d8"
-                  paddingAngle={5}
-                  dataKey="value"
-                >
-                  {trafficDayliChart.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Pie>
-                <Tooltip />
-              </PieChart>
             </div>
           </Paper>
         </Grid>
@@ -433,67 +380,67 @@ export default function Dashboard(props) {
           </Widget>
         </Grid>
         <Grid item lg={6} xs={12}>
-          <Widget
-            title="فاکتور ها"
-            upperTitle
-            className={classes.card}
-            bodyClass={classes.fullHeightBody}
+          <Paper
+            icon="transfer_within_a_station"
+            onClick={() => {
+              onClickPaper("traffic");
+            }}
           >
-            <div className={classes.performanceLegendWrapper}>
-              <div className={classes.legendElement}>
-                <Dot color="warning" />
-                <Typography
-                  color="text"
-                  colorBrightness="secondary"
-                  className={classes.legendElementText}
-                >
-                  فاکتور فروش
+            <div
+              className={classes.paperTitle}
+              style={{ flexDirection: "row", justifyContent: "space-between" }}
+            >
+              <div>
+                <Typography color="text-s" variant="h3">
+                  حضور و غیاب
                 </Typography>
-              </div>
-              <div className={classes.legendElement}>
-                <Dot color="primary" />
-                <Typography
-                  color="text"
-                  colorBrightness="secondary"
-                  className={classes.legendElementText}
+                <div
+                  className={classes.performanceLegendWrapper}
+                  style={{ marginTop: 20 }}
                 >
-                  فاکتور خرید
-                </Typography>
+                  <div className={classes.legendElement}>
+                    <Dot color="secondary" />
+                    <Typography
+                      color="text"
+                      colorBrightness="secondary"
+                      className={classes.legendElementText}
+                    >
+                      غائبین
+                    </Typography>
+                  </div>
+                  <div className={classes.legendElement}>
+                    <Dot color="primary" />
+                    <Typography
+                      color="text"
+                      colorBrightness="secondary"
+                      className={classes.legendElementText}
+                    >
+                      حاضرین
+                    </Typography>
+                  </div>
+                </div>
               </div>
+              <PieChart width={250} height={100}>
+                <Pie
+                  data={trafficDayliChart}
+                  cx={120}
+                  cy={100}
+                  startAngle={180}
+                  endAngle={0}
+                  innerRadius={60}
+                  outerRadius={80}
+                  fill="#8884d8"
+                  paddingAngle={5}
+                  dataKey="value"
+                >
+                  {trafficDayliChart.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Pie>
+                <Tooltip />
+              </PieChart>
             </div>
-            <div className={classes.progressSection}>
-              <Typography
-                size="md"
-                color="text"
-                colorBrightness="secondary"
-                className={classes.progressSectionTitle}
-              >
-                {`${persianNumber(77)}%`}
-              </Typography>
-              <LinearProgress
-                variant="determinate"
-                value={77}
-                classes={{ barColorPrimary: classes.progressBarPrimary }}
-                className={classes.progress}
-              />
-            </div>
-            <div>
-              <Typography
-                size="md"
-                color="text"
-                colorBrightness="secondary"
-                className={classes.progressSectionTitle}
-              >
-                {`${persianNumber(23)}%`}
-              </Typography>
-              <LinearProgress
-                variant="determinate"
-                value={23}
-                classes={{ barColorPrimary: classes.progressBarSecondary }}
-                className={classes.progress}
-              />
-            </div>
-          </Widget>
+          </Paper>
         </Grid>
 
         <Grid style={{ height: 500 }} item lg={6} xs={12}>
@@ -525,7 +472,7 @@ export default function Dashboard(props) {
           </Widget>
         </Grid>
 
-        <Grid style={{ height: 500 }} item lg={6} xs={12}>
+        <Grid item lg={6} xs={12}>
           <Widget title="موجودی صندوق ها" upperTitle className={classes.card}>
             <Grid container spacing={2}>
               {pieChart.length && (
@@ -589,6 +536,43 @@ export default function Dashboard(props) {
                 >
                   دریافتی و پرداختی ها
                 </Typography>
+
+                {showFilterBoxPayment && (
+                  <>
+                    <Grid item lg={3} xs={12} className={classes.datePicker}>
+                      <DatePicker
+                        autoOk
+                        name="date"
+                        label="از تاریخ"
+                        inputVariant="outlined"
+                        okLabel="تأیید"
+                        cancelLabel="لغو"
+                        labelFunc={(date) =>
+                          date ? date.format("jYYYY/jMM/jDD") : ""
+                        }
+                        value={selectedFromDatePayment}
+                        onChange={(e) => onChnageDatePayment(e, "from")}
+                        style={{ width: "100%" }}
+                      />
+                    </Grid>
+                    <Grid item lg={3} xs={12} className={classes.datePicker}>
+                      <DatePicker
+                        autoOk
+                        name="date"
+                        label="تا تاریخ"
+                        inputVariant="outlined"
+                        okLabel="تأیید"
+                        cancelLabel="لغو"
+                        labelFunc={(date) =>
+                          date ? date.format("jYYYY/jMM/jDD") : ""
+                        }
+                        value={selectedToDatePayment}
+                        onChange={(e) => onChnageDatePayment(e, "to")}
+                        style={{ width: "100%" }}
+                      />
+                    </Grid>
+                  </>
+                )}
                 <div className={classes.mainChartHeaderLabels}>
                   <div className={classes.mainChartHeaderLabel}>
                     <Dot color="primary" />
@@ -602,6 +586,15 @@ export default function Dashboard(props) {
                       پرداختی
                     </Typography>
                   </div>
+                  <MUIToolTip title="فیلتر">
+                    <IconButton
+                      onClick={() =>
+                        setShowFilterBoxPayment(!showFilterBoxPayment)
+                      }
+                    >
+                      <i class="material-icons-round">filter_alt</i>
+                    </IconButton>
+                  </MUIToolTip>
                 </div>
               </div>
             }
@@ -650,6 +643,42 @@ export default function Dashboard(props) {
                 >
                   مبلغ فاکتور ها
                 </Typography>
+                {showFilterBoxFactor && (
+                  <>
+                    <Grid item lg={3} xs={12} className={classes.datePicker}>
+                      <DatePicker
+                        autoOk
+                        name="date"
+                        label="از تاریخ"
+                        inputVariant="outlined"
+                        okLabel="تأیید"
+                        cancelLabel="لغو"
+                        labelFunc={(date) =>
+                          date ? date.format("jYYYY/jMM/jDD") : ""
+                        }
+                        value={selectedFromDateFactor}
+                        onChange={(e) => onChnageDateFactor(e, "from")}
+                        style={{ width: "100%" }}
+                      />
+                    </Grid>
+                    <Grid item lg={3} xs={12} className={classes.datePicker}>
+                      <DatePicker
+                        autoOk
+                        name="date"
+                        label="تا تاریخ"
+                        inputVariant="outlined"
+                        okLabel="تأیید"
+                        cancelLabel="لغو"
+                        labelFunc={(date) =>
+                          date ? date.format("jYYYY/jMM/jDD") : ""
+                        }
+                        value={selectedToDateFactor}
+                        onChange={(e) => onChnageDateFactor(e, "to")}
+                        style={{ width: "100%" }}
+                      />
+                    </Grid>
+                  </>
+                )}
                 <div className={classes.mainChartHeaderLabels}>
                   <div className={classes.mainChartHeaderLabel}>
                     <Dot color="primary" />
@@ -663,6 +692,15 @@ export default function Dashboard(props) {
                       فاکتور خرید
                     </Typography>
                   </div>
+                  <MUIToolTip title="فیلتر">
+                    <IconButton
+                      onClick={() =>
+                        setShowFilterBoxFactor(!showFilterBoxFactor)
+                      }
+                    >
+                      <i class="material-icons-round">filter_alt</i>
+                    </IconButton>
+                  </MUIToolTip>
                 </div>
               </div>
             }

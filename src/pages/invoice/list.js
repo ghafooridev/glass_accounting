@@ -257,7 +257,7 @@ const MainList = () => {
                               <TableCell padding="none">{row.id}</TableCell>
                               <TableCell padding="none">
                                 {row.globalCustomer
-                                  ? row.globalCustomer
+                                  ? `${row.globalCustomer}(${row.customer})`
                                   : row.customer}
                               </TableCell>
                               <TableCell padding="none">

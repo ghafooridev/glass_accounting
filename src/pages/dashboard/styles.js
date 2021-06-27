@@ -1,6 +1,14 @@
 import { makeStyles } from "@material-ui/styles";
 
 export default makeStyles((theme) => ({
+  datePicker: {
+    [theme.breakpoints.only("xs")]: {
+      margin: "10px 0",
+    },
+    "& input": {
+      padding: "10px 14px",
+    },
+  },
   paperTitle: {
     display: "flex",
     flexDirection: "column",

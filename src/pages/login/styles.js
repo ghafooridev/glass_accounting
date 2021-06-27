@@ -22,9 +22,15 @@ export default makeStyles((theme) => ({
       flex: 1,
     },
   },
+  backgroundImage: {
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+    filter: "brightness(0.5)",
+  },
   logotypeContainer: {
-    backgroundColor: theme.palette.primary.main,
-    width: "60%",
+    position: "relative",
+    width: "70%",
     height: "100%",
     display: "flex",
     flexDirection: "column",
@@ -40,8 +46,10 @@ export default makeStyles((theme) => ({
   logotypeImage: {
     width: 165,
     marginBottom: theme.spacing(4),
+    position: "relative",
   },
   logotypeText: {
+    position: "relative",
     color: "white",
     fontWeight: 500,
     fontSize: 84,
@@ -50,7 +58,7 @@ export default makeStyles((theme) => ({
     },
   },
   formContainer: {
-    width: "40%",
+    width: "30%",
     height: "100%",
     display: "flex",
     flexDirection: "column",

@@ -165,10 +165,19 @@ export default function MainDetail({ defaultValues }) {
     });
   };
 
+  const getProperProducts = () => {
+    const newProducts = [];
+    products.map((item) => {
+      delete item.id;
+      return newProducts.push(item);
+    });
+    return newProducts;
+  };
+
   const onSubmit = async (data) => {
     const value = {
       ...data,
-      products,
+      products: getProperProducts(),
       drivers,
       date: selectedDate._d,
       customerId: selectedPerson ? selectedPerson.id : 1,
