@@ -108,14 +108,13 @@ export default function MainDetail({ defaultValues }) {
   const onSubmit = async (data) => {
     const value = {
       type: paymentType,
-      personType: "CUSTOMER", //TODO : we should change it later . give this data from person selector component
+      personType: selectedPerson.personType, //TODO : we should change it later . give this data from person selector component
       personId: selectedPerson.value,
       description: data.description,
       date: selectedDate._d,
       isLoan,
       ...paymentRef.current,
     };
-    debugger;
     if (id) {
       await editPaymentRequest.execute(value);
     } else {
