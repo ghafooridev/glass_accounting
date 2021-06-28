@@ -7,7 +7,9 @@ import Constant from "../../helpers/constant";
 
 const Account = ({ onSubmit, onDismiss, defaultValues, units }) => {
   const [depotPicker, setDepotPicker] = useState([]);
-  const [seletedUnit, setSelectedUnit] = useState(units[0].value);
+  const [seletedUnit, setSelectedUnit] = useState(
+    defaultValues ? defaultValues.unit.value : units[0].value,
+  );
   const [seletedDepot, setSelectedDepot] = useState(1);
   const [showPerUnit, setShowPerUnit] = useState(
     defaultValues ? !!defaultValues.perUnit : false,

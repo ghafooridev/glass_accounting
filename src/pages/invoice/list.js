@@ -32,7 +32,7 @@ import TableSkeleton from "../../components/Skeleton";
 import FilterComponent from "./filter";
 
 const headCells = [
-  { id: "id", label: "شماره" },
+  { id: "id", label: "شماره فاکتور" },
   {
     id: "person",
     label: "مشتری",
@@ -161,6 +161,10 @@ const MainList = () => {
   useEffect(() => {
     getData();
   }, [page, order, search, pageSize, type, filter]);
+
+  useEffect(() => {
+    setType(invoiceType);
+  }, [invoiceType]);
 
   return (
     <>

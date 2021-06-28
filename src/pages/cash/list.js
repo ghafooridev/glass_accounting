@@ -14,7 +14,11 @@ import TableTop from "../../components/Table/TableTop";
 import TableHeader from "../../components/Table/TableHead";
 import TablePaging from "../../components/Table/TablePaging";
 import { useApi } from "../../hooks/useApi";
-import { convertParamsToQueryString, hasPermission } from "../../helpers/utils";
+import {
+  convertParamsToQueryString,
+  hasPermission,
+  persianNumber,
+} from "../../helpers/utils";
 import DialogActions from "../../redux/actions/dialogAction";
 import styles from "./style";
 import Constant from "../../helpers/constant";
@@ -208,7 +212,11 @@ const MainList = () => {
                                   />
                                 )}
                               </TableCell>
-                              <TableCell padding="none">{row.amount}</TableCell>
+                              <TableCell padding="none">
+                                {persianNumber(
+                                  Number(row.amount).toLocaleString(),
+                                )}
+                              </TableCell>
 
                               <TableCell padding="none">
                                 <TableRowMenu

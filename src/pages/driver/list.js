@@ -9,13 +9,16 @@ import {
   Paper,
   Typography,
 } from "@material-ui/core";
-import clsx from "clsx";
 import TableRowMenu from "../../components/Table/TableRowMenu";
 import TableTop from "../../components/Table/TableTop";
 import TableHeader from "../../components/Table/TableHead";
 import TablePaging from "../../components/Table/TablePaging";
 import { useApi } from "../../hooks/useApi";
-import { convertParamsToQueryString, hasPermission } from "../../helpers/utils";
+import {
+  convertParamsToQueryString,
+  hasPermission,
+  persianNumber,
+} from "../../helpers/utils";
 import DialogActions from "../../redux/actions/dialogAction";
 import styles from "./style";
 import FilterComponent from "./filter";
@@ -37,8 +40,9 @@ const headCells = [
     id: "mobile",
     label: "موبایل",
   },
-  { id: "phone", label: "تلفن" },
   { id: "car", label: "خودرو" },
+  { id: "pelak", label: "پلاک" },
+
   { id: "action" },
 ];
 
@@ -184,12 +188,16 @@ export default function MainList() {
                               <TableCell padding="none">
                                 {row.category.name}
                               </TableCell>
-                              <TableCell padding="none">{row.mobile}</TableCell>
-                              <TableCell padding="none">{row.phone}</TableCell>
+                              <TableCell padding="none">
+                                {persianNumber(Number(row.mobile))}
+                              </TableCell>
+
                               <TableCell padding="none">
                                 {row.carName}
                               </TableCell>
-
+                              <TableCell padding="none">
+                                {row.carPlaque}
+                              </TableCell>
                               <TableCell padding="none">
                                 <TableRowMenu
                                   options={[

@@ -143,6 +143,7 @@ export default function MainDetail() {
         stock: item.stock,
         depotId: item.depot.value,
         unit: item.unit.value,
+        perunit: item.perUnit,
       };
       filteredAmount.push(newObject);
     });
@@ -179,7 +180,6 @@ export default function MainDetail() {
   };
 
   const handleDeleteAmount = (id) => {
-    console.log(amounts, id);
     DialogActions.show({
       confirm: true,
       title: "ایا از حذف این رکورد مطمئن هستید ؟",

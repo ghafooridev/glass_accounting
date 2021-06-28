@@ -316,7 +316,9 @@ const MainList = () => {
                                 )}
                               </TableCell>
                               <TableCell padding="none">
-                                {persianNumber(row.price)}
+                                {persianNumber(
+                                  Number(row.price).toLocaleString(),
+                                )}
                               </TableCell>
                               <TableCell padding="none">{row.person}</TableCell>
                               <TableCell padding="none">

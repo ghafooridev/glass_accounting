@@ -172,7 +172,7 @@ export default function ProductList({
           amount: "",
         });
       } else {
-        setProductFee({ ...feeProduct, productId: data.id });
+        setProductFee({ ...feeProduct, productId: data.id, name: data.name });
       }
     }
   };

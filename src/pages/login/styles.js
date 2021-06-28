@@ -10,6 +10,7 @@ export default makeStyles((theme) => ({
     position: "absolute",
     top: 0,
     left: 0,
+    overflow: "hidden",
   },
   title: {
     display: "flex",

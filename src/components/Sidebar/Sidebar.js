@@ -128,7 +128,7 @@ const structure = [
         permission: Constants.ALL_PERMISSIONS.EMPLOYEE_SHOW,
       },
       {
-        label: "راننده گان",
+        label: "رانندگان",
         link: "/app/driver-list",
         permission: Constants.ALL_PERMISSIONS.DRIVER_EDIT,
       },

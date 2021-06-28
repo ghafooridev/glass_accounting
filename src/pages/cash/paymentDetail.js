@@ -2,7 +2,7 @@ import React from "react";
 import { Grid, TextField, Button } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import Constant from "../../helpers/constant";
-
+import { persianNumber } from "../../helpers/utils";
 const useStyles = makeStyles((theme) => ({
   img: {
     width: 35,
@@ -41,7 +41,10 @@ export default function MainDetail({ data, type, onDismiss }) {
         <TextField
           disabled
           label="تاریخ"
-          value={data.date || " "}
+          value={
+            persianNumber(new Date(data.date).toLocaleDateString("fa-IR")) ||
+            " "
+          }
           variant="outlined"
           fullWidth
           size="small"
@@ -51,14 +54,14 @@ export default function MainDetail({ data, type, onDismiss }) {
         <TextField
           disabled
           label="مبلغ"
-          value={data.price || " "}
+          value={persianNumber(data.price) || " "}
           variant="outlined"
           fullWidth
           size="small"
         />
       </Grid>
       {(type === "BANK" || type === "CHEQUE") && (
-        <Grid item xs={12}>
+        <Grid item xs={12} style={{ display: "flex" }}>
           <TextField
             disabled
             label="بانک"
@@ -91,7 +94,7 @@ export default function MainDetail({ data, type, onDismiss }) {
           <TextField
             disabled
             label="شماره پیگیری"
-            value={data.detail.trackingCode || " "}
+            value={persianNumber(data.detail.trackingCode) || " "}
             variant="outlined"
             fullWidth
             size="small"
@@ -103,7 +106,7 @@ export default function MainDetail({ data, type, onDismiss }) {
           <TextField
             disabled
             label="شماره چک"
-            value={data.detail.chequeNumber || " "}
+            value={persianNumber(data.detail.chequeNumber) || " "}
             variant="outlined"
             fullWidth
             size="small"
@@ -115,7 +118,11 @@ export default function MainDetail({ data, type, onDismiss }) {
           <TextField
             disabled
             label="تاریخ سررسید"
-            value={data.detail.chequeDueDate || " "}
+            value={
+              persianNumber(
+                new Date(data.detail.chequeDueDate).toLocaleDateString("fa-IR"),
+              ) || " "
+            }
             variant="outlined"
             fullWidth
             size="small"

@@ -1,10 +1,4 @@
-import React, {
-  Fragment,
-  useEffect,
-  useState,
-  useImperativeHandle,
-} from "react";
-import { useHistory } from "react-router-dom";
+import React, { useEffect, useState, useImperativeHandle } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import {
   Grid,
@@ -24,7 +18,7 @@ import {
 } from "@material-ui/core";
 import TableHeader from "../../components/Table/TableHead";
 import { DeleteIcon, EditIcon } from "../../components/icons";
-import { getQueryString } from "../../helpers/utils";
+import { getQueryString, persianNumber } from "../../helpers/utils";
 import dialogAction from "../../redux/actions/dialogAction";
 import Payment from "./paymnet";
 import update from "immutability-helper";
@@ -355,7 +349,9 @@ const PrePayment = React.forwardRef((props, ref) => {
                                   </div>
                                 </TableCell>
                                 <TableCell padding="none">
-                                  {row.price}
+                                  {persianNumber(
+                                    Number(row.price).toLocaleString(),
+                                  )}
                                 </TableCell>
 
                                 <TableCell
@@ -431,7 +427,9 @@ const PrePayment = React.forwardRef((props, ref) => {
                                   </div>
                                 </TableCell>
                                 <TableCell padding="none">
-                                  {row.price}
+                                  {persianNumber(
+                                    Number(row.price).toLocaleString(),
+                                  )}
                                 </TableCell>
                                 <TableCell padding="none">
                                   {row.transactionType}
@@ -516,7 +514,9 @@ const PrePayment = React.forwardRef((props, ref) => {
                                   </div>
                                 </TableCell>
                                 <TableCell padding="none">
-                                  {row.price}
+                                  {persianNumber(
+                                    Number(row.price).toLocaleString(),
+                                  )}
                                 </TableCell>
 
                                 <TableCell padding="none">

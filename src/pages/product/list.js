@@ -243,7 +243,7 @@ export default function MainList() {
                                 <TableRowMenu
                                   options={[
                                     { id: "amount", title: "موجودی ها" },
-                                    { id: "transaction", title: "تراکنش ها" },
+                                    // { id: "transaction", title: "تراکنش ها" },
                                     {
                                       id: "transfer",
                                       title: "انتقال بین انبار",

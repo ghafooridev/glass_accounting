@@ -156,12 +156,16 @@ export default function Dashboard(props) {
 
   const getPaymentRequest = useApi({
     method: "get",
-    url: `dashboard/payments`,
+    url: showFilterBoxPayment
+      ? `dashboard/payments?{from:${selectedFromDatePayment._d.toISOString()},to:${selectedToDatePayment._d.toISOString()}}`
+      : "dashboard/payments",
   });
 
   const getFactorRequest = useApi({
     method: "get",
-    url: `dashboard/invoice`,
+    url: showFilterBoxFactor
+      ? `dashboard/invoices?{from:${selectedFromDateFactor._d.toISOString()},to:${selectedToDateFactor._d.toISOString()}}`
+      : "dashboard/invoices",
   });
 
   const onClickPaper = (type) => {
@@ -185,23 +189,25 @@ export default function Dashboard(props) {
   };
 
   const getPieChartData = async () => {
-    // const dashboardChart = await getDashboardRequest.execute();
-    // const cashDesks = dashboardChart.data;
-    // const newCashDesks = [];
-    // cashDesks?.map((item) => {
-    //   newCashDesks.push({ ...item, color: getRandomColorFromTheme() });
-    // });
-    //  setPieChart(newCashDesks);
+    const dashboardChart = await getDashboardRequest.execute();
+    const { cashDesks } = dashboardChart;
+    const newCashDesks = [];
+    cashDesks?.map((item) => {
+      newCashDesks.push({ ...item, color: getRandomColorFromTheme() });
+    });
+    setPieChart(newCashDesks);
   };
 
   const getPaymentChart = async () => {
-    //const chart = await getPaymentRequest.execute();
-    // setPaymentChart(chart.data);
+    const chart = await getPaymentRequest.execute();
+    const { payments } = chart;
+    setPaymentChart(payments);
   };
 
   const getFactorChart = async () => {
-    //const chart = await getFactorRequest.execute();
-    // setFactorChart(chart.data);
+    const chart = await getFactorRequest.execute();
+    const { invoices } = chart;
+    setFactorChart(invoices);
   };
 
   useEffect(() => {
@@ -676,30 +682,32 @@ export default function Dashboard(props) {
               </div>
             }
           >
-            <div style={{ width: "100%", height: "450px" }}>
-              <div style={{ width: "100%", height: "100%" }}>
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart
-                    width={100}
-                    height={300}
-                    data={factorChart}
-                    margin={{
-                      top: 5,
-                      right: 30,
-                      left: 20,
-                      bottom: 5,
-                    }}
-                  >
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="date" />
-                    <YAxis />
-                    <Tooltip />
-                    <Bar dataKey="buy" fill="#3CD4A0" />
-                    <Bar dataKey="sell" fill="#FF5C93" />
-                  </BarChart>
-                </ResponsiveContainer>
+            {factorChart.length && (
+              <div style={{ width: "100%", height: "450px" }}>
+                <div style={{ width: "100%", height: "100%" }}>
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart
+                      width={100}
+                      height={300}
+                      data={factorChart}
+                      margin={{
+                        top: 5,
+                        right: 30,
+                        left: 20,
+                        bottom: 5,
+                      }}
+                    >
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="date" />
+                      <YAxis />
+                      <Tooltip />
+                      <Bar dataKey="buy" fill="#3CD4A0" />
+                      <Bar dataKey="sell" fill="#FF5C93" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
               </div>
-            </div>
+            )}
           </Widget>
         </Grid>
       </Grid>

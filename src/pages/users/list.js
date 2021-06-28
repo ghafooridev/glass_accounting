@@ -154,38 +154,44 @@ const MainList = () => {
                       />
                       <TableBody>
                         {list.map((row) => {
-                          return (
-                            <TableRow
-                              hover
-                              tabIndex={-1}
-                              key={row.id}
-                              style={{ paddingRight: 10 }}
-                            >
-                              <TableCell padding="none">
-                                {row.username}
-                              </TableCell>
-                              <TableCell padding="none">
-                                {row.firstName}
-                              </TableCell>
-                              <TableCell padding="none">
-                                {row.lastName}
-                              </TableCell>
-                              <TableCell padding="none">{row.mobile}</TableCell>
-                              <TableCell padding="none">{row.phone}</TableCell>
+                          if (!row.isAdmin) {
+                            return (
+                              <TableRow
+                                hover
+                                tabIndex={-1}
+                                key={row.id}
+                                style={{ paddingRight: 10 }}
+                              >
+                                <TableCell padding="none">
+                                  {row.username}
+                                </TableCell>
+                                <TableCell padding="none">
+                                  {row.firstName}
+                                </TableCell>
+                                <TableCell padding="none">
+                                  {row.lastName}
+                                </TableCell>
+                                <TableCell padding="none">
+                                  {row.mobile}
+                                </TableCell>
+                                <TableCell padding="none">
+                                  {row.phone}
+                                </TableCell>
 
-                              <TableCell padding="none">
-                                <TableRowMenu
-                                  options={[
-                                    { id: "edit", title: "ویرایش" },
-                                    { id: "delete", title: "حذف" },
-                                  ]}
-                                  hadleAction={(type) =>
-                                    handleAction(row.id, type)
-                                  }
-                                />
-                              </TableCell>
-                            </TableRow>
-                          );
+                                <TableCell padding="none">
+                                  <TableRowMenu
+                                    options={[
+                                      { id: "edit", title: "ویرایش" },
+                                      { id: "delete", title: "حذف" },
+                                    ]}
+                                    hadleAction={(type) =>
+                                      handleAction(row.id, type)
+                                    }
+                                  />
+                                </TableCell>
+                              </TableRow>
+                            );
+                          }
                         })}
                         {!list.length && !getUserRequest.pending && (
                           <TableRow style={{ height: 53 }}>

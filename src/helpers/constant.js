@@ -14,7 +14,7 @@ const Constant = {
     KILOGRAM: "کیلوگرم",
     GRAM: "گرم",
     TON: "تن",
-    BOX: "بکس",
+    BOX: "کارتن",
     SHEL: "شل",
     CUBICMETERS: "مترمکعب",
     PALLET: "پالت",

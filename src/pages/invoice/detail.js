@@ -348,6 +348,7 @@ export default function MainDetail({ defaultValues }) {
 
   const onChangeInvoicePerson = (e) => {
     setInvoicePerson(e.target.value);
+    setSelectedPerson();
   };
 
   const onDismissOtherPayments = () => {

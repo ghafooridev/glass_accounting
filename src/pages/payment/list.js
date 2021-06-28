@@ -35,7 +35,7 @@ const headCells = [
   { id: "personType" },
   {
     id: "person",
-    label: "نام طرف",
+    label: "نام شخص",
   },
   {
     id: "date",
@@ -157,6 +157,10 @@ const MainList = () => {
   useEffect(() => {
     getData();
   }, [page, order, search, pageSize, type, filter]);
+
+  useEffect(() => {
+    setType(paymentType);
+  }, [paymentType]);
 
   return (
     <>
