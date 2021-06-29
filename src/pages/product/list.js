@@ -109,6 +109,7 @@ export default function MainList() {
     } else {
       await transferRequest.execute(data);
     }
+    await getData();
     DialogActions.hide();
   };
 

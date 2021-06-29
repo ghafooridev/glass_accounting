@@ -52,7 +52,7 @@ function Login(props) {
         <img src={back} alt="logo" className={classes.backgroundImage} />
         <img src={logo} alt="logo" className={classes.logotypeImage} />
         <Typography className={classes.logotypeText}>
-          سیستم مدیریت مالی
+          سیستم یکپارچه مدیریت
         </Typography>
       </div>
       <div className={classes.formContainer}>
@@ -101,6 +101,7 @@ function Login(props) {
                 <CircularProgress size={26} className={classes.loginLoader} />
               ) : (
                 <Button
+                  fullWidth
                   disabled={
                     usernameValue.length === 0 || passwordValue.length === 0
                   }
@@ -119,20 +120,24 @@ function Login(props) {
                   color="primary"
                   size="large"
                 >
-                  ورود
+                  ورود به سیستم
                 </Button>
               )}
-              <Button
+              {/* <Button
                 color="primary"
                 size="large"
                 className={classes.forgetButton}
               >
                 بازیابی رمز عبور
-              </Button>
+              </Button> */}
             </div>
           </React.Fragment>
         </div>
-        <Typography color="primary" className={classes.copyright}>
+        <Typography
+          color="primary"
+          className={classes.copyright}
+          variant="caption"
+        >
           تمامی حقوق مادی و معنوی این اثر متعلق به شرکت المان می باشد
         </Typography>
       </div>

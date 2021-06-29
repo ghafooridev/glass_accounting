@@ -46,72 +46,67 @@ function Layout(props) {
   return (
     <div className={classes.root}>
       <>
-        <Router>
-          <Header history={props.history} />
-          <Sidebar />
-          <div
-            className={classnames(classes.content, {
-              [classes.contentShift]: layoutState.isSidebarOpened,
-            })}
-          >
-            <div className={classes.fakeToolbar} />
-            <Switch>
-              <Route path="/app/dashboard" component={Dashboard} />
+        <Header history={props.history} />
+        <Sidebar />
+        <div
+          className={classnames(classes.content, {
+            [classes.contentShift]: layoutState.isSidebarOpened,
+          })}
+        >
+          <div className={classes.fakeToolbar} />
+          <Switch>
+            <Route path="/app/dashboard" component={Dashboard} />
 
-              <Route path="/app/user-list" component={UserList} />
-              <Route path="/app/user-detail" component={UserDetail} />
+            <Route path="/app/user-list" component={UserList} />
+            <Route path="/app/user-detail" component={UserDetail} />
 
-              <Route path="/app/customer-list" component={CustomerList} />
-              <Route path="/app/customer-detail" component={CustomerDetail} />
-              <Route
-                path="/app/customer-transaction"
-                component={CustomerTransaction}
-              />
+            <Route path="/app/customer-list" component={CustomerList} />
+            <Route path="/app/customer-detail" component={CustomerDetail} />
+            <Route
+              path="/app/customer-transaction"
+              component={CustomerTransaction}
+            />
 
-              <Route path="/app/employee-list" component={EmployeeList} />
-              <Route path="/app/employee-detail" component={EmployeeDetail} />
-              <Route path="/app/employee-log" component={EmployeeLog} />
+            <Route path="/app/employee-list" component={EmployeeList} />
+            <Route path="/app/employee-detail" component={EmployeeDetail} />
+            <Route path="/app/employee-log" component={EmployeeLog} />
 
-              <Route path="/app/driver-list" component={DriverList} />
-              <Route path="/app/driver-detail" component={DriverDetail} />
+            <Route path="/app/driver-list" component={DriverList} />
+            <Route path="/app/driver-detail" component={DriverDetail} />
 
-              <Route path="/app/cash-list" component={CashList} />
-              <Route path="/app/cash-detail" component={CashDetail} />
-              <Route
-                path="/app/cash-transaction"
-                component={CashPaymentReport}
-              />
+            <Route path="/app/cash-list" component={CashList} />
+            <Route path="/app/cash-detail" component={CashDetail} />
+            <Route path="/app/cash-transaction" component={CashPaymentReport} />
 
-              <Route path="/app/cheque-list" component={ChequeList} />
-              <Route path="/app/cheque-detail" component={ChequeDetail} />
+            <Route path="/app/cheque-list" component={ChequeList} />
+            <Route path="/app/cheque-detail" component={ChequeDetail} />
 
-              <Route path="/app/cheque-list" component={ChequeList} />
-              <Route path="/app/cheque-detail" component={ChequeDetail} />
+            <Route path="/app/cheque-list" component={ChequeList} />
+            <Route path="/app/cheque-detail" component={ChequeDetail} />
 
-              <Route path="/app/loan-list" component={LoanList} />
-              <Route path="/app/loan-detail" component={LoanDetail} />
+            <Route path="/app/loan-list" component={LoanList} />
+            <Route path="/app/loan-detail" component={LoanDetail} />
 
-              <Route path="/app/invoice-list" component={InvoiceList} />
-              <Route path="/app/invoice-detail" component={InvoiceDetail} />
+            <Route path="/app/invoice-list" component={InvoiceList} />
+            <Route path="/app/invoice-detail" component={InvoiceDetail} />
 
-              <Route path="/app/payment-list" component={PaymentList} />
-              <Route path="/app/payment-detail" component={PaymentDetail} />
+            <Route path="/app/payment-list" component={PaymentList} />
+            <Route path="/app/payment-detail" component={PaymentDetail} />
 
-              <Route path="/app/product-list" component={ProductList} />
-              <Route path="/app/product-detail" component={ProductDetail} />
+            <Route path="/app/product-list" component={ProductList} />
+            <Route path="/app/product-detail" component={ProductDetail} />
 
-              <Route path="/app/depot-list" component={DepotList} />
-              <Route path="/app/depot-detail" component={DepotDetail} />
+            <Route path="/app/depot-list" component={DepotList} />
+            <Route path="/app/depot-detail" component={DepotDetail} />
 
-              <Route path="/app/setting" component={Setting} />
-              <Route path="/app/category" component={Category} />
+            <Route path="/app/setting" component={Setting} />
+            <Route path="/app/category" component={Category} />
 
-              <Route path="/app/traffic" component={Traffic} />
-              <Route path="/app/traffic-detail" component={TrafficDetail} />
-              <Route path="/app/accountNumber" component={AccountsNumber} />
-            </Switch>
-          </div>
-        </Router>
+            <Route path="/app/traffic" component={Traffic} />
+            <Route path="/app/traffic-detail" component={TrafficDetail} />
+            <Route path="/app/accountNumber" component={AccountsNumber} />
+          </Switch>
+        </div>
       </>
     </div>
   );
