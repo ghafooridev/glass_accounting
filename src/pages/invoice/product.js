@@ -318,7 +318,7 @@ export default function ProductList({
         </Grid>
       </Grid>
       <TableContainer>
-        <TableTop handleSearch={onSearch} />
+        <TableTop handleSearch={onSearch} defaultSearch={search} />
 
         <Table className={classes.table} size={"medium"}>
           <TableHeader

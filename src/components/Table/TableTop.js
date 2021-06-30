@@ -9,6 +9,7 @@ import {
   TextField,
   Button,
   Collapse,
+  InputAdornment,
 } from "@material-ui/core";
 import SearchIcon from "@material-ui/icons/SearchRounded";
 
@@ -46,10 +47,11 @@ const TableTop = (props) => {
     toolbarClass,
     addButtonClass,
     minimal,
+    defaultSearch,
   } = props;
-  const [showSearchText, setShowSearchText] = useState(false);
+  const [showSearchText, setShowSearchText] = useState(!!defaultSearch);
   const [showFilterBox, setShowFilterBox] = useState(false);
-  const [searchText, setSearchText] = useState();
+  const [searchText, setSearchText] = useState(defaultSearch);
 
   const onChangeSearch = (event) => {
     const { value } = event.target;
@@ -60,6 +62,11 @@ const TableTop = (props) => {
     if (e.key === "Enter") {
       handleSearch(searchText);
     }
+  };
+
+  const onRemoveSearch = () => {
+    setSearchText("");
+    handleSearch("");
   };
 
   return (
@@ -77,6 +84,19 @@ const TableTop = (props) => {
               variant="outlined"
               onChange={onChangeSearch}
               onKeyDown={OnSearchKeyPress}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <i
+                      className="material-icons-round"
+                      style={{ cursor: "pointer" }}
+                      onClick={onRemoveSearch}
+                    >
+                      clear
+                    </i>
+                  </InputAdornment>
+                ),
+              }}
             />
           )}
           {handleSearch && (

@@ -55,8 +55,8 @@ const AccountsNumber = () => {
   const [pageSize, setPageSize] = useState(Constant.TABLE_PAGE_SIZE);
   const [list, setList] = useState([]);
   const [total, setTotal] = useState(0);
-  const history = useHistory();
   const [person, setPerson] = useState("ALL");
+
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
@@ -74,6 +74,7 @@ const AccountsNumber = () => {
 
   const onSearch = (value) => {
     setSearch(value);
+    setPage(0);
   };
 
   const getCardRequest = useApi({
@@ -129,6 +130,7 @@ const AccountsNumber = () => {
                   <TableTop
                     title="لیست حساب های بانکی"
                     handleSearch={onSearch}
+                    defaultSearch={search}
                   />
                   <div className={classes.tab}>
                     <Tabs

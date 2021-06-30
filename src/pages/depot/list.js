@@ -68,6 +68,7 @@ const MainList = () => {
 
   const onSearch = (value) => {
     setSearch(value);
+    setPage(0);
   };
 
   const getDepotRequest = useApi({
@@ -151,6 +152,7 @@ const MainList = () => {
                     title="لیست انبار ها"
                     onAdd={onAdd}
                     handleSearch={onSearch}
+                    defaultSearch={search}
                   />
                   <TableContainer style={{ padding: "0 10px" }}>
                     <Table

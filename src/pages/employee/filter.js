@@ -7,7 +7,7 @@ const personType = [
     label: "بدهکار",
     value: Constant.PERSON_STATUS.DEBTIOR,
   },
-  { label: "بستانکار", value: Constant.PERSON_STATUS.NODEBT },
+  { label: "بی حساب", value: Constant.PERSON_STATUS.NODEBT },
   { label: "طلبکار", value: Constant.PERSON_STATUS.CREDITOR },
 ];
 

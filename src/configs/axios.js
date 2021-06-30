@@ -43,11 +43,19 @@ http.interceptors.response.use(
     return result;
   },
   async (error) => {
-    const { code } = error.response.data.error;
-    AlertAction.show({
-      type: "error",
-      text: "خطایی رخ داده است",
-    });
+    const { code, message } = error.response.data.error;
+    console.log(code);
+    if (code === "UNHANDLED_DATABASE_EXCEPTION") {
+      AlertAction.show({
+        type: "error",
+        text: "خطایی رخ داده است",
+      });
+    } else {
+      AlertAction.show({
+        type: "error",
+        text: message,
+      });
+    }
 
     // TODO : handle 4xx error here and calling refresh token
     // const originalRequest = error.config;

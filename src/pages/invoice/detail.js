@@ -313,7 +313,7 @@ export default function MainDetail({ defaultValues }) {
       }
       return "ویرایش فاکتور فروش";
     } else {
-      if (invoiceType === "INCOME") {
+      if (invoiceType === "SELL") {
         return "افزودن فاکتور خرید";
       }
       return "افزودن فاکتور فروش";

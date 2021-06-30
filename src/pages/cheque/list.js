@@ -79,6 +79,7 @@ const MainList = () => {
 
   const onSearch = (value) => {
     setSearch(value);
+    setPage(0);
   };
 
   const getChequeRequest = useApi({
@@ -218,7 +219,11 @@ const MainList = () => {
             ) : (
               <div className={classes.root}>
                 <Paper className={classes.paper}>
-                  <TableTop title="لیست چک ها" handleSearch={onSearch} />
+                  <TableTop
+                    title="لیست چک ها"
+                    handleSearch={onSearch}
+                    defaultSearch={search}
+                  />
                   <div className={classes.tab}>
                     <Tabs
                       variant="fullWidth"

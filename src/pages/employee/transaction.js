@@ -147,7 +147,11 @@ const MainList = () => {
             ) : (
               <div className={classes.root}>
                 <Paper className={classes.paper}>
-                  <TableTop title={getTableTitle()} handleSearch={onSearch} />
+                  <TableTop
+                    title={getTableTitle()}
+                    handleSearch={onSearch}
+                    defaultSearch={search}
+                  />
                   <TableContainer style={{ padding: "0 10px" }}>
                     <Table
                       className={classes.table}

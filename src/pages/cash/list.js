@@ -76,6 +76,7 @@ const MainList = () => {
 
   const onSearch = (value) => {
     setSearch(value);
+    setPage(0);
   };
 
   const getCashRequest = useApi({
@@ -175,6 +176,7 @@ const MainList = () => {
                     title="لیست صندوق ها"
                     onAdd={onAdd}
                     handleSearch={onSearch}
+                    defaultSearch={search}
                   />
                   <TableContainer style={{ padding: "0 10px" }}>
                     <Table

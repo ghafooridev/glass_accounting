@@ -101,6 +101,7 @@ export default function MainList() {
 
   const onSearch = (value) => {
     setSearch(value);
+    setPage(0);
   };
 
   const onSubmitTransfer = async (data) => {
@@ -207,6 +208,7 @@ export default function MainList() {
                     title="لیست کالا ها"
                     onAdd={onAdd}
                     handleSearch={onSearch}
+                    defaultSearch={search}
                   />
                   <TableContainer style={{ padding: "0 10px" }}>
                     <Table

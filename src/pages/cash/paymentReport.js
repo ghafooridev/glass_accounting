@@ -145,6 +145,7 @@ const PaymentReport = () => {
                   <TableTop
                     title="لیست حساب های بانکی"
                     handleSearch={onSearch}
+                    defaultSearch={search}
                   />
                   <div className={classes.tab}>
                     <Tabs

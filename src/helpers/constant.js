@@ -56,7 +56,7 @@ const Constant = {
   },
   PERSON_STATUS: {
     DEBTOR: "بدهکار",
-    NODEBT: "بستانکار",
+    NODEBT: "بی حساب",
     CREDITOR: "طلبکار",
   },
   PAYMENT_TYPE: {

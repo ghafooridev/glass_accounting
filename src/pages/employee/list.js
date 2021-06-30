@@ -118,10 +118,12 @@ export default function MainList() {
 
   const onSearch = (value) => {
     setSearch(value);
+    setPage(0);
   };
 
   const onFilter = (data) => {
     setFilter(data);
+    setPage(0);
   };
 
   const getData = async () => {
@@ -149,6 +151,7 @@ export default function MainList() {
                     onAdd={onAdd}
                     FilterComponent={<FilterComponent onFilter={onFilter} />}
                     handleSearch={onSearch}
+                    defaultSearch={search}
                   />
                   <TableContainer style={{ padding: "0 10px" }}>
                     <Table

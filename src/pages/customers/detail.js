@@ -161,13 +161,15 @@ export default function MainDetail() {
     onShowDialog(data);
   };
 
-  const handleDeleteAccount = (id) => {
+  const handleDeleteAccount = (row) => {
     DialogActions.show({
       confirm: true,
       title: "ایا از حذف این رکورد مطمئن هستید ؟",
       onAction: async () => {
-        await deleteAccountRequest.execute(null, id);
-        setAccounts(accounts.filter((item) => item.id !== id));
+        if (id) {
+          await deleteAccountRequest.execute(null, row.id);
+        }
+        setAccounts(accounts.filter((item) => item.id !== row.id));
         DialogActions.hide();
       },
       size: "sm",
@@ -317,6 +319,7 @@ export default function MainDetail() {
                       render={({ onChange, value, name }) => {
                         return (
                           <TextField
+                            type="number"
                             variant="outlined"
                             label="مانده از قبل"
                             name={name}
@@ -333,7 +336,6 @@ export default function MainDetail() {
                           />
                         );
                       }}
-                      rules={{ required: Constant.VALIDATION.REQUIRED }}
                       name="accountRemaining"
                     />
                   </Grid>
@@ -399,7 +401,7 @@ export default function MainDetail() {
                                         }}
                                       >
                                         <img
-                                          src={`${Constant.API_ADDRESS}${row.bank.logo}`}
+                                          src={`${Constant.API_ADDRESS}/${row.bank.logo}`}
                                           alt={row.bank.label}
                                           style={{
                                             width: 25,
@@ -429,9 +431,7 @@ export default function MainDetail() {
                                       </IconButton>
 
                                       <IconButton
-                                        onClick={() =>
-                                          handleDeleteAccount(row.id)
-                                        }
+                                        onClick={() => handleDeleteAccount(row)}
                                       >
                                         <DeleteIcon />
                                       </IconButton>

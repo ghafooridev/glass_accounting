@@ -133,10 +133,12 @@ const MainList = () => {
 
   const onChangeType = (e, value) => {
     setType(value);
+    setPage(0);
   };
 
   const onFilter = (data) => {
     setFilter(data);
+    setPage(0);
   };
 
   const getTableTitle = () => {
@@ -176,6 +178,7 @@ const MainList = () => {
                     title={getTableTitle()}
                     onAdd={type !== "ALL" && onAdd}
                     handleSearch={onSearch}
+                    defaultSearch={search}
                     FilterComponent={<FilterComponent onFilter={onFilter} />}
                   />
                   <div className={classes.tab}>

@@ -71,6 +71,7 @@ const MainList = () => {
 
   const onSearch = (value) => {
     setSearch(value);
+    setPage(0);
   };
 
   const getUserRequest = useApi({
@@ -137,6 +138,7 @@ const MainList = () => {
                     title="لیست کاربران"
                     onAdd={onAdd}
                     handleSearch={onSearch}
+                    defaultSearch={search}
                   />
                   <TableContainer style={{ padding: "0 10px" }}>
                     <Table

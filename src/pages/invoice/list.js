@@ -89,6 +89,7 @@ const MainList = () => {
 
   const onSearch = (value) => {
     setSearch(value);
+    setPage(0);
   };
 
   const getInvoiceRequest = useApi({
@@ -156,6 +157,7 @@ const MainList = () => {
 
   const onFilter = (data) => {
     setFilter(data);
+    setPage(0);
   };
 
   useEffect(() => {
@@ -180,6 +182,7 @@ const MainList = () => {
                     title={getTableTitle()}
                     onAdd={type !== "ALL" && onAdd}
                     handleSearch={onSearch}
+                    defaultSearch={search}
                     FilterComponent={<FilterComponent onFilter={onFilter} />}
                   />
                   <div className={classes.tab}>
@@ -289,7 +292,7 @@ const MainList = () => {
                                 />
                               </TableCell>
 
-                              <TableCell padding="none">
+                              {/* <TableCell padding="none">
                                 <TableRowMenu
                                   options={[
                                     { id: "edit", title: "ویرایش" },
@@ -299,7 +302,7 @@ const MainList = () => {
                                     handleAction(row.id, type)
                                   }
                                 />
-                              </TableCell>
+                              </TableCell> */}
                             </TableRow>
                           );
                         })}

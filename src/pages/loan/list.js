@@ -75,6 +75,7 @@ const MainList = () => {
 
   const onSearch = (value) => {
     setSearch(value);
+    setPage(0);
   };
 
   const onAdd = () => {
@@ -130,6 +131,7 @@ const MainList = () => {
                     title="لیست وام ها"
                     onAdd={onAdd}
                     handleSearch={onSearch}
+                    defaultSearch={search}
                   />
 
                   <TableContainer style={{ padding: "0 10px" }}>
