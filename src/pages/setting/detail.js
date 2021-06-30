@@ -65,6 +65,9 @@ export default function MainDetail() {
       return await editUserRequest.execute(data);
     }
     await addUserRequest.execute(data);
+    setTimeout(() => {
+      onReject();
+    }, 1000);
   };
 
   const onReject = () => {

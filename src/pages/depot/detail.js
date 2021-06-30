@@ -61,6 +61,9 @@ export default function MainDetail() {
       return await editDepotRequest.execute(value);
     }
     await addDepotRequest.execute(value);
+    setTimeout(() => {
+      onReject();
+    }, 1000);
   };
 
   const onReject = () => {

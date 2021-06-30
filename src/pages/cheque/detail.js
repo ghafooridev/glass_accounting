@@ -75,6 +75,9 @@ export default function MainDetail({ defaultValues }) {
     } else {
       await addCashRequest.execute(data);
     }
+    setTimeout(() => {
+      onReject();
+    }, 1000);
   };
 
   const onReject = () => {

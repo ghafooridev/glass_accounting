@@ -161,6 +161,9 @@ export default function MainDetail() {
       return await editProductRequest.execute(result);
     }
     await addProductRequest.execute(result);
+    setTimeout(() => {
+      onReject();
+    }, 1000);
   };
 
   const onReject = () => {

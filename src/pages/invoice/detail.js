@@ -200,6 +200,9 @@ export default function MainDetail({ defaultValues }) {
         description: `بابت فاکتور به شماره  ${response.id}`,
       };
       addInvoicePaymentRequest.execute(invoicePayment);
+      setTimeout(() => {
+        onReject();
+      }, 1000);
     }
   };
 

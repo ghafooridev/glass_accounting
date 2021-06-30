@@ -31,9 +31,16 @@ const headCellsCustomer = [
 ];
 const headCellsPerson = [
   { id: "lastName", label: "نام و نام خانوادگی" },
+  { id: "type", label: "نوع شخص" },
 
   { id: "action" },
 ];
+
+const PERSON_TYPE = {
+  EMPLOYEE: "پرسنل",
+  CUSTOMER: "مشتری",
+  DRIVER: "راننده",
+};
 
 export default function MainList({ onSelect, onDismiss, filter }) {
   const classes = styles();
@@ -114,6 +121,11 @@ export default function MainList({ onSelect, onDismiss, filter }) {
                 >
                   {filter === "person" && (
                     <TableCell padding="none">{row.label}</TableCell>
+                  )}
+                  {filter === "person" && (
+                    <TableCell padding="none">
+                      {PERSON_TYPE[row.personType]}
+                    </TableCell>
                   )}
 
                   {filter === "customer" && (

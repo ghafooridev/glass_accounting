@@ -121,6 +121,9 @@ export default function MainDetail({ defaultValues }) {
     } else {
       await addPaymentRequest.execute(value);
     }
+    setTimeout(() => {
+      onReject();
+    }, 1000);
   };
 
   const onReject = () => {

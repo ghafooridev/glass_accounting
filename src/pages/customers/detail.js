@@ -87,6 +87,7 @@ export default function MainDetail() {
 
   const onSubmit = async (data) => {
     const newAccounts = [];
+    console.log(accounts);
     accounts.map((item) => {
       const newData = {
         bankId: item.bank.value,
@@ -94,6 +95,7 @@ export default function MainDetail() {
         accountNumber: item.accountNumber,
         accountShaba: item.accountShaba,
         description: item.description,
+        id: item.id,
       };
       newAccounts.push(newData);
     });
@@ -103,6 +105,9 @@ export default function MainDetail() {
       return await editCustomerRequest.execute(allData);
     }
     await addCustomerRequest.execute(allData);
+    setTimeout(() => {
+      onReject();
+    }, 1000);
   };
 
   const onReject = () => {
@@ -162,6 +167,7 @@ export default function MainDetail() {
   };
 
   const handleDeleteAccount = (row) => {
+    debugger;
     DialogActions.show({
       confirm: true,
       title: "ایا از حذف این رکورد مطمئن هستید ؟",

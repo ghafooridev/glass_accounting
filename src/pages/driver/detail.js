@@ -107,6 +107,9 @@ export default function MainDetail() {
       return await editDriverRequest.execute(allData);
     }
     await addDriverRequest.execute(allData);
+    setTimeout(() => {
+      onReject();
+    }, 1000);
   };
 
   const onReject = () => {

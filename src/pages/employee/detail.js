@@ -127,6 +127,9 @@ export default function MainDetail() {
       return await editEmployeeRequest.execute(allData);
     }
     await addEmployeeRequest.execute(allData);
+    setTimeout(() => {
+      onReject();
+    }, 1000);
   };
 
   const onReject = () => {
