@@ -54,6 +54,7 @@ export default function MainList() {
   const [list, setList] = useState([]);
   const [filter, setFilter] = useState();
   const history = useHistory();
+  const [total, setTotal] = useState(0);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -129,6 +130,7 @@ export default function MainList() {
   const getData = async () => {
     const customerList = await getCustomerRequest.execute();
     setList(customerList.data);
+    setTotal(customerList.total);
   };
 
   useEffect(() => {
@@ -233,7 +235,7 @@ export default function MainList() {
                     </Table>
                   </TableContainer>
                   <TablePaging
-                    count={list.length}
+                    count={total}
                     handleChangePage={handleChangePage}
                     handleChangeRowsPerPage={handleChangeRowsPerPage}
                     page={page}

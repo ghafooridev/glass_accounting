@@ -10,7 +10,7 @@ function TablePaging(props) {
     page,
     rowsPerPage,
   } = props;
-
+  console.log(props);
   return (
     <TablePagination
       style={{ display: "flex" }}

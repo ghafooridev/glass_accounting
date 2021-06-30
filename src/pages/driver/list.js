@@ -56,6 +56,7 @@ export default function MainList() {
   const [pageSize, setPageSize] = useState(Constant.TABLE_PAGE_SIZE);
   const [list, setList] = useState([]);
   const history = useHistory();
+  const [total, setTotal] = useState(0);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -133,6 +134,7 @@ export default function MainList() {
   const getData = async () => {
     const driverList = await getDriverRequest.execute();
     setList(driverList.data);
+    setTotal(driverList.total);
   };
 
   useEffect(() => {
@@ -229,7 +231,7 @@ export default function MainList() {
                     </Table>
                   </TableContainer>
                   <TablePaging
-                    count={list.length}
+                    count={total}
                     handleChangePage={handleChangePage}
                     handleChangeRowsPerPage={handleChangeRowsPerPage}
                     page={page}

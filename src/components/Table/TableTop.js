@@ -54,8 +54,14 @@ const TableTop = (props) => {
   const onChangeSearch = (event) => {
     const { value } = event.target;
     setSearchText(value);
-    handleSearch(value);
   };
+
+  const OnSearchKeyPress = (e) => {
+    if (e.key === "Enter") {
+      handleSearch(searchText);
+    }
+  };
+
   return (
     <>
       <Toolbar className={clsx(classes.root, toolbarClass)}>
@@ -70,6 +76,7 @@ const TableTop = (props) => {
               label="جستجو"
               variant="outlined"
               onChange={onChangeSearch}
+              onKeyDown={OnSearchKeyPress}
             />
           )}
           {handleSearch && (

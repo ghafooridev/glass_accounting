@@ -51,6 +51,7 @@ export default function MainList() {
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(Constant.TABLE_PAGE_SIZE);
   const [list, setList] = useState([]);
+  const [total, setTotal] = useState(0);
   const history = useHistory();
 
   const handleRequestSort = (event, property) => {
@@ -185,6 +186,7 @@ export default function MainList() {
   const getData = async () => {
     const productList = await getProductRequest.execute();
     setList(productList.data);
+    setTotal(productList.total);
   };
 
   useEffect(() => {
@@ -277,7 +279,7 @@ export default function MainList() {
                     </Table>
                   </TableContainer>
                   <TablePaging
-                    count={list.length}
+                    count={total}
                     handleChangePage={handleChangePage}
                     handleChangeRowsPerPage={handleChangeRowsPerPage}
                     page={page}

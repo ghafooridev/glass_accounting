@@ -47,6 +47,7 @@ export default function MainList() {
   const [pageSize, setPageSize] = useState(Constant.TABLE_PAGE_SIZE);
   const [list, setList] = useState([]);
   const [filter, setFilter] = useState();
+  const [total, setTotal] = useState(0);
   const history = useHistory();
 
   const handleRequestSort = (event, property) => {
@@ -126,6 +127,7 @@ export default function MainList() {
   const getData = async () => {
     const employeeList = await getEmployeeRequest.execute();
     setList(employeeList.data);
+    setTotal(employeeList.total);
   };
 
   useEffect(() => {
@@ -220,7 +222,7 @@ export default function MainList() {
                     </Table>
                   </TableContainer>
                   <TablePaging
-                    count={list.length}
+                    count={total}
                     handleChangePage={handleChangePage}
                     handleChangeRowsPerPage={handleChangeRowsPerPage}
                     page={page}
