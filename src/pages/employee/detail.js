@@ -108,11 +108,12 @@ export default function MainDetail() {
     const newAccounts = [];
     accounts.map((item) => {
       const newData = {
-        bankId: item.bank.value,
+        bankId: item.bank.value || item.bank.id,
         accountCardNumber: item.accountCardNumber,
         accountNumber: item.accountNumber,
         accountShaba: item.accountShaba,
         description: item.description,
+        id: item.id.toString().includes("-") ? null : item.id,
       };
       newAccounts.push(newData);
     });

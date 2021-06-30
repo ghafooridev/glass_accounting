@@ -155,7 +155,7 @@ export default function MainDetail() {
       ...data,
       categories: selectedCategory,
       unitBase: selectedUnit,
-      stocks: filterAmounts(amounts),
+      stocks: id ? amounts : filterAmounts(amounts),
     };
     if (id) {
       return await editProductRequest.execute(result);
