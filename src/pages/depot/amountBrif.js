@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import {
   Grid,
-  Paper,
+  CircularProgress,
   Table,
   TableBody,
   TableContainer,
@@ -28,14 +28,19 @@ export default function MainDetail({ depotId, onSubmit }) {
     method: "get",
     url: `product/depot/${depotId}`,
   });
+
   const getAmount = async () => {
     const result = await getAmountRequest.execute();
     setData(result.data);
   };
+
   useEffect(() => {
     getAmount();
   }, []);
-  return (
+  console.log(data);
+  return getAmountRequest.pending ? (
+    <CircularProgress style={{ position: "absolute", top: 20, left: 20 }} />
+  ) : (
     <Grid container spacing={3} alignItems="center">
       {!!data.length && (
         <Grid item xs={12}>

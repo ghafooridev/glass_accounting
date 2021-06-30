@@ -53,6 +53,7 @@ export default function MainDetail({ defaultValues }) {
 
   const paymentType = getQueryString("type");
   const loan = getQueryString("loan");
+  const customerId = getQueryString("customerId");
   const [detail, setDetail] = useState({});
   const [isLoan, setIsLoan] = useState(loan);
   const [selectedPerson, setSelectedPerson] = useState();
@@ -108,7 +109,7 @@ export default function MainDetail({ defaultValues }) {
   const onSubmit = async (data) => {
     const value = {
       type: paymentType,
-      personType: selectedPerson.personType, //TODO : we should change it later . give this data from person selector component
+      personType: selectedPerson.personType,
       personId: selectedPerson.value,
       description: data.description,
       date: selectedDate._d,
@@ -123,6 +124,9 @@ export default function MainDetail({ defaultValues }) {
   };
 
   const onReject = () => {
+    if (customerId) {
+      return history.push(`/app/customer-transaction?id=${customerId}`);
+    }
     history.push("/app/payment-list?type=ALL");
   };
 
@@ -152,7 +156,10 @@ export default function MainDetail({ defaultValues }) {
 
   const getPersonName = () => {
     if (selectedPerson) {
-      return `${selectedPerson.label}`;
+      if (selectedPerson.label) {
+        return `${selectedPerson.label}`;
+      }
+      return `${selectedPerson.firstName} ${selectedPerson.lastName}`;
     }
     return "";
   };

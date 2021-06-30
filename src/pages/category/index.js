@@ -105,7 +105,6 @@ const MainList = () => {
   });
 
   const onAction = ({ name, value }) => {
-    debugger;
     const types = {
       customer: async () => {
         if (action === "edit") {

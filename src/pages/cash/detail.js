@@ -148,11 +148,13 @@ export default function MainDetail({ defaultValues }) {
                     }}
                   >
                     <FormControlLabel
+                      disabled={!!id}
                       value="CASH"
                       control={<Radio />}
                       label="نقدی"
                     />
                     <FormControlLabel
+                      disabled={!!id}
                       value="BANK"
                       control={<Radio />}
                       label="بانکی"
@@ -187,7 +189,7 @@ export default function MainDetail({ defaultValues }) {
                     render={({ onChange, value, name }) => {
                       return (
                         <TextField
-                        disabled={!!id}
+                          disabled={!!id}
                           variant="outlined"
                           label="موجودی "
                           type="number"

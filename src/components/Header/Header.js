@@ -121,7 +121,7 @@ export default function Header(props) {
           )}
         </IconButton>
         <Typography variant="h6" weight="medium" className={classes.logotype}>
-          سیستم یکپارچه مدیریت مالی
+          سیستم یکپارچه مدیریت
         </Typography>
 
         <div className={classes.grow} />

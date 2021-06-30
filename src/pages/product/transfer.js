@@ -20,7 +20,7 @@ export default function MainDetail({ productId, units, onSubmit, onDismiss }) {
   const [driverPicker, setDriverPicker] = useState([]);
   const [isAddDriver, setIsAddDriver] = useState(false);
   const [category, setCategory] = useState([]);
-  const [driverCategory, setDriverCategory] = useState(1);
+  const [categoryId, setDriverCategory] = useState(1);
   const [newDriver, setNewDriver] = useState();
   const [showPerUnit, setShowPerUnit] = useState(false);
   const [perUnit, setPerUnit] = useState();
@@ -35,13 +35,13 @@ export default function MainDetail({ productId, units, onSubmit, onDismiss }) {
     url: "driver",
   });
 
-  const driverCategoryRequest = useApi({
+  const categoryIdRequest = useApi({
     method: "get",
     url: `driver/category`,
   });
 
   const getDriverCategory = async () => {
-    const detail = await driverCategoryRequest.execute();
+    const detail = await categoryIdRequest.execute();
     setCategory(detail.data);
   };
 
@@ -86,17 +86,20 @@ export default function MainDetail({ productId, units, onSubmit, onDismiss }) {
         )[0];
         setShowPerUnit(targetUnit.perUnit);
       },
-      driverName: () => {
-        setNewDriver({ ...newDriver, driverName: e.target.value });
+      firstName: () => {
+        setNewDriver({ ...newDriver, firstName: e.target.value });
       },
-      driverCarName: () => {
-        setNewDriver({ ...newDriver, driverCarName: e.target.value });
+      lastName: () => {
+        setNewDriver({ ...newDriver, lastName: e.target.value });
       },
-      driverCarPelak: () => {
-        setNewDriver({ ...newDriver, driverCarPelak: e.target.value });
+      carName: () => {
+        setNewDriver({ ...newDriver, carName: e.target.value });
       },
-      driverCategory: () => {
-        setNewDriver({ ...newDriver, driverCategory: e.target.value });
+      carPlaque: () => {
+        setNewDriver({ ...newDriver, carPlaque: e.target.value });
+      },
+      categoryId: () => {
+        setNewDriver({ ...newDriver, categoryId: e.target.value });
       },
       perUnit: () => {
         setPerUnit(e.target.value);
@@ -254,8 +257,18 @@ export default function MainDetail({ productId, units, onSubmit, onDismiss }) {
               <TextField
                 variant="outlined"
                 label="نام راننده"
-                onChange={(e) => onChange(e, "driverName")}
-                value={newDriver?.driverName}
+                onChange={(e) => onChange(e, "firstName")}
+                value={newDriver?.firstName}
+                fullWidth
+                size="small"
+              />
+            </Grid>
+            <Grid item xs={12} style={{ margin: "0 10px" }}>
+              <TextField
+                variant="outlined"
+                label="نام خانوادگی راننده"
+                onChange={(e) => onChange(e, "lastName")}
+                value={newDriver?.lastName}
                 fullWidth
                 size="small"
               />
@@ -265,8 +278,8 @@ export default function MainDetail({ productId, units, onSubmit, onDismiss }) {
               <TextField
                 variant="outlined"
                 label="نام ماشین"
-                onChange={(e) => onChange(e, "driverCarName")}
-                value={newDriver?.driverCarName}
+                onChange={(e) => onChange(e, "carName")}
+                value={newDriver?.carName}
                 fullWidth
                 size="small"
               />
@@ -276,20 +289,20 @@ export default function MainDetail({ productId, units, onSubmit, onDismiss }) {
               <TextField
                 variant="outlined"
                 label="پلاک"
-                onChange={(e) => onChange(e, "driverCarPelak")}
-                value={newDriver?.driverCarPelak}
+                onChange={(e) => onChange(e, "carPlaque")}
+                value={newDriver?.carPlaque}
                 fullWidth
                 size="small"
               />
             </Grid>
 
             <Grid item xs={12} style={{ margin: "0 10px" }}>
-              {!!category.length && driverCategory && (
+              {!!category.length && categoryId && (
                 <TextField
                   select
                   label="دسته بندی"
-                  value={driverCategory}
-                  onChange={(e) => onChange(e, "driverCategory")}
+                  value={categoryId}
+                  onChange={(e) => onChange(e, "categoryId")}
                   variant="outlined"
                   fullWidth
                   size="small"

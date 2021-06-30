@@ -89,40 +89,52 @@ const factorPriceChart = [
 ];
 const empoyeeTrafficChart = [
   {
-    subject: "Math",
-    A: 120,
-    B: 110,
-    fullMark: 150,
+    subject: "فروردین",
+    A: 100,
   },
   {
-    subject: "Chinese",
-    A: 98,
-    B: 130,
-    fullMark: 150,
+    subject: "ادریبهشت",
+    A: 60,
   },
   {
-    subject: "English",
-    A: 86,
-    B: 130,
-    fullMark: 150,
+    subject: "خرداد",
+    A: 69,
   },
   {
-    subject: "Geography",
-    A: 99,
-    B: 100,
-    fullMark: 150,
+    subject: "تیر",
+    A: 75,
   },
   {
-    subject: "Physics",
+    subject: "مرداد",
+    A: 95,
+  },
+  {
+    subject: "شهریور",
+    A: 90,
+  },
+  {
+    subject: "مهر",
+    A: 62,
+  },
+  {
+    subject: "آبان",
+    A: 100,
+  },
+  {
+    subject: "آذر",
     A: 85,
-    B: 90,
-    fullMark: 150,
   },
   {
-    subject: "History",
-    A: 65,
-    B: 85,
-    fullMark: 150,
+    subject: "دی",
+    A: 43,
+  },
+  {
+    subject: "بهمن",
+    A: 72,
+  },
+  {
+    subject: "اسفند",
+    A: 86,
   },
 ];
 
@@ -453,7 +465,7 @@ export default function Dashboard(props) {
           <Widget title="موجودی صندوق ها" upperTitle className={classes.card}>
             <Grid container spacing={2}>
               {pieChart.length && (
-                <Grid item sm={8} xs={12}>
+                <Grid item sm={6} xs={12}>
                   <div style={{ width: "100%", height: "330px" }}>
                     <div style={{ width: "100%", height: "100%" }}>
                       <ResponsiveContainer width="100%" height="100%">
@@ -478,7 +490,7 @@ export default function Dashboard(props) {
                   </div>
                 </Grid>
               )}
-              <Grid item sm={4} xs={12}>
+              <Grid item sm={6} xs={12}>
                 <div className={classes.pieChartLegendWrapper}>
                   {pieChart.map(({ name, amount, color }, index) => (
                     <div key={color} className={classes.legendItemContainer}>

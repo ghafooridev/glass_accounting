@@ -95,9 +95,12 @@ const MainList = () => {
   });
 
   const handleAction = (row, type) => {
+    console.log(row);
     const types = {
       edit: () => {
-        history.push(`/app/payment-detail?type=${row.type}&id=${row.id}`);
+        history.push(
+          `/app/payment-detail?type=${row.type}&id=${row.id}&customerId=${customerId}`,
+        );
       },
       delete: () => {
         DialogActions.show({
@@ -122,7 +125,8 @@ const MainList = () => {
     if (list.length)
       return (
         <div>
-          لیست تراکنش های <b style={{ fontWeight: "bold" }}>{list[0].person}</b>
+          لیست تراکنش های{" "}
+          <b style={{ fontWeight: "bolder" }}>{list[0].person}</b>
         </div>
       );
   };

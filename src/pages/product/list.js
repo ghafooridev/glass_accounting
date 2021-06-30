@@ -133,6 +133,7 @@ export default function MainList() {
         });
       },
       amount: () => {
+        console.log(row);
         DialogActions.show({
           title: "موجودی در انبار ها",
           component: (

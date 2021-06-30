@@ -25,6 +25,7 @@ const headCells = [
 ];
 
 export default function MainDetail({ data, onSubmit }) {
+  console.log(data);
   return (
     <Grid container spacing={3} alignItems="center">
       {!!data.length && (

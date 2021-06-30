@@ -337,7 +337,6 @@ export default function MainDetail() {
                           />
                         );
                       }}
-                      rules={{ required: Constant.VALIDATION.REQUIRED }}
                       name="accountRemaining"
                     />
                   </Grid>

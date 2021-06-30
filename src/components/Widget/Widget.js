@@ -32,14 +32,21 @@ export default function Widget({
   var [isMoreMenuOpen, setMoreMenuOpen] = useState(false);
 
   return (
-    <div className={classes.widgetWrapper} style={style && {...style}}>
-      <Paper className={classes.paper} classes={{ root: classnames(classes.widgetRoot, {
-        [classes.noWidgetShadow]: noWidgetShadow
-        }) }}>
-        <div className={classnames(classes.widgetHeader, {
-          [classes.noPadding]: noHeaderPadding,
-          [headerClass]: headerClass
-        })}>
+    <div className={classes.widgetWrapper} style={style && { ...style }}>
+      <Paper
+        className={classes.paper}
+        classes={{
+          root: classnames(classes.widgetRoot, {
+            [classes.noWidgetShadow]: noWidgetShadow,
+          }),
+        }}
+      >
+        <div
+          className={classnames(classes.widgetHeader, {
+            [classes.noPadding]: noHeaderPadding,
+            [headerClass]: headerClass,
+          })}
+        >
           {header ? (
             header
           ) : (
@@ -47,7 +54,7 @@ export default function Widget({
               <Typography variant="h5" color="textSecondary" noWrap>
                 {title}
               </Typography>
-              {!disableWidgetMenu && (
+              {!true && (
                 <IconButton
                   color="primary"
                   classes={{ root: classes.moreButton }}

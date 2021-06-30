@@ -3,7 +3,6 @@ import identity from "lodash/identity";
 import queryString from "query-string";
 import storageService from "../services/storage";
 import Constant from "./constant";
-import defaultTheme from "../themes/default";
 import {
   primary,
   secondary,
@@ -21,7 +20,10 @@ export const convertParamsToQueryString = (params) => {
 };
 
 export const getQueryString = (param) => {
-  return queryString.parse(window.location.search)[param];
+  var myUrl = new URL(window.location.href.replace(/#/g, ""));
+  var param_value = myUrl.searchParams.get(param);
+  return param_value;
+  // return queryString.parse(window.location.search)[param];
 };
 
 export const getRandomColor = () => {
