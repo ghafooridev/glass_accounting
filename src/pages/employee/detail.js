@@ -102,7 +102,6 @@ export default function MainDetail() {
   const onSubmit = async (data) => {
     const contract = {
       type: selectedContract,
-      SPH: data.SPH,
       startDate: selectedDate._d,
     };
     const newAccounts = [];
@@ -364,29 +363,7 @@ export default function MainDetail() {
                       ))}
                     </TextField>
                   </Grid>
-                  <Grid item lg={6} xs={12}>
-                    <Controller
-                      control={control}
-                      render={({ onChange, value, name }) => {
-                        return (
-                          <TextField
-                            type="number"
-                            variant="outlined"
-                            label="مبلغ قرارداد"
-                            name={name}
-                            onChange={onChange}
-                            value={value}
-                            error={!!errors.SPH}
-                            helperText={errors.SPH ? errors.SPH.message : ""}
-                            fullWidth
-                            size="small"
-                          />
-                        );
-                      }}
-                      rules={{ required: Constant.VALIDATION.REQUIRED }}
-                      name="SPH"
-                    />
-                  </Grid>
+
                   <Grid item lg={6} xs={12} className={classes.datePicker}>
                     <DatePicker
                       autoOk

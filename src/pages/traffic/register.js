@@ -249,28 +249,28 @@ export default function MainDetail() {
         <>
           <TableCell padding="none">
             <Chip
-              label={row.times[0].date}
+              label={row.times[0]?.date}
               className={classes.logedEnter}
               // onClick={() => onSubmit(row, "ENTER")}
             />
           </TableCell>
           <TableCell padding="none">
             <Chip
-              label={row.times[1].date}
+              label={row.times[1]?.date}
               className={classes.logedExit}
               // onClick={() => onSubmit(row, "EXIT")}
             />
           </TableCell>
           <TableCell padding="none">
             <Chip
-              label={row.times[2].date}
+              label={row.times[2]?.date}
               className={classes.logedEnter}
               // onClick={() => onSubmit(row, "ENTER")}
             />
           </TableCell>
           <TableCell padding="none">
             <Chip
-              label={row.times[3].date}
+              label={row.times[3]?.date}
               className={classes.logedExit}
               // onClick={() => onSubmit(row, "ENTER")}
             />
@@ -287,23 +287,21 @@ export default function MainDetail() {
   return (
     <Grid container spacing={3} style={{ alignItems: "baseline" }}>
       <Grid item lg={3} sm={12} className={classes.dateTime}>
-        <Grid item lg={12} xs={12} className={classes.datePicker}>
-          <DatePicker
-            autoOk
-            orientation="landscape"
-            variant="static"
-            openTo="date"
-            name="date"
-            label="تاریخ شروع قرارداد"
-            inputVariant="outlined"
-            okLabel="تأیید"
-            cancelLabel="لغو"
-            labelFunc={(date) => (date ? date.format("jYYYY/jMM/jDD") : "")}
-            value={selectedDate}
-            onChange={handleDateChange}
-            style={{ width: "100%" }}
-          />
-        </Grid>
+        <DatePicker
+          autoOk
+          orientation="portrait"
+          variant="static"
+          openTo="date"
+          name="date"
+          label="تاریخ شروع قرارداد"
+          inputVariant="outlined"
+          okLabel="تأیید"
+          cancelLabel="لغو"
+          labelFunc={(date) => (date ? date.format("jYYYY/jMM/jDD") : "")}
+          value={selectedDate}
+          onChange={handleDateChange}
+          style={{ width: "100%" }}
+        />
       </Grid>
       <Grid item lg={9} sm={12} className={classes.root}>
         <Paper className={classes.paper}>
