@@ -9,11 +9,10 @@ import styles from "./style";
 import { v4 as uuid } from "uuid";
 
 const Payment = ({ onSubmit, onDismiss, defaultValues, paymentType, type }) => {
-  console.log(defaultValues.transactionType);
   const [banks, setBanks] = useState([]);
   const [chequeDueDate, handleChequeDueDateChange] = useState(moment());
   const [selectedTransaction, setSelectedTransaction] = useState(
-    defaultValues.transactionType,
+    defaultValues?.transactionType,
   );
   const [selectedBank, setSelectedBank] = useState(defaultValues?.bankId || 1);
   const [cashes, setCashes] = useState([]);
