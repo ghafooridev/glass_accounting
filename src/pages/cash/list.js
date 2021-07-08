@@ -101,13 +101,13 @@ const MainList = () => {
   });
 
   const onDismissTransfer = () => {
-    DialogActions.hide();
+    DialogActions.hide({ name: "transfer" });
   };
 
   const onSubmitTransfer = async (data) => {
     await transferCashDesk.execute(data);
     getData();
-    DialogActions.hide();
+    onDismissTransfer();
   };
 
   const handleAction = (row, type) => {
@@ -125,9 +125,10 @@ const MainList = () => {
           onAction: async () => {
             await deleteCashRequest.execute(null, row.id);
             setList(list.filter((item) => item.id !== row.id));
-            DialogActions.hide();
+            DialogActions.hide({ name: "delete" });
           },
-          size: "sm",
+          name: "delete",
+          size: "6",
           disableCloseButton: false,
         });
       },
@@ -141,7 +142,8 @@ const MainList = () => {
               source={row.id}
             />
           ),
-          size: "xs",
+          name: "transfer",
+          size: "4",
           confirm: false,
           disableCloseButton: false,
         });

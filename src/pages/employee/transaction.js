@@ -106,9 +106,10 @@ const MainList = () => {
           onAction: async () => {
             await deleteUseRequest.execute(null, row.id);
             setList(list.filter((item) => item.id !== row.id));
-            DialogActions.hide();
+            DialogActions.hide({ name: "delete" });
           },
-          size: "sm",
+          name: "delete",
+          size: "6",
           disableCloseButton: false,
         });
       },

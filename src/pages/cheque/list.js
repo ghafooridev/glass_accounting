@@ -107,14 +107,13 @@ const MainList = () => {
   const onSelectCash = async (cashdeskId, chequeId) => {
     await sleepRequest.execute({ chequeId, cashdeskId });
     getData();
-    DialogActions.hide();
+    DialogActions.hide({ name: "cash" });
   };
 
   const onSubmitSpend = async (data) => {
-    console.log(data);
     await spendRequest.execute(data);
     getData();
-    DialogActions.hide();
+    DialogActions.hide({ name: "spend" });
   };
 
   const handleAction = (row, type) => {
@@ -126,10 +125,11 @@ const MainList = () => {
             <CashSelector
               chequeId={row.id}
               onSelect={onSelectCash}
-              onDismiss={() => DialogActions.hide()}
+              onDismiss={() => DialogActions.hide({ name: "cash" })}
             />
           ),
-          size: "lg",
+          name: "cash",
+          size: "8",
           confirm: false,
           disableCloseButton: false,
         });
@@ -141,10 +141,11 @@ const MainList = () => {
             <SpendCheque
               chequeId={row.id}
               onSubmit={onSubmitSpend}
-              onDismiss={() => DialogActions.hide()}
+              onDismiss={() => DialogActions.hide({ name: "spend" })}
             />
           ),
-          size: "sm",
+          name: "spend",
+          size: "6",
           confirm: false,
           disableCloseButton: false,
         });
@@ -155,9 +156,10 @@ const MainList = () => {
           title: "ایا از برداشتن این چک مطمئن هستید ؟",
           onAction: async () => {
             onSelectCash({ cashdeskId: 1, chequeId: row.id });
-            DialogActions.hide();
+            DialogActions.hide({ name: "revert" });
           },
-          size: "sm",
+          name: "revert",
+          size: "6",
           disableCloseButton: false,
         });
       },

@@ -55,7 +55,6 @@ export default function SpendCheque({ chequeId, onDismiss, onSubmit }) {
       date: selectedDate._d,
       description,
     });
-    console.log(selectedPerson, selectedDate, chequeId);
   };
 
   const onChangePerson = (e, value) => {

@@ -100,11 +100,10 @@ const PaymentReport = () => {
   });
 
   const onDismissDetail = () => {
-    DialogActions.hide();
+    DialogActions.hide({ name: "detail" });
   };
 
   const handleDetail = (row) => {
-    console.log(row);
     DialogActions.show({
       title: `${
         row.paymentType === "INCOME" ? "جزییات دریافت" : "جزییات پرداخت"
@@ -112,7 +111,8 @@ const PaymentReport = () => {
       component: (
         <PaymentDetail onDismiss={onDismissDetail} data={row} type={row.type} />
       ),
-      size: "sm",
+      name: "detail",
+      size: "6",
       confirm: false,
       disableCloseButton: false,
     });

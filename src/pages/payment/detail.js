@@ -83,11 +83,11 @@ export default function MainDetail({ defaultValues }) {
 
   const onSelectPerson = (person) => {
     setSelectedPerson(person);
-    dialogAction.hide();
+    onDismissPerson();
   };
 
   const onDismissPerson = () => {
-    dialogAction.hide();
+    dialogAction.hide({ name: "person" });
   };
 
   const onShowDialog = () => {
@@ -100,7 +100,8 @@ export default function MainDetail({ defaultValues }) {
           filter={Constant.PERSON_TYPE.PERSON}
         />
       ),
-      size: "lg",
+      name: "person",
+      size: "8",
       confirm: false,
       disableCloseButton: false,
     });

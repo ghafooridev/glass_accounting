@@ -88,7 +88,8 @@ const MainList = () => {
       confirm: false,
       title: `${selectedEmployee}جزییات کارکرد`,
       component: <Description employee={selectedEmployee} />,
-      size: "lg",
+      name: "detail",
+      size: "8",
       disableCloseButton: false,
     });
   };

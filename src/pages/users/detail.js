@@ -57,18 +57,17 @@ export default function MainDetail() {
   };
 
   const onSubmitPermission = async (data, permissions) => {
-    console.log(data, permissions);
     const value = { ...data, permissions };
     if (id) {
       await editUserRequest.execute(value);
     } else {
       await addUserRequest.execute(value);
     }
-    dialogAction.hide();
+    onDismissPermission();
   };
 
   const onDismissPermission = () => {
-    dialogAction.hide();
+    dialogAction.hide({ name: "permission" });
   };
 
   const onShowPermissionDialog = (data) => {
@@ -81,7 +80,8 @@ export default function MainDetail() {
           onDismiss={onDismissPermission}
         />
       ),
-      size: "md",
+      name: "permission",
+      size: "8",
       confirm: false,
       disableCloseButton: true,
     });

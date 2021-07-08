@@ -118,7 +118,8 @@ export default function EmployeeLog() {
         // defaultValues={data}
         />
       ),
-      size: "xs",
+      name: "transaction",
+      size: "4",
       confirm: false,
       disableCloseButton: true,
     });
@@ -135,7 +136,6 @@ export default function EmployeeLog() {
 
   const onSubmitNewPayment = () => {
     //add new payment in today and type ="outcome"
-    console.log(price, id, description);
   };
 
   const onChange = (e, type) => {};

@@ -128,7 +128,7 @@ const PrePayment = React.forwardRef((props, ref) => {
     if (types[type]) {
       types[type]();
       setPayments(newPayments);
-      dialogAction.hide();
+      dialogAction.hide({ name: "prePayment" });
     }
   };
 
@@ -165,7 +165,7 @@ const PrePayment = React.forwardRef((props, ref) => {
     if (types[type]) {
       types[type]();
       setPayments(newPayments);
-      dialogAction.hide();
+      dialogAction.hide({ name: "prePayment" });
     }
   };
 
@@ -204,16 +204,16 @@ const PrePayment = React.forwardRef((props, ref) => {
         if (types[type]) {
           types[type]();
           setPayments(newPayments);
-          dialogAction.hide();
+          dialogAction.hide({ name: "prePayment" });
         }
       },
-      size: "sm",
+      size: "6",
       disableCloseButton: false,
     });
   };
 
   const onDismissPayment = () => {
-    dialogAction.hide();
+    dialogAction.hide({ name: "prePayment" });
   };
 
   const onClickPayment = (type, data) => {
@@ -230,7 +230,8 @@ const PrePayment = React.forwardRef((props, ref) => {
           type={type}
         />
       ),
-      size: "xs",
+      name: "prePayment",
+      size: "4",
       confirm: false,
       disableCloseButton: true,
     });

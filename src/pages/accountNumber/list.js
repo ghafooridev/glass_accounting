@@ -90,14 +90,15 @@ const AccountsNumber = () => {
   });
 
   const onDismissDetail = () => {
-    DialogActions.hide();
+    DialogActions.hide({ name: "personAccount" });
   };
 
   const handleDetail = (row) => {
     DialogActions.show({
       title: `حساب های ${row.personName}`,
       component: <Detail onDismiss={onDismissDetail} detail={row} />,
-      size: "sm",
+      name: "personAccount",
+      size: "6",
       confirm: false,
       disableCloseButton: false,
     });

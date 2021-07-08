@@ -94,14 +94,15 @@ const MainList = () => {
   });
 
   const onDismissDetail = () => {
-    DialogActions.hide();
+    DialogActions.hide({ name: "detail" });
   };
 
   const handleDetail = (row) => {
     // DialogActions.show({
     //   title: `حساب های ${row.personName}`,
     //   component: <Detail onDismiss={onDismissDetail} detail={row} />,
-    //   size: "sm",
+    // name:"detail",
+    //   size: "6",
     //   confirm: false,
     //   disableCloseButton: false,
     // });

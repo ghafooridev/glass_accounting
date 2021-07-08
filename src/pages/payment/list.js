@@ -121,7 +121,7 @@ const MainList = () => {
             setList(list.filter((item) => item.id !== row.id));
             DialogActions.hide();
           },
-          size: "sm",
+          size: "6",
           disableCloseButton: false,
         });
       },

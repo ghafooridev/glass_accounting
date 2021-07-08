@@ -101,11 +101,11 @@ export default function MainDetail() {
     } else {
       setAmounts([...amounts, data]);
     }
-    DialogActions.hide();
+    onDismissAmount();
   };
 
   const onDismissAmount = () => {
-    DialogActions.hide();
+    DialogActions.hide({ name: "amount" });
   };
 
   const onShowDialog = (data) => {
@@ -126,7 +126,8 @@ export default function MainDetail() {
           units={units}
         />
       ),
-      size: "xs",
+      name: "amount",
+      size: "4",
       confirm: false,
       disableCloseButton: true,
     });
@@ -188,9 +189,10 @@ export default function MainDetail() {
       title: "ایا از حذف این رکورد مطمئن هستید ؟",
       onAction: () => {
         setAmounts(amounts.filter((item) => item.id !== id));
-        DialogActions.hide();
+        DialogActions.hide({ name: "delete" });
       },
-      size: "sm",
+      name: "delete",
+      size: "6",
       disableCloseButton: false,
     });
   };
@@ -326,7 +328,6 @@ export default function MainDetail() {
 
                           <TableBody>
                             {amounts.map((row) => {
-                              console.log(row);
                               return (
                                 <TableRow
                                   hover

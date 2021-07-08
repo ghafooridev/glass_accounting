@@ -4,7 +4,6 @@ import { useState } from "react";
 import http from "../configs/axios";
 
 const getProperUrl = (url, urlParams) => {
-  console.log(url, urlParams);
   return `${url.substring(0, url.indexOf("?"))}/${urlParams}?${url.substring(
     url.indexOf("?") + 1,
     url.length,

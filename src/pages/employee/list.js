@@ -98,9 +98,10 @@ export default function MainList() {
           onAction: async () => {
             await deleteUseRequest.execute(null, id);
             setList(list.filter((item) => item.id !== id));
-            DialogActions.hide();
+            DialogActions.hide({ name: "delete" });
           },
-          size: "sm",
+          name: "delete",
+          size: "6",
           disableCloseButton: false,
         });
       },

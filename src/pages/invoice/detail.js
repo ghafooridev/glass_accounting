@@ -27,7 +27,7 @@ import PersonSelector from "../payment/personSelector";
 import { DatePicker } from "@material-ui/pickers";
 import moment from "moment";
 import dialogAction from "../../redux/actions/dialogAction";
-import OtherPayments from "./OtherPayments";
+import DriverPayment from "./driverPayment";
 import PrePayment from "../payment/prePayment";
 import Drivers from "./driver";
 import Product from "./product";
@@ -74,6 +74,28 @@ const headCells = [
   {
     id: "total",
     label: "مجموع",
+  },
+
+  { id: "action" },
+];
+
+const driverHeadCell = [
+  {
+    id: "first",
+    label: "نام راننده",
+  },
+  { id: "last", label: "نام خانوادگی راننده" },
+  {
+    id: "car",
+    label: "نام ماشین",
+  },
+  {
+    id: "pelak",
+    label: "پلاک",
+  },
+  {
+    id: "pay",
+    label: "پرداختی",
   },
 
   { id: "action" },
@@ -140,14 +162,13 @@ export default function MainDetail({ defaultValues }) {
   };
 
   const onSelectPerson = (person) => {
-    console.log(person);
     setSelectedPerson(person);
     setInvoicePerson(true ? `${person.firstName} ${person.lastName}` : "");
-    dialogAction.hide();
+    onDismissPerson();
   };
 
   const onDismissPerson = () => {
-    dialogAction.hide();
+    dialogAction.hide({ name: "person" });
   };
 
   const onShowDialog = () => {
@@ -160,7 +181,8 @@ export default function MainDetail({ defaultValues }) {
           filter={Constant.PERSON_TYPE.CUSTOMER}
         />
       ),
-      size: "lg",
+      name: "person",
+      size: "8",
       confirm: false,
       disableCloseButton: false,
     });
@@ -240,15 +262,56 @@ export default function MainDetail({ defaultValues }) {
 
   const onSubmitDrivers = (drivers) => {
     setDrivers(drivers);
-    dialogAction.hide();
+    onDismissDrivers();
   };
 
   const onDismissDrivers = () => {
-    dialogAction.hide();
+    dialogAction.hide({ name: "driver" });
   };
 
-  const handleDeleteDriver = (data) => {
-    setDrivers(drivers.filter((item) => item.id !== data.id));
+  const handleDeleteDriver = (id) => {
+    setDrivers(drivers.filter((item) => item.id !== id));
+  };
+
+  const onDismissDriverPayments = () => {
+    dialogAction.hide({ name: "pay" });
+  };
+
+  const onSubmitDriverPayments = (driverPayments, id) => {
+    const newDriver = [...drivers];
+    const selected = newDriver.find((item) => item.id === id);
+    const index = newDriver.findIndex((item) => item.id === id);
+    selected.payments = driverPayments;
+    newDriver[index] = selected;
+    setDrivers(newDriver);
+    // setDrivers({ ...drivers, drivers: { payments: driverPayments } });
+    onDismissDriverPayments();
+
+    // if (data.isUpdate) {
+    //   const index = accounts.findIndex((item) => item.id === data.id);
+    //   const accounstTmp = [...accounts];
+    //   accounstTmp[index] = data;
+    //   setAccounts(accounstTmp);
+    // } else {
+    //   setAccounts([...accounts, data]);
+    // }
+  };
+
+  const handlePaymentDriver = (row) => {
+    dialogAction.show({
+      title: "پرداخت به راننده",
+      component: (
+        <DriverPayment
+          onSubmit={onSubmitDriverPayments}
+          onDismiss={onDismissDriverPayments}
+          driverId={row.id}
+        />
+      ),
+      name: "pay",
+      size: "xl",
+      confirm: false,
+      disableCloseButton: true,
+    });
   };
 
   const onShowDriverDialog = () => {
@@ -261,7 +324,8 @@ export default function MainDetail({ defaultValues }) {
           defaultValues={drivers}
         />
       ),
-      size: "lg",
+      name: "driver",
+      size: "8",
       confirm: false,
       disableCloseButton: true,
     });
@@ -276,11 +340,11 @@ export default function MainDetail({ defaultValues }) {
     } else {
       setProducts([...products, product]);
     }
-    dialogAction.hide();
+    onDismissProduct();
   };
 
   const onDismissProduct = () => {
-    dialogAction.hide();
+    dialogAction.hide({ name: "product" });
   };
 
   const handleDeleteProduct = (id) => {
@@ -303,7 +367,8 @@ export default function MainDetail({ defaultValues }) {
           action={type}
         />
       ),
-      size: "lg",
+      name: "product",
+      size: "6",
       confirm: false,
       disableCloseButton: true,
     });
@@ -320,6 +385,24 @@ export default function MainDetail({ defaultValues }) {
         return "افزودن فاکتور خرید";
       }
       return "افزودن فاکتور فروش";
+    }
+  };
+
+  const onTotalDriverPayments = (data) => {
+    if (data) {
+      const cashesPrice = data.cashes.reduce(
+        (n, { price }) => n + Number(price),
+        0,
+      );
+      const chequesPrice = data.cheques.reduce(
+        (n, { price }) => n + Number(price),
+        0,
+      );
+      const banksPrice = data.banks.reduce(
+        (n, { price }) => n + Number(price),
+        0,
+      );
+      return cashesPrice + chequesPrice + banksPrice;
     }
   };
 
@@ -354,29 +437,6 @@ export default function MainDetail({ defaultValues }) {
     setSelectedPerson();
   };
 
-  const onDismissOtherPayments = () => {
-    dialogAction.hide();
-  };
-
-  const onSubmitOtherPayments = (data) => {
-    console.log(data);
-  };
-
-  const onOtherPayments = () => {
-    // dialogAction.show({
-    //   title: "انتخاب کالا",
-    //   component: (
-    //     <OtherPayments
-    //       onSubmit={onSubmitOtherPayments}
-    //       onDismiss={onDismissOtherPayments}
-    //     />
-    //   ),
-    //   size: "lg",
-    //   confirm: false,
-    //   disableCloseButton: true,
-    // });
-  };
-
   useEffect(() => {
     getInvoiceCategory();
     if (id) {
@@ -400,7 +460,6 @@ export default function MainDetail({ defaultValues }) {
   useEffect(() => {
     reset(detail);
   }, [reset, detail]);
-
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       {!detailInvoiceRequest.pending ? (
@@ -533,20 +592,73 @@ export default function MainDetail({ defaultValues }) {
                   >
                     انتخاب راننده
                   </Button>
-                  <Grid>
-                    {drivers.map((item) => {
-                      return (
-                        <Chip
-                          style={{ margin: "0 1px 4px" }}
-                          label={`${item.firstName} ${item.lastName}`}
-                          onDelete={() => handleDeleteDriver(item)}
-                          color="primary"
-                        />
-                      );
-                    })}
-                  </Grid>
                 </Grid>
+                {!!drivers.length && (
+                  <Grid item xs={12}>
+                    <Paper>
+                      <TableContainer style={{ padding: "0 10px" }}>
+                        <Table
+                          className={classes.table}
+                          size={"medium"}
+                          style={{ paddingRight: 10 }}
+                        >
+                          <TableHeader headCells={driverHeadCell} />
 
+                          <TableBody>
+                            {drivers.map((row) => {
+                              console.log(row);
+                              return (
+                                <TableRow
+                                  hover
+                                  tabIndex={-1}
+                                  key={row.id}
+                                  style={{ paddingRight: 10 }}
+                                >
+                                  <TableCell padding="none">
+                                    {row.firstName}
+                                  </TableCell>
+                                  <TableCell padding="none">
+                                    {row.lastName}
+                                  </TableCell>
+                                  <TableCell padding="none">
+                                    {row.carName}
+                                  </TableCell>
+                                  <TableCell padding="none">
+                                    {row.carPlaque}
+                                  </TableCell>
+                                  <TableCell padding="none">
+                                    {onTotalDriverPayments(row.payments)}
+                                  </TableCell>
+                                  <TableCell
+                                    padding="none"
+                                    style={{ textAlign: "left" }}
+                                  >
+                                    <IconButton
+                                      onClick={() => handlePaymentDriver(row)}
+                                    >
+                                      <span
+                                        class="material-icons-round"
+                                        style={{ color: "green" }}
+                                      >
+                                        paid
+                                      </span>
+                                    </IconButton>
+
+                                    <IconButton
+                                      onClick={() => handleDeleteDriver(row.id)}
+                                    >
+                                      <DeleteIcon />
+                                    </IconButton>
+                                  </TableCell>
+                                </TableRow>
+                              );
+                            })}
+                          </TableBody>
+                        </Table>
+                      </TableContainer>
+                    </Paper>
+                  </Grid>
+                )}
                 <Grid item lg={6} xs={12} style={{ display: "flex" }}>
                   <Button
                     // disabled={isEmpty(selectedPerson)}
@@ -733,17 +845,7 @@ export default function MainDetail({ defaultValues }) {
                   <Button variant="contained" color="primary" type="submit">
                     تایید
                   </Button>
-                  {/* <Button
-                    variant="outlined"
-                    color="primary"
-                    type="button"
-                    endIcon={
-                      <i className="material-icons-round">attach_money</i>
-                    }
-                    onClick={onOtherPayments}
-                  >
-                    پرداخت متفرقه
-                  </Button> */}
+
                   <Button
                     variant="contained"
                     color="secondary"

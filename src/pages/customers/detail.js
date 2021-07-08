@@ -87,7 +87,6 @@ export default function MainDetail() {
 
   const onSubmit = async (data) => {
     const newAccounts = [];
-    console.log(accounts);
     accounts.map((item) => {
       const newData = {
         bankId: item.bank.value || item.bank.id,
@@ -135,11 +134,11 @@ export default function MainDetail() {
     } else {
       setAccounts([...accounts, data]);
     }
-    DialogActions.hide();
+    onDismissAccount();
   };
 
   const onDismissAccount = () => {
-    DialogActions.hide();
+    DialogActions.hide({ name: "account" });
   };
 
   const onShowDialog = (data) => {
@@ -152,7 +151,8 @@ export default function MainDetail() {
           defaultValues={data}
         />
       ),
-      size: "xs",
+      name: "account",
+      size: "4",
       confirm: false,
       disableCloseButton: true,
     });
@@ -176,9 +176,10 @@ export default function MainDetail() {
           await deleteAccountRequest.execute(null, row.id);
         }
         setAccounts(accounts.filter((item) => item.id !== row.id));
-        DialogActions.hide();
+        DialogActions.hide({ name: "delete" });
       },
-      size: "sm",
+      name: "delete",
+      size: "6",
       disableCloseButton: false,
     });
   };

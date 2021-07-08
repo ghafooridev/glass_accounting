@@ -37,7 +37,6 @@ export default function MainDetail({ depotId, onSubmit }) {
   useEffect(() => {
     getAmount();
   }, []);
-  console.log(data);
   return getAmountRequest.pending ? (
     <CircularProgress style={{ position: "absolute", top: 20, left: 20 }} />
   ) : (

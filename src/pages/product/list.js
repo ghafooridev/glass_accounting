@@ -111,8 +111,20 @@ export default function MainList() {
     } else {
       await transferRequest.execute(data);
     }
+
+    // const transferPayments = {
+    //   ...paymentRef.current,
+    //   invoiceId: response.id,
+    //   date: selectedDate._d,
+    //   personId: selectedPerson ? selectedPerson.id : 1,
+    //   personType: "CUSTOMER",
+    //   type: invoiceType === "SELL" ? "INCOME" : "OUTCOME",
+    //   description: `بابت فاکتور به شماره  ${response.id}`,
+    // };
+    // addPaymentRequest.execute(transferPayments);
+
     await getData();
-    DialogActions.hide();
+    // DialogActions.hide({});
   };
 
   const handleAction = (row, type) => {
@@ -128,25 +140,26 @@ export default function MainList() {
           onAction: async () => {
             await deleteUseRequest.execute(null, id);
             setList(list.filter((item) => item.id !== id));
-            DialogActions.hide();
+            DialogActions.hide({ name: "delete" });
           },
-          size: "sm",
+          name: "delete",
+          size: "6",
           disableCloseButton: false,
         });
       },
       amount: () => {
-        console.log(row);
         DialogActions.show({
           title: "موجودی در انبار ها",
           component: (
             <AmountBrif
               onSubmit={() => {
-                DialogActions.hide();
+                DialogActions.hide({ name: "amount" });
               }}
               data={row.stocks}
             />
           ),
-          size: "xs",
+          name: "amount",
+          size: "4",
           confirm: false,
           disableCloseButton: true,
         });
@@ -154,29 +167,33 @@ export default function MainList() {
       transaction: () => {},
 
       transfer: () => {
-        let units;
-        const allUnits = unitAction
-          .getProductUnit()
-          .filter((item) => item.value === row.unitBaseId)[0];
-        if (allUnits) {
-          units = allUnits.children;
-        }
-        DialogActions.show({
-          title: "انتقال بین انبار ها",
-          component: (
-            <Transform
-              onDismiss={() => {
-                DialogActions.hide();
-              }}
-              onSubmit={onSubmitTransfer}
-              productId={row.id}
-              units={units}
-            />
-          ),
-          size: "xs",
-          confirm: false,
-          disableCloseButton: true,
-        });
+        history.push(
+          `/app/product-transfer?id=${id}&productName=${row.name}&unitBaseId=${row.unitBaseId}`,
+        );
+
+        //   let units;
+        //   const allUnits = unitAction
+        //     .getProductUnit()
+        //     .filter((item) => item.value === row.unitBaseId)[0];
+        //   if (allUnits) {
+        //     units = allUnits.children;
+        //   }
+        //   DialogActions.show({
+        //     title: "انتقال بین انبار ها",
+        //     component: (
+        //       <Transform
+        //         onDismiss={() => {
+        //           DialogActions.hide();
+        //         }}
+        //         onSubmit={onSubmitTransfer}
+        //         productId={row.id}
+        //         units={units}
+        //       />
+        //     ),
+        //     size: "4",
+        //     confirm: false,
+        //     disableCloseButton: true,
+        //   });
       },
     };
     if (types[type]) {

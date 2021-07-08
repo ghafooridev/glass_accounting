@@ -44,7 +44,6 @@ http.interceptors.response.use(
   },
   async (error) => {
     const { code, message } = error.response.data.error;
-    console.log(code);
     if (code === "UNHANDLED_DATABASE_EXCEPTION") {
       AlertAction.show({
         type: "error",

@@ -175,7 +175,7 @@ const MainList = () => {
   };
 
   const onDismiss = () => {
-    DialogActions.hide();
+    DialogActions.hide({ name: "category" });
     setAction();
   };
 
@@ -189,7 +189,8 @@ const MainList = () => {
           defaultValue={selectedCategory}
         />
       ),
-      size: "xs",
+      name: "detail",
+      size: "4",
       disableCloseButton: true,
     });
   };

@@ -118,7 +118,6 @@ export default function MainDetail({ defaultValues }) {
   }, []);
 
   useEffect(() => {
-    console.log(detail);
     reset(detail);
   }, [reset, detail]);
 

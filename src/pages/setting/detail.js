@@ -60,7 +60,6 @@ export default function MainDetail() {
   };
 
   const onSubmit = async (data) => {
-    console.log(data);
     if (id) {
       return await editUserRequest.execute(data);
     }

@@ -1,60 +1,75 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import dialogAction from "../../redux/actions/dialogAction";
-import { Grid, Dialog, Typography, Button } from "@material-ui/core";
+import { Grid, Grow, Typography, Button } from "@material-ui/core";
 import { styles } from "./Modal.Style";
 
 const Modal = function () {
   const classes = styles();
-  const {
-    show,
-    component,
-    title,
-    onAction,
-    size,
-    disableCloseButton,
-    confirm,
-    name,
-  } = useSelector((state) => state.dialog);
+  const { names } = useSelector((state) => state.dialog);
 
-  const onClose = function () {
-    dialogAction.hide(name);
+  const onClose = function (item) {
+    dialogAction.hide(item.name);
   };
 
   return (
-    <Dialog
-      fullWidth
-      maxWidth={size}
-      onClose={onClose}
-      aria-labelledby="simple-dialog-title"
-      open={show}
-      disableBackdropClick
-    >
-      <Grid item xs={12} className={classes.title}>
-        <Typography variant="h6">{title}</Typography>
-        {!disableCloseButton && (
-          <i
-            className="material-icons"
-            onClick={onClose}
-            style={{ cursor: "pointer" }}
-          >
-            clear
-          </i>
-        )}
-      </Grid>
-      {!confirm && (
-        <Grid item xs={12} className={classes.container}>
-          {component && React.cloneElement(component, { onAction })}
+    // <Dialog
+    //   fullWidth
+    //   maxWidth={size}
+    //   onClose={onClose}
+    //   aria-labelledby="simple-dialog-title"
+    //   open={x()}
+    //   disableBackdropClick
+    // >
+    names.map((item) => (
+      <Grow in={true}>
+        <Grid
+          xs={12}
+          sm={Number(item.size)}
+          container
+          style={{
+            boxShadow: "0 3px 10px rgb(0 0 0 / 0.2)",
+            borderRadius: 5,
+            padding: 20,
+            position: "fixed",
+            zIndex: 100000000,
+            top: "50%",
+            backgroundColor: "#fff",
+            left: "50%",
+            transform: "translate(-50%,-50%)",
+          }}
+        >
+          <Grid item xs={12} className={classes.title}>
+            <Typography variant="h6">{item.title}</Typography>
+            {/* {!item.disableCloseButton && (
+              <i
+                className="material-icons"
+                onClick={() => onClose(item)}
+                style={{ cursor: "pointer" }}
+              >
+                clear
+              </i>
+            )} */}
+          </Grid>
+          {!item.confirm && (
+            <Grid item xs={12} className={classes.container}>
+              {item.component}
+            </Grid>
+          )}
+          {item.confirm && (
+            <Grid item xs={12} className={classes.confirm}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={item.onAction}
+              >
+                تایید
+              </Button>
+            </Grid>
+          )}
         </Grid>
-      )}
-      {confirm && (
-        <Grid item xs={12} className={classes.confirm}>
-          <Button variant="contained" color="primary" onClick={onAction}>
-            تایید
-          </Button>
-        </Grid>
-      )}
-    </Dialog>
+      </Grow>
+    ))
   );
 };
 

@@ -62,13 +62,12 @@ export default function Header(props) {
     history.push("/app/cheque-list");
   };
 
-  const onSubmitChangePassword = (data) => {
-    console.log(data);
-    dialogAction.hide();
+  const onSubmitChangePassword = () => {
+    onDismissChangePassword();
   };
 
   const onDismissChangePassword = () => {
-    dialogAction.hide();
+    dialogAction.hide({ name: "password" });
   };
 
   const onChangePassword = () => {
@@ -80,7 +79,8 @@ export default function Header(props) {
           onDismiss={onDismissChangePassword}
         />
       ),
-      size: "xs",
+      name: "password",
+      size: "4",
       disableCloseButton: true,
     });
   };

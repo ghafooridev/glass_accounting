@@ -37,6 +37,7 @@ import AccountsNumber from "../../pages/accountNumber/list";
 import CashPaymentReport from "../../pages/cash/paymentReport";
 import LoanList from "../../pages/loan";
 import LoanDetail from "../../pages/loan/detail";
+import ProductTransfer from "../../pages/product/transfer";
 
 function Layout(props) {
   var classes = useStyles();
@@ -95,6 +96,7 @@ function Layout(props) {
 
             <Route path="/app/product-list" component={ProductList} />
             <Route path="/app/product-detail" component={ProductDetail} />
+            <Route path="/app/product-transfer" component={ProductTransfer} />
 
             <Route path="/app/depot-list" component={DepotList} />
             <Route path="/app/depot-detail" component={DepotDetail} />

@@ -75,7 +75,6 @@ export default function CashSelector({ onSelect, onDismiss, chequeId }) {
   });
 
   const handleAction = (id) => {
-    console.log(id);
     onSelect(id, chequeId);
   };
 

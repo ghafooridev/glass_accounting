@@ -3,9 +3,10 @@ const initialState = {
   show: false,
   component: null,
   title: "",
-  size: "md",
+  size: "8",
   disableCloseButton: false,
   confirm: false,
+  names: [],
   onAction: () => {},
 };
 
@@ -15,13 +16,12 @@ export default function (state = initialState, action) {
       return {
         ...state,
         ...action.option,
-        show: true,
+        names: [...state.names, action.option],
       };
     }
     case Constant.ACTION_TYPES.HIDE_DIALOG: {
       return {
-        ...state,
-        show: false,
+        names: state.names.filter((item) => item.name !== action.option.name),
       };
     }
     default:

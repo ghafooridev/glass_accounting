@@ -30,7 +30,6 @@ export default function MainDetail({ source, onSubmit, onDismiss }) {
 
   const getCashes = async () => {
     const result = await getCashRequest.execute();
-    console.log(source, result.data);
     const filterdCashes = result.data.filter((item) => item.value !== source);
     setCashes(filterdCashes);
   };
