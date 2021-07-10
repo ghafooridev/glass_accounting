@@ -75,8 +75,7 @@ export default function MainDetail() {
   const [detail, setDetail] = useState({});
   const [accounts, setAccounts] = useState([]);
   const [selectedGender, setSelectedGender] = useState("M");
-  const [selectedContract, setSelectedContract] = useState("DAILY");
-  const [selectedDate, setSelectedDate] = useState(moment());
+  const [selectedContract, setSelectedContract] = useState("FACTORY");
   const { control, handleSubmit, errors, reset } = useForm();
 
   const addEmployeeRequest = useApi({
@@ -100,10 +99,6 @@ export default function MainDetail() {
   });
 
   const onSubmit = async (data) => {
-    const contract = {
-      type: selectedContract,
-      startDate: selectedDate._d,
-    };
     const newAccounts = [];
     accounts.map((item) => {
       const newData = {
@@ -120,7 +115,7 @@ export default function MainDetail() {
     const allData = {
       ...data,
       accounts: newAccounts,
-      contract,
+      contractType: selectedContract,
       gender: selectedGender,
     };
     if (id) {
@@ -141,8 +136,7 @@ export default function MainDetail() {
     setDetail(detail.data);
     setAccounts(detail.data.accounts);
     setSelectedGender(detail.data.gender);
-    setSelectedContract(detail.data.contract.type);
-    setSelectedDate(detail.data.contract.startDate);
+    setSelectedContract(detail.data.contractType);
   };
 
   const onSubmitAccount = (data) => {
@@ -209,10 +203,6 @@ export default function MainDetail() {
 
   const onChangeContract = (e) => {
     setSelectedContract(e.target.value);
-  };
-
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
   };
 
   useEffect(() => {
@@ -337,16 +327,44 @@ export default function MainDetail() {
                       }}
                     >
                       <FormControlLabel
+                        color="primary"
                         value="M"
-                        control={<Radio />}
+                        control={<Radio color="primary" />}
                         label="مرد"
                       />
                       <FormControlLabel
+                        color="primary"
                         value="F"
-                        control={<Radio />}
+                        control={<Radio color="primary" />}
                         label="زن"
                       />
                     </RadioGroup>
+                  </Grid>
+                  <Grid item lg={6} xs={12}>
+                    <Controller
+                      control={control}
+                      render={({ onChange, value, name }) => {
+                        return (
+                          <TextField
+                            type="number"
+                            variant="outlined"
+                            label="مانده از قبل"
+                            name={name}
+                            onChange={onChange}
+                            value={value}
+                            error={!!errors.accountRemaining}
+                            helperText={
+                              errors.accountRemaining
+                                ? errors.accountRemaining.message
+                                : ""
+                            }
+                            fullWidth
+                            size="small"
+                          />
+                        );
+                      }}
+                      name="accountRemaining"
+                    />
                   </Grid>
 
                   <Grid item lg={6} xs={12}>
@@ -367,22 +385,6 @@ export default function MainDetail() {
                     </TextField>
                   </Grid>
 
-                  <Grid item lg={6} xs={12} className={classes.datePicker}>
-                    <DatePicker
-                      autoOk
-                      name="date"
-                      label="تاریخ شروع قرارداد"
-                      inputVariant="outlined"
-                      okLabel="تأیید"
-                      cancelLabel="لغو"
-                      labelFunc={(date) =>
-                        date ? date.format("jYYYY/jMM/jDD") : ""
-                      }
-                      value={selectedDate}
-                      onChange={handleDateChange}
-                      style={{ width: "100%" }}
-                    />
-                  </Grid>
                   <Grid item lg={6} xs={12}>
                     <Button
                       variant="contained"

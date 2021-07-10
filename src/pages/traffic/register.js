@@ -14,7 +14,7 @@ import {
   Chip,
 } from "@material-ui/core";
 import { useApi } from "../../hooks/useApi";
-import { getQueryString } from "../../helpers/utils";
+import { getQueryString, persianNumber } from "../../helpers/utils";
 import TableHeader from "../../components/Table/TableHead";
 import { convertParamsToQueryString } from "../../helpers/utils";
 import { DatePicker } from "@material-ui/pickers";
@@ -52,14 +52,16 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   logedEnter: {
-    color: theme.palette.primary.main,
+    color: "white",
+    fontSize: 16,
     backgroundColor: theme.palette.gray.main,
     "&:hover": {
       backgroundColor: theme.palette.gray.main,
     },
   },
   logedExit: {
-    color: theme.palette.error.main,
+    color: "white",
+    fontSize: 16,
     backgroundColor: theme.palette.gray.main,
     "&:hover": {
       backgroundColor: theme.palette.gray.main,
@@ -165,7 +167,7 @@ export default function MainDetail() {
         <>
           <TableCell padding="none">
             <Chip
-              label={row.times[0].date}
+              label={persianNumber(row.times[0].time)}
               className={classes.logedEnter}
               // onClick={() => onSubmit(row, "ENTER")}
             />
@@ -187,14 +189,14 @@ export default function MainDetail() {
         <>
           <TableCell padding="none">
             <Chip
-              label={row.times[0].date}
+              label={persianNumber(row.times[0].time)}
               className={classes.logedEnter}
               // onClick={() => onSubmit(row, "ENTER")}
             />
           </TableCell>
           <TableCell padding="none">
             <Chip
-              label={row.times[1].date}
+              label={persianNumber(row.times[1].time)}
               className={classes.logedExit}
               // onClick={() => onSubmit(row, "EXIT")}
             />
@@ -215,21 +217,21 @@ export default function MainDetail() {
         <>
           <TableCell padding="none">
             <Chip
-              label={row.times[0].date}
+              label={persianNumber(row.times[0].time)}
               className={classes.logedEnter}
               // onClick={() => onSubmit(row, "ENTER")}
             />
           </TableCell>
           <TableCell padding="none">
             <Chip
-              label={row.times[1].date}
+              label={persianNumber(row.times[1].time)}
               className={classes.logedExit}
               // onClick={() => onSubmit(row, "EXIT")}
             />
           </TableCell>
           <TableCell padding="none">
             <Chip
-              label={row.times[2].date}
+              label={persianNumber(row.times[2].time)}
               className={classes.logedEnter}
               // onClick={() => onSubmit(row, "ENTER")}
             />
@@ -249,28 +251,28 @@ export default function MainDetail() {
         <>
           <TableCell padding="none">
             <Chip
-              label={row.times[0]?.date}
+              label={persianNumber(row.times[0].time)}
               className={classes.logedEnter}
               // onClick={() => onSubmit(row, "ENTER")}
             />
           </TableCell>
           <TableCell padding="none">
             <Chip
-              label={row.times[1]?.date}
+              label={persianNumber(row.times[1].time)}
               className={classes.logedExit}
               // onClick={() => onSubmit(row, "EXIT")}
             />
           </TableCell>
           <TableCell padding="none">
             <Chip
-              label={row.times[2]?.date}
+              label={persianNumber(row.times[2].time)}
               className={classes.logedEnter}
               // onClick={() => onSubmit(row, "ENTER")}
             />
           </TableCell>
           <TableCell padding="none">
             <Chip
-              label={row.times[3]?.date}
+              label={persianNumber(row.times[3].time)}
               className={classes.logedExit}
               // onClick={() => onSubmit(row, "ENTER")}
             />
@@ -345,7 +347,7 @@ export default function MainDetail() {
                         key={row.id}
                         style={{ paddingRight: 10 }}
                       >
-                        <TableCell padding="none">{row.name}</TableCell>
+                        <TableCell padding="none">{row.employee}</TableCell>
                         {getTimesElement(row)}
                       </TableRow>
                     );

@@ -22,6 +22,7 @@ import {
   convertParamsToQueryString,
   hasPermission,
   getQueryString,
+  persianNumber,
 } from "../../helpers/utils";
 import styles from "./style";
 import FilterComponent from "./logFilter";
@@ -30,16 +31,15 @@ import { Slide } from "@material-ui/core";
 import TableSkeleton from "../../components/Skeleton";
 import Transction from "../customers/transaction";
 import DialogActions from "../../redux/actions/dialogAction";
+import moment from "moment-timezone";
+import jMoment from "jalali-moment";
 
 const headCells = [
   {
     id: "date",
     label: "تاریخ",
   },
-  {
-    id: "status",
-    label: "وضعیت",
-  },
+
   { id: "firstEnter", label: "ورود اول" },
   {
     id: "firstExit",
@@ -50,7 +50,15 @@ const headCells = [
     id: "secondExit",
     label: "خروج دوم",
   },
-  { id: "log", label: "کارکرد روزانه" },
+  { id: "fractionTime", label: "کسر کار" },
+  {
+    id: "overTime",
+    label: "اضافه کار",
+  },
+  {
+    id: "total",
+    label: "مجموع کارکرد",
+  },
 ];
 
 export default function EmployeeLog() {
@@ -58,21 +66,26 @@ export default function EmployeeLog() {
   const id = getQueryString("id");
   const name = getQueryString("name");
   const [order, setOrder] = useState("asc");
-  const [orderBy, setOrderBy] = useState("firstName");
+  const [orderBy, setOrderBy] = useState("date");
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(Constant.TABLE_PAGE_SIZE);
   const [list, setList] = useState([]);
   const history = useHistory();
-  const [filter, setFilter] = useState();
-  const [price, setPrice] = useState();
-  const [description, setDescription] = useState();
-  const [detail, setDetail] = useState({
-    totalPay: " ",
-    totalLogPay: " ",
-    totalLog: " ",
-    purePay: " ",
-    SPH: " ",
-  });
+  const [filter, setFilter] = useState(
+    `{from:${jMoment(moment(), "YYYY/MM/DD")
+      .locale("fa")
+      .startOf("month")
+      .toISOString()},to:${moment().toISOString()}}`,
+  );
+  // const [price, setPrice] = useState();
+  // const [description, setDescription] = useState();
+  // const [detail, setDetail] = useState({
+  //   totalPay: " ",
+  //   totalLogPay: " ",
+  //   totalLog: " ",
+  //   purePay: " ",
+  //   SPH: " ",
+  // });
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -95,13 +108,15 @@ export default function EmployeeLog() {
 
   const getEmployeeRequest = useApi({
     method: "get",
-    url: `employee?${convertParamsToQueryString({
-      page,
-      order,
-      orderBy,
-      pageSize,
-      filter,
-    })}`,
+    url: decodeURIComponent(
+      `attendance/employee?${convertParamsToQueryString({
+        page,
+        order,
+        orderBy,
+        pageSize,
+        filter,
+      })}`,
+    ),
   });
 
   const onFilter = (data) => {
@@ -126,7 +141,7 @@ export default function EmployeeLog() {
   };
 
   const getData = async () => {
-    const employeeList = await getEmployeeRequest.execute();
+    const employeeList = await getEmployeeRequest.execute(null, id);
     setList(employeeList.data);
   };
 
@@ -154,7 +169,7 @@ export default function EmployeeLog() {
             ) : (
               <>
                 <Grid container spacing={3} className={classes.salary}>
-                  <Grid item xs={3}>
+                  {/* <Grid item xs={3}>
                     <Paper className={classes.salaryPaperRight}>
                       <Grid container spacing={3}>
                         <Grid item xs={12}>
@@ -232,7 +247,8 @@ export default function EmployeeLog() {
                       </Grid>
                     </Paper>
                   </Grid>
-                  <Grid item xs={9}>
+                   */}
+                  <Grid item xs={12}>
                     <Paper className={classes.salaryPaperLeft}>
                       <TableTop
                         title={getTitle()}
@@ -265,33 +281,32 @@ export default function EmployeeLog() {
                                   style={{ paddingRight: 10 }}
                                 >
                                   <TableCell padding="none">
-                                    {row.firstName}
+                                    {persianNumber(
+                                      new Date(row.date).toLocaleDateString(
+                                        "fa-IR",
+                                      ),
+                                    )}
                                   </TableCell>
                                   <TableCell padding="none">
-                                    {row.firstName}
+                                    {persianNumber(row.times[0]?.time)}
                                   </TableCell>
                                   <TableCell padding="none">
-                                    {row.firstName}
+                                    {persianNumber(row.times[1]?.time)}
                                   </TableCell>
                                   <TableCell padding="none">
-                                    {row.firstName}
+                                    {persianNumber(row.times[2]?.time)}
                                   </TableCell>
                                   <TableCell padding="none">
-                                    {row.lastName}
+                                    {persianNumber(row.times[3]?.time)}
                                   </TableCell>
                                   <TableCell padding="none">
-                                    {row.mobile}
+                                    {persianNumber(row.fractionTime)}
                                   </TableCell>
                                   <TableCell padding="none">
-                                    <Chip
-                                      label={
-                                        Constant.TRAFFIC_STATUS[row.status]
-                                      }
-                                      className={clsx(
-                                        classes.status,
-                                        classes[row.status],
-                                      )}
-                                    />
+                                    {persianNumber(row.overTime)}
+                                  </TableCell>
+                                  <TableCell padding="none">
+                                    {persianNumber(row.total)}
                                   </TableCell>
                                 </TableRow>
                               );
@@ -299,7 +314,7 @@ export default function EmployeeLog() {
                             {!list.length && !getEmployeeRequest.pending && (
                               <TableRow style={{ height: 53 }}>
                                 <TableCell
-                                  colSpan={6}
+                                  colSpan={headCells.length}
                                   style={{ textAlign: "center" }}
                                 >
                                   <Typography variant="h6">
@@ -321,7 +336,7 @@ export default function EmployeeLog() {
                     </Paper>
                   </Grid>
                 </Grid>
-                <Grid container spacing={3} className={classes.salary}>
+                {/* <Grid container spacing={3} className={classes.salary}>
                   <Grid item xs={3}>
                     <Paper className={classes.salaryPaperRight}>
                       <Grid container spacing={3}>
@@ -381,6 +396,7 @@ export default function EmployeeLog() {
                     </Paper>
                   </Grid>
                 </Grid>
+              */}
               </>
             )}
           </div>

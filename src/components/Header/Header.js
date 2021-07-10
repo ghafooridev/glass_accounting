@@ -132,7 +132,15 @@ export default function Header(props) {
           <Typography variant="h6">
             {persianNumber(new Date().toLocaleDateString("fa-IR"))}
           </Typography>
-          <Typography variant="h6" style={{ margin: "0 10px" }}>
+          <Typography
+            variant="h6"
+            style={{
+              margin: "0 10px",
+              width: 70,
+              display: "flex",
+              justifyContent: "flex-end",
+            }}
+          >
             <Clock
               format={"HH:mm:ss"}
               ticking={true}

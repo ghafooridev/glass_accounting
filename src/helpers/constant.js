@@ -3,9 +3,8 @@ const Constant = {
   // API_ADDRESS: "http://account.toosbloor.ir",
   TABLE_PAGE_SIZE: 10,
   EMPLOYEE_CONTACRT: [
-    { value: "HOURLY", label: "ساعتی" },
-    { value: "DAYLI", label: "روزانه" },
-    { value: "MONTHLY", label: "ماهانه" },
+    { value: "FACTORY", label: "کارخانه" },
+    { value: "DEPOT", label: "انبار" },
   ],
   TRAFFIC_STATUS: {
     PRESENT: "حاضر",

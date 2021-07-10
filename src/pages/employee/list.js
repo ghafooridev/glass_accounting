@@ -86,7 +86,8 @@ export default function MainList() {
     url: `employee`,
   });
 
-  const handleAction = (id, type) => {
+  const handleAction = (row, type) => {
+    const { id, firstName, lastName } = row;
     const types = {
       edit: () => {
         history.push(`/app/employee-detail?id=${id}`);
@@ -106,7 +107,9 @@ export default function MainList() {
         });
       },
       traffic: () => {
-        history.push(`/app/employee-log?id=${id}`);
+        history.push(
+          `/app/employee-log?id=${id}&name=${firstName} ${lastName}`,
+        );
       },
       transaction: () => {
         history.push(`/app/employee-transaction?id=${id}`);
@@ -203,7 +206,7 @@ export default function MainList() {
                                     { id: "delete", title: "حذف" },
                                   ]}
                                   hadleAction={(type) =>
-                                    handleAction(row.id, type)
+                                    handleAction(row, type)
                                   }
                                 />
                               </TableCell>

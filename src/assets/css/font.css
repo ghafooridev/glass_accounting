@@ -12,6 +12,9 @@
   borderradius: 10px;
 }
 *::-webkit-scrollbar-thumb {
-  background-color: #00989D;
+  background-color: #00989d;
   border-radius: 5px;
+}
+body {
+  overflow-x: hidden;
 }
