@@ -137,8 +137,10 @@ export default function MainDetail() {
   });
 
   const onSubmit = async (row, type) => {
-    await registerRequest.execute({ employeeId: row.id, type });
-    getData();
+    if (!checkToday()) {
+      await registerRequest.execute({ employeeId: row.id, type });
+      getData();
+    }
   };
 
   const onEdit = async (date) => {
