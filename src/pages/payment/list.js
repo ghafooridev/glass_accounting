@@ -47,7 +47,7 @@ const headCells = [
     label: "نوع",
   },
 
-  { id: "action" },
+  // { id: "action" },
 ];
 
 const MainList = () => {

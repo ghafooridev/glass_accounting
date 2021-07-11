@@ -32,7 +32,7 @@ const Modal = function () {
             borderRadius: 5,
             padding: 20,
             position: "fixed",
-            zIndex: 100000000,
+            zIndex: 1000,
             top: "50%",
             backgroundColor: "#fff",
             left: "50%",

@@ -152,6 +152,11 @@ export default function MainDetail({ defaultValues }) {
     url: `payment/invoice/${id}`,
   });
 
+  const addPaymentDriverRequest = useApi({
+    method: "post",
+    url: `payment`,
+  });
+
   const onChnageDate = (e) => {
     handleDateChange(e);
   };
@@ -221,7 +226,32 @@ export default function MainDetail({ defaultValues }) {
         type: invoiceType === "SELL" ? "INCOME" : "OUTCOME",
         description: `بابت فاکتور به شماره  ${response.id}`,
       };
-      addInvoicePaymentRequest.execute(invoicePayment);
+      if (
+        invoicePayment.cashes.length > 0 ||
+        invoicePayment.cheques.length > 0 ||
+        invoicePayment.banks.length > 0
+      ) {
+        await addInvoicePaymentRequest.execute(invoicePayment);
+      }
+
+      drivers.map(async (item) => {
+        const value = {
+          type: "OUTCOME",
+          personType: "DRIVER",
+          personId: item.id,
+          description: `بابت فاکتور به شماره  ${response.id}`,
+          date: selectedDate._d,
+          ...item.payments,
+        };
+        if (
+          value.cashes.length > 0 ||
+          value.cheques.length > 0 ||
+          value.banks.length > 0
+        ) {
+          await addPaymentDriverRequest.execute(value);
+        }
+      });
+
       setTimeout(() => {
         onReject();
       }, 1000);
@@ -308,7 +338,7 @@ export default function MainDetail({ defaultValues }) {
         />
       ),
       name: "pay",
-      size: "xl",
+      size: "6",
       confirm: false,
       disableCloseButton: true,
     });
@@ -382,9 +412,9 @@ export default function MainDetail({ defaultValues }) {
       return "ویرایش فاکتور فروش";
     } else {
       if (invoiceType === "SELL") {
-        return "افزودن فاکتور خرید";
+        return "افزودن فاکتور فروش";
       }
-      return "افزودن فاکتور فروش";
+      return "افزودن فاکتور خرید";
     }
   };
 

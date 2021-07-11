@@ -471,7 +471,7 @@ export default function MainDetail() {
           />
         )} */}
       </Grid>
-      <Grid item lg={9} sm={12} className={classes.root}>
+      <Grid item lg={8} sm={12} className={classes.root}>
         <Paper className={classes.paper}>
           <Typography
             className={classes.title}
