@@ -272,7 +272,7 @@ export default function MainList() {
                                       title: "انتقال بین انبار",
                                     },
                                     { id: "edit", title: "ویرایش" },
-                                    { id: "delete", title: "حذف" },
+                                    // { id: "delete", title: "حذف" },
                                   ]}
                                   hadleAction={(type) =>
                                     handleAction(row, type)

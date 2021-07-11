@@ -176,7 +176,7 @@ export default function MainList() {
                       <TableCell padding="none">
                         <TableRowMenu
                           options={[
-                            { id: "delete", title: "حذف" },
+                            // { id: "delete", title: "حذف" },
                             { id: "edit", title: "ویرایش" },
                           ]}
                           hadleAction={(type) => handleAction(row.id, type)}

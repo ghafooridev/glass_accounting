@@ -31,6 +31,10 @@ const headCells = [
   },
   { id: "lastName", label: "نام خانوادگی" },
   {
+    id: "محل خدمت",
+    label: "محل خدمت",
+  },
+  {
     id: "mobile",
     label: "موبایل",
   },
@@ -39,6 +43,10 @@ const headCells = [
 ];
 
 export default function MainList() {
+  const CONTERACT_TYPE = {
+    DEPOT: "انبار",
+    FACTORY: "کارخانه",
+  };
   const classes = styles();
   const [order, setOrder] = useState("asc");
   const [search, setSearch] = useState();
@@ -187,6 +195,10 @@ export default function MainList() {
                               <TableCell padding="none">
                                 {row.lastName}
                               </TableCell>
+                              <TableCell padding="none">
+                                {CONTERACT_TYPE[row.contractType]}
+                              </TableCell>
+
                               <TableCell padding="none">{row.mobile}</TableCell>
                               <TableCell padding="none">
                                 <Chip
@@ -203,7 +215,7 @@ export default function MainList() {
                                     { id: "transaction", title: "تراکنش ها" },
                                     { id: "traffic", title: "گزارش تردد" },
                                     { id: "edit", title: "ویرایش" },
-                                    { id: "delete", title: "حذف" },
+                                    // { id: "delete", title: "حذف" },
                                   ]}
                                   hadleAction={(type) =>
                                     handleAction(row, type)

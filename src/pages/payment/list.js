@@ -283,7 +283,7 @@ const MainList = () => {
                                 />
                               </TableCell>
 
-                              <TableCell padding="none">
+                              {/* <TableCell padding="none">
                                 <TableRowMenu
                                   options={[
                                     { id: "edit", title: "ویرایش" },
@@ -293,7 +293,7 @@ const MainList = () => {
                                     handleAction(row, type)
                                   }
                                 />
-                              </TableCell>
+                              </TableCell> */}
                             </TableRow>
                           );
                         })}

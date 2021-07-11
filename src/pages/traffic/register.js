@@ -13,12 +13,14 @@ import {
   TextField,
   Chip,
 } from "@material-ui/core";
+import { TimePicker } from "@material-ui/pickers";
 import { useApi } from "../../hooks/useApi";
 import { getQueryString, persianNumber } from "../../helpers/utils";
 import TableHeader from "../../components/Table/TableHead";
 import { convertParamsToQueryString } from "../../helpers/utils";
 import { DatePicker } from "@material-ui/pickers";
 import moment from "moment";
+import clsx from "clsx";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -107,10 +109,12 @@ const headCells = [
 export default function MainDetail() {
   const classes = useStyles();
   const history = useHistory();
-  const id = getQueryString("id");
   const [search, setSearch] = useState();
   const [list, setList] = useState([]);
   const [selectedDate, setSelectedDate] = useState(moment());
+  const [selectedTime, setSelectedTime] = useState(moment());
+  const [isEditTime, setIsEditTime] = useState(false);
+  const [editTime, setEditTime] = useState();
 
   const registerRequest = useApi({
     method: "post",
@@ -127,8 +131,22 @@ export default function MainDetail() {
     ),
   });
 
+  const editTrafficRequest = useApi({
+    method: "put",
+    url: `attendance`,
+  });
+
   const onSubmit = async (row, type) => {
     await registerRequest.execute({ employeeId: row.id, type });
+    getData();
+  };
+
+  const onEdit = async (date) => {
+    const tzOffset = new Date().getTimezoneOffset() * 60000;
+    await editTrafficRequest.execute({
+      id: editTime.id,
+      date: new Date(new Date(date) - tzOffset),
+    });
     getData();
   };
 
@@ -145,6 +163,23 @@ export default function MainDetail() {
     setSelectedDate(date);
   };
 
+  const handleTimeChange = (date) => {
+    setSelectedTime(date._d);
+    setIsEditTime(false);
+    setEditTime(null);
+    onEdit(date._d);
+  };
+
+  const onEditTime = (time) => {
+    setSelectedTime(time.dateTime);
+    setIsEditTime(true);
+    setEditTime({ id: time.id });
+  };
+
+  const checkToday = () => {
+    return selectedDate._d.toDateString() !== moment()._d.toDateString();
+  };
+
   const getTimesElement = (row) => {
     if (row.times.length === 0) {
       return (
@@ -152,7 +187,10 @@ export default function MainDetail() {
           <TableCell padding="none">
             <Chip
               label={"ثبت ورود"}
-              className={classes.enter}
+              className={clsx(
+                classes.enter,
+                checkToday() && classes.logedEnter,
+              )}
               onClick={() => onSubmit(row, "ENTER")}
             />
           </TableCell>
@@ -166,16 +204,27 @@ export default function MainDetail() {
       return (
         <>
           <TableCell padding="none">
-            <Chip
-              label={persianNumber(row.times[0].time)}
-              className={classes.logedEnter}
-              // onClick={() => onSubmit(row, "ENTER")}
-            />
+            {isEditTime && row.times[0].id === editTime.id ? (
+              <TimePicker
+                style={{ width: 50 }}
+                ampm={false}
+                value={selectedTime}
+                onChange={handleTimeChange}
+                okLabel="تایید"
+                cancelLabel="انصراف"
+              />
+            ) : (
+              <Chip
+                label={persianNumber(row.times[0].time).substring(0, 5)}
+                className={classes.logedEnter}
+                onClick={() => onEditTime(row.times[0])}
+              />
+            )}
           </TableCell>
           <TableCell padding="none">
             <Chip
               label={"ثبت خروج"}
-              className={classes.exit}
+              className={clsx(classes.exit, checkToday() && classes.logedExit)}
               onClick={() => onSubmit(row, "EXIT")}
             />
           </TableCell>
@@ -188,23 +237,48 @@ export default function MainDetail() {
       return (
         <>
           <TableCell padding="none">
-            <Chip
-              label={persianNumber(row.times[0].time)}
-              className={classes.logedEnter}
-              // onClick={() => onSubmit(row, "ENTER")}
-            />
+            {isEditTime && row.times[0].id === editTime.id ? (
+              <TimePicker
+                style={{ width: 50 }}
+                ampm={false}
+                value={selectedTime}
+                onChange={handleTimeChange}
+                okLabel="تایید"
+                cancelLabel="انصراف"
+              />
+            ) : (
+              <Chip
+                label={persianNumber(row.times[0].time).substring(0, 5)}
+                className={classes.logedEnter}
+                onClick={() => onEditTime(row.times[0])}
+              />
+            )}
           </TableCell>
           <TableCell padding="none">
-            <Chip
-              label={persianNumber(row.times[1].time)}
-              className={classes.logedExit}
-              // onClick={() => onSubmit(row, "EXIT")}
-            />
+            {isEditTime && row.times[1].id === editTime.id ? (
+              <TimePicker
+                style={{ width: 50 }}
+                ampm={false}
+                value={selectedTime}
+                onChange={handleTimeChange}
+                okLabel="تایید"
+                cancelLabel="انصراف"
+              />
+            ) : (
+              <Chip
+                label={persianNumber(row.times[1].time).substring(0, 5)}
+                className={classes.logedExit}
+                onClick={() => onEditTime(row.times[1])}
+              />
+            )}
           </TableCell>
           <TableCell padding="none">
             <Chip
               label={"ثبت ورود"}
-              className={classes.enter}
+              className={clsx(
+                classes.enter,
+                checkToday() && classes.logedEnter,
+              )}
               onClick={() => onSubmit(row, "ENTER")}
             />
           </TableCell>
@@ -216,30 +290,63 @@ export default function MainDetail() {
       return (
         <>
           <TableCell padding="none">
-            <Chip
-              label={persianNumber(row.times[0].time)}
-              className={classes.logedEnter}
-              // onClick={() => onSubmit(row, "ENTER")}
-            />
+            {isEditTime && row.times[0].id === editTime.id ? (
+              <TimePicker
+                style={{ width: 50 }}
+                ampm={false}
+                value={selectedTime}
+                onChange={handleTimeChange}
+                okLabel="تایید"
+                cancelLabel="انصراف"
+              />
+            ) : (
+              <Chip
+                label={persianNumber(row.times[0].time).substring(0, 5)}
+                className={classes.logedEnter}
+                onClick={() => onEditTime(row.times[0])}
+              />
+            )}
           </TableCell>
           <TableCell padding="none">
-            <Chip
-              label={persianNumber(row.times[1].time)}
-              className={classes.logedExit}
-              // onClick={() => onSubmit(row, "EXIT")}
-            />
+            {isEditTime && row.times[1].id === editTime.id ? (
+              <TimePicker
+                style={{ width: 50 }}
+                ampm={false}
+                value={selectedTime}
+                onChange={handleTimeChange}
+                okLabel="تایید"
+                cancelLabel="انصراف"
+              />
+            ) : (
+              <Chip
+                label={persianNumber(row.times[1].time).substring(0, 5)}
+                className={classes.logedExit}
+                onClick={() => onEditTime(row.times[1])}
+              />
+            )}
           </TableCell>
           <TableCell padding="none">
-            <Chip
-              label={persianNumber(row.times[2].time)}
-              className={classes.logedEnter}
-              // onClick={() => onSubmit(row, "ENTER")}
-            />
+            {isEditTime && row.times[2].id === editTime.id ? (
+              <TimePicker
+                style={{ width: 50 }}
+                ampm={false}
+                value={selectedTime}
+                onChange={handleTimeChange}
+                okLabel="تایید"
+                cancelLabel="انصراف"
+              />
+            ) : (
+              <Chip
+                label={persianNumber(row.times[2].time).substring(0, 5)}
+                className={classes.logedEnter}
+                onClick={() => onEditTime(row.times[2])}
+              />
+            )}
           </TableCell>
           <TableCell padding="none">
             <Chip
               label={"ثبت خروج"}
-              className={classes.exit}
+              className={clsx(classes.exit, checkToday() && classes.logedExit)}
               onClick={() => onSubmit(row, "EXIT")}
             />
           </TableCell>
@@ -250,37 +357,85 @@ export default function MainDetail() {
       return (
         <>
           <TableCell padding="none">
-            <Chip
-              label={persianNumber(row.times[0].time)}
-              className={classes.logedEnter}
-              // onClick={() => onSubmit(row, "ENTER")}
-            />
+            {isEditTime && row.times[0].id === editTime.id ? (
+              <TimePicker
+                style={{ width: 50 }}
+                ampm={false}
+                value={selectedTime}
+                onChange={handleTimeChange}
+                okLabel="تایید"
+                cancelLabel="انصراف"
+              />
+            ) : (
+              <Chip
+                label={persianNumber(row.times[0].time).substring(0, 5)}
+                className={classes.logedEnter}
+                onClick={() => onEditTime(row.times[0])}
+              />
+            )}
           </TableCell>
           <TableCell padding="none">
-            <Chip
-              label={persianNumber(row.times[1].time)}
-              className={classes.logedExit}
-              // onClick={() => onSubmit(row, "EXIT")}
-            />
+            {isEditTime && row.times[1].id === editTime.id ? (
+              <TimePicker
+                style={{ width: 50 }}
+                ampm={false}
+                value={selectedTime}
+                onChange={handleTimeChange}
+                okLabel="تایید"
+                cancelLabel="انصراف"
+              />
+            ) : (
+              <Chip
+                label={persianNumber(row.times[1].time).substring(0, 5)}
+                className={classes.logedExit}
+                onClick={() => onEditTime(row.times[1])}
+              />
+            )}
           </TableCell>
           <TableCell padding="none">
-            <Chip
-              label={persianNumber(row.times[2].time)}
-              className={classes.logedEnter}
-              // onClick={() => onSubmit(row, "ENTER")}
-            />
+            {isEditTime && row.times[2].id === editTime.id ? (
+              <TimePicker
+                style={{ width: 50 }}
+                ampm={false}
+                value={selectedTime}
+                onChange={handleTimeChange}
+                okLabel="تایید"
+                cancelLabel="انصراف"
+              />
+            ) : (
+              <Chip
+                label={persianNumber(row.times[2].time).substring(0, 5)}
+                className={classes.logedEnter}
+                onClick={() => onEditTime(row.times[2])}
+              />
+            )}
           </TableCell>
           <TableCell padding="none">
-            <Chip
-              label={persianNumber(row.times[3].time)}
-              className={classes.logedExit}
-              // onClick={() => onSubmit(row, "ENTER")}
-            />
+            {isEditTime && row.times[3].id === editTime.id ? (
+              <TimePicker
+                style={{ width: 50 }}
+                ampm={false}
+                value={selectedTime}
+                onChange={handleTimeChange}
+                okLabel="تایید"
+                cancelLabel="انصراف"
+              />
+            ) : (
+              <Chip
+                label={persianNumber(row.times[3].time).substring(0, 5)}
+                className={classes.logedExit}
+                onClick={() => onEditTime(row.times[3])}
+              />
+            )}
           </TableCell>
         </>
       );
     }
   };
+
+  // useEffect(() => {
+  //   console.log(new Date(selectedTime._d).getHours());
+  // }, [selectedTime]);
 
   useEffect(() => {
     getData();
@@ -304,6 +459,17 @@ export default function MainDetail() {
           onChange={handleDateChange}
           style={{ width: "100%" }}
         />
+
+        {/* {isEditTime && (
+          <TimePicker
+            autoOk={false}
+            variant="static"
+            openTo="hours"
+            ampm={false}
+            value={selectedTime}
+            onChange={setSelectedTime}
+          />
+        )} */}
       </Grid>
       <Grid item lg={9} sm={12} className={classes.root}>
         <Paper className={classes.paper}>

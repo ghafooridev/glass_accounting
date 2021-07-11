@@ -190,7 +190,7 @@ const MainList = () => {
                                   options={[
                                     { id: "amount", title: "موجودی" },
                                     { id: "edit", title: "ویرایش" },
-                                    { id: "delete", title: "حذف" },
+                                    // { id: "delete", title: "حذف" },
                                   ]}
                                   hadleAction={(type) =>
                                     handleAction(row, type)

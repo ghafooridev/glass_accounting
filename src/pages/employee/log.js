@@ -70,6 +70,8 @@ export default function EmployeeLog() {
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(Constant.TABLE_PAGE_SIZE);
   const [list, setList] = useState([]);
+  const [total, setTotal] = useState(0);
+  const [sum, setSum] = useState();
   const history = useHistory();
   const [filter, setFilter] = useState(
     `{from:${jMoment(moment(), "YYYY/MM/DD")
@@ -143,6 +145,8 @@ export default function EmployeeLog() {
   const getData = async () => {
     const employeeList = await getEmployeeRequest.execute(null, id);
     setList(employeeList.data);
+    setTotal(employeeList.total);
+    setSum(employeeList.details);
   };
 
   const getTitle = () => {
@@ -327,12 +331,52 @@ export default function EmployeeLog() {
                         </Table>
                       </TableContainer>
                       <TablePaging
-                        count={list.length}
+                        count={total}
                         handleChangePage={handleChangePage}
                         handleChangeRowsPerPage={handleChangeRowsPerPage}
                         page={page}
                         rowsPerPage={pageSize}
                       />
+                    </Paper>
+                  </Grid>
+
+                  <Grid item xs={12}>
+                    <Paper className={classes.salaryPaperRight}>
+                      <Grid container spacing={3}>
+                        <Grid item xs={12} sm={4}>
+                          <TextField
+                            disabled
+                            variant="outlined"
+                            label="مجموع کارکرد"
+                            name="totalLog"
+                            value={persianNumber(sum?.totalTime)}
+                            fullWidth
+                            size="small"
+                          />
+                        </Grid>
+                        <Grid item xs={12} sm={4}>
+                          <TextField
+                            disabled
+                            variant="outlined"
+                            label="مجموع اضافه کار"
+                            name="totalLog"
+                            value={persianNumber(sum?.totalOverTime)}
+                            fullWidth
+                            size="small"
+                          />
+                        </Grid>
+                        <Grid item xs={12} sm={4}>
+                          <TextField
+                            disabled
+                            variant="outlined"
+                            label="مجموع کسر کار"
+                            name="totalLog"
+                            value={persianNumber(sum?.totalFractionTime)}
+                            fullWidth
+                            size="small"
+                          />
+                        </Grid>
+                      </Grid>
                     </Paper>
                   </Grid>
                 </Grid>
