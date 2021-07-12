@@ -15,6 +15,7 @@ import EmployeeList from "../../pages/employee";
 import EmployeeDetail from "../../pages/employee/detail";
 import InvoiceList from "../../pages/invoice";
 import InvoiceDetail from "../../pages/invoice/detail";
+import FastInvoice from "../../pages/invoice/fastInvoice";
 import ChequeList from "../../pages/cheque";
 import ChequeDetail from "../../pages/cheque/detail";
 import PaymentList from "../../pages/payment";
@@ -64,7 +65,7 @@ function Layout(props) {
             <Route path="/app/customer-list" component={CustomerList} />
             <Route path="/app/customer-detail" component={CustomerDetail} />
             <Route
-              path="/app/customer-transaction"
+              path="/app/person-transaction"
               component={CustomerTransaction}
             />
 
@@ -90,6 +91,7 @@ function Layout(props) {
 
             <Route path="/app/invoice-list" component={InvoiceList} />
             <Route path="/app/invoice-detail" component={InvoiceDetail} />
+            <Route path="/app/fast_invoice" component={FastInvoice} />
 
             <Route path="/app/payment-list" component={PaymentList} />
             <Route path="/app/payment-detail" component={PaymentDetail} />

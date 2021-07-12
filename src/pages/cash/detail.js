@@ -103,10 +103,12 @@ export default function MainDetail({ defaultValues }) {
   const onDone = (data) => {
     const value = {
       ...data,
-      bankId: selectedBank,
       type: selectedType,
       isUpdate: !!defaultValues,
     };
+    if (selectedType === "BANK") {
+      value.bankId = selectedBank;
+    }
     onSubmit(value);
   };
 

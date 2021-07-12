@@ -130,7 +130,7 @@ export default function MainDetail({ defaultValues }) {
 
   const onReject = () => {
     if (customerId) {
-      return history.push(`/app/customer-transaction?id=${customerId}`);
+      return history.push(`/app/person-transaction?id=${customerId}`);
     }
     history.push("/app/payment-list?type=ALL");
   };

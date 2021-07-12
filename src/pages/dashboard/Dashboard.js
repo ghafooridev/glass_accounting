@@ -286,87 +286,36 @@ export default function Dashboard(props) {
           </Paper>
         </Grid>
       </Grid>
-      <Grid container spacing={4}>
-        <Grid item lg={6} xs={12}>
-          <Widget
-            title="موجودی ده روز اخیر صندوق ها"
-            upperTitle
-            className={classes.card}
-            bodyClass={classes.fullHeightBody}
+      <Grid container spacing={4} style={{ marginBottom: 20 }}>
+        <Grid item md={3} xs={6}>
+          <Paper
+            style={{ backgroundColor: "#b8e4c4" }}
+            icon="bolt"
+            onClick={() => {
+              onClickPaper("fast_invoice?type=SELL");
+            }}
           >
-            <div className={classes.serverOverviewElement}>
-              <Typography
-                color="text"
-                colorBrightness="secondary"
-                className={classes.serverOverviewElementText}
-                noWrap
-              >
-                صندوق 1
+            <div className={classes.paperTitle}>
+              <Typography variant="h3" style={{ color: "#137333" }}>
+                فاکتور فروش سریع
               </Typography>
-              <div className={classes.serverOverviewElementChartWrapper}>
-                <ResponsiveContainer height={50} width="99%">
-                  <AreaChart data={getRandomData(10)}>
-                    <Area
-                      type="natural"
-                      dataKey="value"
-                      stroke={theme.palette.secondary.main}
-                      fill={theme.palette.secondary.light}
-                      strokeWidth={2}
-                      fillOpacity="0.25"
-                    />
-                  </AreaChart>
-                </ResponsiveContainer>
-              </div>
             </div>
-            <div className={classes.serverOverviewElement}>
-              <Typography
-                color="text"
-                colorBrightness="secondary"
-                className={classes.serverOverviewElementText}
-                noWrap
-              >
-                صندوق 2
+          </Paper>
+        </Grid>
+        <Grid item md={3} xs={6}>
+          <Paper
+            style={{ backgroundColor: "#f9d5d1" }}
+            icon="bolt"
+            onClick={() => {
+              onClickPaper("fast_invoice?type=BUY");
+            }}
+          >
+            <div className={classes.paperTitle}>
+              <Typography variant="h3" style={{ color: "#c5221f" }}>
+                فاکتور خرید سریع
               </Typography>
-              <div className={classes.serverOverviewElementChartWrapper}>
-                <ResponsiveContainer height={50} width="99%">
-                  <AreaChart data={getRandomData(10)}>
-                    <Area
-                      type="natural"
-                      dataKey="value"
-                      stroke={theme.palette.primary.main}
-                      fill={theme.palette.primary.light}
-                      strokeWidth={2}
-                      fillOpacity="0.25"
-                    />
-                  </AreaChart>
-                </ResponsiveContainer>
-              </div>
             </div>
-            <div className={classes.serverOverviewElement}>
-              <Typography
-                color="text"
-                colorBrightness="secondary"
-                className={classes.serverOverviewElementText}
-                noWrap
-              >
-                صندوق 3
-              </Typography>
-              <div className={classes.serverOverviewElementChartWrapper}>
-                <ResponsiveContainer height={50} width="99%">
-                  <AreaChart data={getRandomData(10)}>
-                    <Area
-                      type="natural"
-                      dataKey="value"
-                      stroke={theme.palette.warning.main}
-                      fill={theme.palette.warning.light}
-                      strokeWidth={2}
-                      fillOpacity="0.25"
-                    />
-                  </AreaChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-          </Widget>
+          </Paper>
         </Grid>
         <Grid item lg={6} xs={12}>
           <Paper
@@ -431,7 +380,8 @@ export default function Dashboard(props) {
             </div>
           </Paper>
         </Grid>
-
+      </Grid>
+      <Grid container spacing={4} style={{ marginBottom: 20 }}>
         <Grid style={{ height: 500 }} item lg={6} xs={12}>
           <Widget
             title="میزان حضور پرسنل"

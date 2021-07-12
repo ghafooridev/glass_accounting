@@ -262,7 +262,9 @@ const MainList = () => {
                               key={row.id}
                               style={{ paddingRight: 10 }}
                             >
-                              <TableCell padding="none">{row.id}</TableCell>
+                              <TableCell padding="none">
+                                {persianNumber(row.id)}
+                              </TableCell>
                               <TableCell padding="none">
                                 {row.globalCustomer
                                   ? `${row.globalCustomer}(${row.customer})`

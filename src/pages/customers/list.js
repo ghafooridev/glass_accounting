@@ -112,7 +112,7 @@ export default function MainList() {
         });
       },
       transaction: () => {
-        history.push(`/app/customer-transaction?id=${row.id}`);
+        history.push(`/app/person-transaction?id=${row.id}`);
       },
     };
     if (types[type]) {

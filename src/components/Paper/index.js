@@ -26,7 +26,7 @@ export default function SimplePaper(props) {
   const classes = useStyles(props);
 
   return (
-    <Paper className={classes.root} onClick={props.onClick}>
+    <Paper className={classes.root} onClick={props.onClick} style={props.style}>
       <i className={classNames("material-icons-round", classes.icon)}>
         {props.icon}
       </i>

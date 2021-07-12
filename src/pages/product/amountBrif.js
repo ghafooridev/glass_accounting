@@ -10,6 +10,7 @@ import {
   TableRow,
   Button,
 } from "@material-ui/core";
+import { persianNumber } from "../../helpers/utils";
 import TableHeader from "../../components/Table/TableHead";
 
 const headCells = [
@@ -42,7 +43,9 @@ export default function MainDetail({ data, onSubmit }) {
                       key={row.id}
                       style={{ paddingRight: 10 }}
                     >
-                      <TableCell padding="none">{row.stock}</TableCell>
+                      <TableCell padding="none">
+                        {persianNumber(row.stock)}
+                      </TableCell>
                       <TableCell padding="none">{row.unit}</TableCell>
                       <TableCell padding="none">{row.depot}</TableCell>
                     </TableRow>

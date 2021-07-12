@@ -120,7 +120,7 @@ export default function MainList() {
         );
       },
       transaction: () => {
-        history.push(`/app/employee-transaction?id=${id}`);
+        history.push(`/app/person-transaction?id=${id}`);
       },
     };
     if (types[type]) {

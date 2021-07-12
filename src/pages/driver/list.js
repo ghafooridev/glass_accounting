@@ -116,7 +116,7 @@ export default function MainList() {
         });
       },
       transaction: () => {
-        history.push(`/app/driver-transaction?id=${id}`);
+        history.push(`/app/person-transaction?id=${id}`);
       },
     };
     if (types[type]) {
