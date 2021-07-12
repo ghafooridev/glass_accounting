@@ -143,7 +143,7 @@ const PaymentReport = () => {
               <div className={classes.root}>
                 <Paper className={classes.paper}>
                   <TableTop
-                    title="لیست حساب های بانکی"
+                    title="لیست تراکنش های صندوق "
                     handleSearch={onSearch}
                     defaultSearch={search}
                   />

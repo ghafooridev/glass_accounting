@@ -65,14 +65,14 @@ export default function MainDetail({ data, type, onDismiss }) {
           <TextField
             disabled
             label="بانک"
-            value={data.detail.bank.name || " "}
+            value={data.detail.bank?.name || " "}
             variant="outlined"
             fullWidth
             size="small"
           />
           <img
             src={`${Constant.API_ADDRESS}/${data.detail.bank.logo}`}
-            alt={data.detail.bank.logo}
+            alt={data.detail.bank?.logo}
             className={classes.img}
           />
         </Grid>

@@ -108,6 +108,7 @@ export default function MainDetail({ defaultValues }) {
   };
 
   const onSubmit = async (data) => {
+    console.log(data);
     const value = {
       type: paymentType,
       personType: selectedPerson.personType,

@@ -84,7 +84,6 @@ const Payment = ({ onSubmit, onDismiss, defaultValues, paymentType, type }) => {
         isUpdate: !!defaultValues,
       };
     }
-
     return onSubmit(value, type, !!defaultValues);
   };
 
