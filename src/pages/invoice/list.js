@@ -295,17 +295,17 @@ const MainList = () => {
                                 />
                               </TableCell>
 
-                              {/* <TableCell padding="none">
+                              <TableCell padding="none">
                                 <TableRowMenu
                                   options={[
-                                    { id: "edit", title: "ویرایش" },
+                                    // { id: "edit", title: "ویرایش" },
                                     { id: "delete", title: "حذف" },
                                   ]}
                                   hadleAction={(type) =>
                                     handleAction(row.id, type)
                                   }
                                 />
-                              </TableCell> */}
+                              </TableCell>
                             </TableRow>
                           );
                         })}

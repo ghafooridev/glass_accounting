@@ -209,7 +209,7 @@ export default function MainList() {
                                   options={[
                                     { id: "transaction", title: "تراکنش ها" },
                                     { id: "edit", title: "ویرایش" },
-                                    // { id: "delete", title: "حذف" },
+                                    { id: "delete", title: "حذف" },
                                   ]}
                                   hadleAction={(type) =>
                                     handleAction(row.id, type)

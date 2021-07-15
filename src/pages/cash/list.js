@@ -228,7 +228,7 @@ const MainList = () => {
                                     { id: "transaction", title: "تراکنش" },
                                     { id: "transfer", title: "انتقال" },
                                     { id: "edit", title: "ویرایش" },
-                                    // { id: "delete", title: "حذف" },
+                                    { id: "delete", title: "حذف" },
                                   ]}
                                   hadleAction={(type) =>
                                     handleAction(row, type)

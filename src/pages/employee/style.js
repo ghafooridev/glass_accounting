@@ -22,6 +22,9 @@ export default makeStyles((theme) => ({
   table: {
     minWidth: 750,
   },
+  tab: {
+    borderBottom: `1px solid ${theme.palette.gray.main}`,
+  },
   status: {
     color: "#fff",
   },

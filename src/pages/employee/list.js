@@ -9,6 +9,8 @@ import {
   Paper,
   Typography,
   Chip,
+  Tab,
+  Tabs,
 } from "@material-ui/core";
 import clsx from "clsx";
 import TableRowMenu from "../../components/Table/TableRowMenu";
@@ -54,6 +56,7 @@ export default function MainList() {
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(Constant.TABLE_PAGE_SIZE);
   const [list, setList] = useState([]);
+  const [type, setType] = useState("ALL");
   const [filter, setFilter] = useState();
   const [total, setTotal] = useState(0);
   const history = useHistory();
@@ -86,6 +89,7 @@ export default function MainList() {
       pageSize,
       search,
       filter,
+      type,
     })}`,
   });
 
@@ -138,6 +142,11 @@ export default function MainList() {
     setPage(0);
   };
 
+  const onChangeType = (e, value) => {
+    setType(value);
+    setPage(0);
+  };
+
   const getData = async () => {
     const employeeList = await getEmployeeRequest.execute();
     setList(employeeList.data);
@@ -146,7 +155,7 @@ export default function MainList() {
 
   useEffect(() => {
     getData();
-  }, [page, order, search, pageSize, filter]);
+  }, [page, order, search, pageSize, type, filter]);
 
   return (
     <>
@@ -165,6 +174,20 @@ export default function MainList() {
                     handleSearch={onSearch}
                     defaultSearch={search}
                   />
+                  <div className={classes.tab}>
+                    <Tabs
+                      value={type}
+                      onChange={onChangeType}
+                      indicatorColor="primary"
+                      textColor="primary"
+                      centered
+                      variant="fullWidth"
+                    >
+                      <Tab label="کل پرسنل" value="ALL" />
+                      <Tab label="پرسنل کارخانه" value="FACTORY" />
+                      <Tab label="پرسنل انبار" value="DEPOT" />
+                    </Tabs>
+                  </div>
                   <TableContainer style={{ padding: "0 10px" }}>
                     <Table
                       className={classes.table}
@@ -215,7 +238,7 @@ export default function MainList() {
                                     { id: "transaction", title: "تراکنش ها" },
                                     { id: "traffic", title: "گزارش تردد" },
                                     { id: "edit", title: "ویرایش" },
-                                    // { id: "delete", title: "حذف" },
+                                    { id: "delete", title: "حذف" },
                                   ]}
                                   hadleAction={(type) =>
                                     handleAction(row, type)
