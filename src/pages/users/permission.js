@@ -14,6 +14,18 @@ export default function Permission({ onSubmit, defaultPermissions }) {
     setUserAccess([...userAccess, item]);
   };
 
+  const onSelectAll = () => {
+    const array = [];
+    permissions.map((item) => {
+      array.push(item.value);
+    });
+    setUserAccess(array);
+  };
+
+  const onDeSelectAll = () => {
+    setUserAccess([]);
+  };
+
   return (
     <Grid item sm={12}>
       <Grid
@@ -57,6 +69,19 @@ export default function Permission({ onSubmit, defaultPermissions }) {
         >
           تایید
         </Button>
+        <Grid>
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={onSelectAll}
+            style={{ margin: "0 10px" }}
+          >
+            انتخاب همه
+          </Button>
+          <Button variant="contained" color="secondary" onClick={onDeSelectAll}>
+            حذف همه
+          </Button>
+        </Grid>
       </Grid>
     </Grid>
   );

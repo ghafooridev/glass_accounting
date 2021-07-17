@@ -175,7 +175,7 @@ const MainList = () => {
   };
 
   const onDismiss = () => {
-    DialogActions.hide({ name: "category" });
+    DialogActions.hide({ name: "detail" });
     setAction();
   };
 

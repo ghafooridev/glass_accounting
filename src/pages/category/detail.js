@@ -33,7 +33,7 @@ const MainDetail = ({ onSubmit, onDismiss, defaultValue }) => {
         >
           تایید
         </Button>
-        <Button variant="contained" color="primary" onClick={onDismiss}>
+        <Button variant="contained" color="secondary" onClick={onDismiss}>
           انصراف
         </Button>
       </Grid>

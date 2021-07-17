@@ -204,9 +204,10 @@ const PrePayment = React.forwardRef((props, ref) => {
         if (types[type]) {
           types[type]();
           setPayments(newPayments);
-          dialogAction.hide({ name: "prePayment" });
+          dialogAction.hide({ name: "delete" });
         }
       },
+      name: "delete",
       size: "6",
       disableCloseButton: false,
     });
