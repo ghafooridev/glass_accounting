@@ -24,14 +24,18 @@ import {
   PolarAngleAxis,
   RadarChart,
 } from "recharts";
-
+import Constant from "../../helpers/constant";
 import useStyles from "./styles";
 import Widget from "../../components/Widget";
 import { Typography } from "../../components/Wrappers";
 import Dot from "../../components/Sidebar/components/Dot";
 
 import Paper from "../../components/Paper";
-import { persianNumber, getRandomColorFromTheme } from "../../helpers/utils";
+import {
+  persianNumber,
+  getRandomColorFromTheme,
+  hasPermission,
+} from "../../helpers/utils";
 import { useApi } from "../../hooks/useApi";
 import { useEffect } from "react";
 import { DatePicker } from "@material-ui/pickers";
@@ -63,30 +67,7 @@ const renderCustomizedLabel = ({
     </text>
   );
 };
-const incomeOutcomeChart = [
-  {
-    date: "Page A",
-    income: 4000,
-    outcome: 2400,
-  },
-  {
-    date: "Page B",
-    income: 3000,
-    outcome: 1398,
-  },
-];
-const factorPriceChart = [
-  {
-    date: "Page A",
-    buy: 4000,
-    sell: 2400,
-  },
-  {
-    date: "Page B",
-    buy: 3000,
-    sell: 1398,
-  },
-];
+
 const empoyeeTrafficChart = [
   {
     subject: "فروردین",
@@ -237,86 +218,98 @@ export default function Dashboard(props) {
   return (
     <>
       <Grid container spacing={4} style={{ marginBottom: 20 }}>
-        <Grid item lg={3} md={4} sm={6} xs={12}>
-          <Paper
-            icon="shopping_basket"
-            onClick={() => {
-              onClickPaper("invoice-detail?type=BUY");
-            }}
-          >
-            <div className={classes.paperTitle}>
-              <Typography variant="h3">ثبت خرید</Typography>
-            </div>
-          </Paper>
-        </Grid>
-        <Grid item lg={3} md={4} sm={6} xs={12}>
-          <Paper
-            icon="sell"
-            onClick={() => {
-              onClickPaper("invoice-detail?type=SELL");
-            }}
-          >
-            <div className={classes.paperTitle}>
-              <Typography variant="h3">ثبت فروش</Typography>
-            </div>
-          </Paper>
-        </Grid>
-        <Grid item lg={3} md={4} sm={6} xs={12}>
-          <Paper
-            icon="move_to_inbox"
-            onClick={() => {
-              onClickPaper("payment-detail?type=INCOME");
-            }}
-          >
-            <div className={classes.paperTitle}>
-              <Typography variant="h3">ثبت دریافت</Typography>
-            </div>
-          </Paper>
-        </Grid>
-        <Grid item lg={3} md={4} sm={6} xs={12}>
-          <Paper
-            icon="unarchive"
-            onClick={() => {
-              onClickPaper("payment-detail?type=OUTCOME");
-            }}
-          >
-            <div className={classes.paperTitle}>
-              <Typography variant="h3">ثبت پرداخت</Typography>
-            </div>
-          </Paper>
-        </Grid>
+        {hasPermission(Constant.ALL_PERMISSIONS.INVOICE_EDIT) && (
+          <Grid item lg={3} md={4} sm={6} xs={12}>
+            <Paper
+              icon="shopping_basket"
+              onClick={() => {
+                onClickPaper("invoice-detail?type=BUY");
+              }}
+            >
+              <div className={classes.paperTitle}>
+                <Typography variant="h3">ثبت خرید</Typography>
+              </div>
+            </Paper>
+          </Grid>
+        )}
+        {hasPermission(Constant.ALL_PERMISSIONS.INVOICE_EDIT) && (
+          <Grid item lg={3} md={4} sm={6} xs={12}>
+            <Paper
+              icon="sell"
+              onClick={() => {
+                onClickPaper("invoice-detail?type=SELL");
+              }}
+            >
+              <div className={classes.paperTitle}>
+                <Typography variant="h3">ثبت فروش</Typography>
+              </div>
+            </Paper>
+          </Grid>
+        )}
+        {hasPermission(Constant.ALL_PERMISSIONS.INVOICE_EDIT) && (
+          <Grid item lg={3} md={4} sm={6} xs={12}>
+            <Paper
+              icon="move_to_inbox"
+              onClick={() => {
+                onClickPaper("payment-detail?type=INCOME");
+              }}
+            >
+              <div className={classes.paperTitle}>
+                <Typography variant="h3">ثبت دریافت</Typography>
+              </div>
+            </Paper>
+          </Grid>
+        )}
+        {hasPermission(Constant.ALL_PERMISSIONS.PAYMENT_EDIT) && (
+          <Grid item lg={3} md={4} sm={6} xs={12}>
+            <Paper
+              icon="unarchive"
+              onClick={() => {
+                onClickPaper("payment-detail?type=OUTCOME");
+              }}
+            >
+              <div className={classes.paperTitle}>
+                <Typography variant="h3">ثبت پرداخت</Typography>
+              </div>
+            </Paper>
+          </Grid>
+        )}
       </Grid>
       <Grid container spacing={4} style={{ marginBottom: 20 }}>
-        <Grid item md={3} xs={6}>
-          <Paper
-            style={{ backgroundColor: "#b8e4c4" }}
-            icon="bolt"
-            onClick={() => {
-              onClickPaper("fast_invoice?type=SELL");
-            }}
-          >
-            <div className={classes.paperTitle}>
-              <Typography variant="h3" style={{ color: "#137333" }}>
-                فاکتور فروش سریع
-              </Typography>
-            </div>
-          </Paper>
-        </Grid>
-        <Grid item md={3} xs={6}>
-          <Paper
-            style={{ backgroundColor: "#f9d5d1" }}
-            icon="bolt"
-            onClick={() => {
-              onClickPaper("fast_invoice?type=BUY");
-            }}
-          >
-            <div className={classes.paperTitle}>
-              <Typography variant="h3" style={{ color: "#c5221f" }}>
-                فاکتور خرید سریع
-              </Typography>
-            </div>
-          </Paper>
-        </Grid>
+        {hasPermission(Constant.ALL_PERMISSIONS.INVOICE_EDIT) && (
+          <Grid item md={3} xs={6}>
+            <Paper
+              style={{ backgroundColor: "#b8e4c4" }}
+              icon="bolt"
+              onClick={() => {
+                onClickPaper("fast_invoice?type=SELL");
+              }}
+            >
+              <div className={classes.paperTitle}>
+                <Typography variant="h3" style={{ color: "#137333" }}>
+                  فاکتور فروش سریع
+                </Typography>
+              </div>
+            </Paper>
+          </Grid>
+        )}
+        {hasPermission(Constant.ALL_PERMISSIONS.INVOICE_EDIT) && (
+          <Grid item md={3} xs={6}>
+            <Paper
+              style={{ backgroundColor: "#f9d5d1" }}
+              icon="bolt"
+              onClick={() => {
+                onClickPaper("fast_invoice?type=BUY");
+              }}
+            >
+              <div className={classes.paperTitle}>
+                <Typography variant="h3" style={{ color: "#c5221f" }}>
+                  فاکتور خرید سریع
+                </Typography>
+              </div>
+            </Paper>
+          </Grid>
+        )}
         <Grid item lg={6} xs={12}>
           <Paper
             icon="transfer_within_a_station"
@@ -411,267 +404,278 @@ export default function Dashboard(props) {
           </Widget>
         </Grid>
 
-        <Grid item lg={6} xs={12}>
-          <Widget title="موجودی صندوق ها" upperTitle className={classes.card}>
-            <Grid container spacing={2}>
-              {pieChart.length && (
-                <Grid item sm={6} xs={12}>
-                  <div style={{ width: "100%", height: "330px" }}>
-                    <div style={{ width: "100%", height: "100%" }}>
-                      <ResponsiveContainer width="100%" height="100%">
-                        <PieChart width="300" height="400">
-                          <Pie
-                            data={pieChart}
-                            cx="50%"
-                            cy="50%"
-                            labelLine={false}
-                            label={renderCustomizedLabel}
-                            outerRadius={120}
-                            fill="#8884d8"
-                            dataKey="amount"
-                          >
-                            {pieChart.map((entry, index) => (
-                              <Cell key={`cell-${index}`} fill={entry.color} />
-                            ))}
-                          </Pie>
-                        </PieChart>
-                      </ResponsiveContainer>
+        {hasPermission(Constant.ALL_PERMISSIONS.CASH_DESK_SHOW) && (
+          <Grid item lg={6} xs={12}>
+            <Widget title="موجودی صندوق ها" upperTitle className={classes.card}>
+              <Grid container spacing={2}>
+                {pieChart.length && (
+                  <Grid item sm={6} xs={12}>
+                    <div style={{ width: "100%", height: "330px" }}>
+                      <div style={{ width: "100%", height: "100%" }}>
+                        <ResponsiveContainer width="100%" height="100%">
+                          <PieChart width="300" height="400">
+                            <Pie
+                              data={pieChart}
+                              cx="50%"
+                              cy="50%"
+                              labelLine={false}
+                              label={renderCustomizedLabel}
+                              outerRadius={120}
+                              fill="#8884d8"
+                              dataKey="amount"
+                            >
+                              {pieChart.map((entry, index) => (
+                                <Cell
+                                  key={`cell-${index}`}
+                                  fill={entry.color}
+                                />
+                              ))}
+                            </Pie>
+                          </PieChart>
+                        </ResponsiveContainer>
+                      </div>
                     </div>
+                  </Grid>
+                )}
+                <Grid item sm={6} xs={12}>
+                  <div className={classes.pieChartLegendWrapper}>
+                    {pieChart.map(({ name, amount, color }, index) => (
+                      <div key={color} className={classes.legendItemContainer}>
+                        <Dot color={color} />
+                        <Typography
+                          variant="h6"
+                          style={{ whiteSpace: "nowrap" }}
+                        >
+                          &nbsp;{name}&nbsp;
+                        </Typography>
+                        <Typography
+                          color="text"
+                          variant="h4"
+                          colorBrightness="secondary"
+                        >
+                          &nbsp;{persianNumber(amount)}
+                        </Typography>
+                      </div>
+                    ))}
                   </div>
                 </Grid>
-              )}
-              <Grid item sm={6} xs={12}>
-                <div className={classes.pieChartLegendWrapper}>
-                  {pieChart.map(({ name, amount, color }, index) => (
-                    <div key={color} className={classes.legendItemContainer}>
-                      <Dot color={color} />
-                      <Typography variant="h6" style={{ whiteSpace: "nowrap" }}>
-                        &nbsp;{name}&nbsp;
-                      </Typography>
-                      <Typography
-                        color="text"
-                        variant="h4"
-                        colorBrightness="secondary"
-                      >
-                        &nbsp;{persianNumber(amount)}
+              </Grid>
+            </Widget>
+          </Grid>
+        )}
+
+        {hasPermission(Constant.ALL_PERMISSIONS.PAYMENT_SHOW) && (
+          <Grid item xs={12}>
+            <Widget
+              bodyClass={classes.mainChartBody}
+              header={
+                <div className={classes.mainChartHeader}>
+                  <Typography
+                    variant="h5"
+                    color="text"
+                    colorBrightness="secondary"
+                  >
+                    دریافتی و پرداختی ها
+                  </Typography>
+
+                  {showFilterBoxPayment && (
+                    <>
+                      <Grid item lg={3} xs={12} className={classes.datePicker}>
+                        <DatePicker
+                          autoOk
+                          name="date"
+                          label="از تاریخ"
+                          inputVariant="outlined"
+                          okLabel="تأیید"
+                          cancelLabel="لغو"
+                          labelFunc={(date) =>
+                            date ? date.format("jYYYY/jMM/jDD") : ""
+                          }
+                          value={selectedFromDatePayment}
+                          onChange={(e) => onChnageDatePayment(e, "from")}
+                          style={{ width: "100%" }}
+                        />
+                      </Grid>
+                      <Grid item lg={3} xs={12} className={classes.datePicker}>
+                        <DatePicker
+                          autoOk
+                          name="date"
+                          label="تا تاریخ"
+                          inputVariant="outlined"
+                          okLabel="تأیید"
+                          cancelLabel="لغو"
+                          labelFunc={(date) =>
+                            date ? date.format("jYYYY/jMM/jDD") : ""
+                          }
+                          value={selectedToDatePayment}
+                          onChange={(e) => onChnageDatePayment(e, "to")}
+                          style={{ width: "100%" }}
+                        />
+                      </Grid>
+                    </>
+                  )}
+                  <div className={classes.mainChartHeaderLabels}>
+                    <div className={classes.mainChartHeaderLabel}>
+                      <Dot color="primary" />
+                      <Typography className={classes.mainChartLegentElement}>
+                        دریافتی
                       </Typography>
                     </div>
-                  ))}
+                    <div className={classes.mainChartHeaderLabel}>
+                      <Dot color="secondary" />
+                      <Typography className={classes.mainChartLegentElement}>
+                        پرداختی
+                      </Typography>
+                    </div>
+                    <MUIToolTip title="فیلتر">
+                      <IconButton
+                        onClick={() =>
+                          setShowFilterBoxPayment(!showFilterBoxPayment)
+                        }
+                      >
+                        <i class="material-icons-round">filter_alt</i>
+                      </IconButton>
+                    </MUIToolTip>
+                  </div>
                 </div>
-              </Grid>
-            </Grid>
-          </Widget>
-        </Grid>
-
-        <Grid item xs={12}>
-          <Widget
-            bodyClass={classes.mainChartBody}
-            header={
-              <div className={classes.mainChartHeader}>
-                <Typography
-                  variant="h5"
-                  color="text"
-                  colorBrightness="secondary"
+              }
+            >
+              <ResponsiveContainer width="100%" height={350}>
+                <LineChart
+                  width={500}
+                  height={300}
+                  data={paymentChart}
+                  margin={{
+                    top: 5,
+                    right: 30,
+                    left: 20,
+                    bottom: 5,
+                  }}
                 >
-                  دریافتی و پرداختی ها
-                </Typography>
-
-                {showFilterBoxPayment && (
-                  <>
-                    <Grid item lg={3} xs={12} className={classes.datePicker}>
-                      <DatePicker
-                        autoOk
-                        name="date"
-                        label="از تاریخ"
-                        inputVariant="outlined"
-                        okLabel="تأیید"
-                        cancelLabel="لغو"
-                        labelFunc={(date) =>
-                          date ? date.format("jYYYY/jMM/jDD") : ""
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="date" />
+                  <YAxis />
+                  <Tooltip />
+                  <Line
+                    type="monotone"
+                    dataKey="income"
+                    stroke={theme.palette.primary.main}
+                    activeDot={{ r: 8 }}
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="outcome"
+                    stroke={theme.palette.secondary.main}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </Widget>
+          </Grid>
+        )}
+        {hasPermission(Constant.ALL_PERMISSIONS.INVOICE_SHOW) && (
+          <Grid item xs={12}>
+            <Widget
+              bodyClass={classes.mainChartBody}
+              header={
+                <div className={classes.mainChartHeader}>
+                  <Typography
+                    variant="h5"
+                    color="text"
+                    colorBrightness="secondary"
+                  >
+                    مبلغ فاکتور ها
+                  </Typography>
+                  {showFilterBoxFactor && (
+                    <>
+                      <Grid item lg={3} xs={12} className={classes.datePicker}>
+                        <DatePicker
+                          autoOk
+                          name="date"
+                          label="از تاریخ"
+                          inputVariant="outlined"
+                          okLabel="تأیید"
+                          cancelLabel="لغو"
+                          labelFunc={(date) =>
+                            date ? date.format("jYYYY/jMM/jDD") : ""
+                          }
+                          value={selectedFromDateFactor}
+                          onChange={(e) => onChnageDateFactor(e, "from")}
+                          style={{ width: "100%" }}
+                        />
+                      </Grid>
+                      <Grid item lg={3} xs={12} className={classes.datePicker}>
+                        <DatePicker
+                          autoOk
+                          name="date"
+                          label="تا تاریخ"
+                          inputVariant="outlined"
+                          okLabel="تأیید"
+                          cancelLabel="لغو"
+                          labelFunc={(date) =>
+                            date ? date.format("jYYYY/jMM/jDD") : ""
+                          }
+                          value={selectedToDateFactor}
+                          onChange={(e) => onChnageDateFactor(e, "to")}
+                          style={{ width: "100%" }}
+                        />
+                      </Grid>
+                    </>
+                  )}
+                  <div className={classes.mainChartHeaderLabels}>
+                    <div className={classes.mainChartHeaderLabel}>
+                      <Dot color="primary" />
+                      <Typography className={classes.mainChartLegentElement}>
+                        فاکتور فروش
+                      </Typography>
+                    </div>
+                    <div className={classes.mainChartHeaderLabel}>
+                      <Dot color="secondary" />
+                      <Typography className={classes.mainChartLegentElement}>
+                        فاکتور خرید
+                      </Typography>
+                    </div>
+                    <MUIToolTip title="فیلتر">
+                      <IconButton
+                        onClick={() =>
+                          setShowFilterBoxFactor(!showFilterBoxFactor)
                         }
-                        value={selectedFromDatePayment}
-                        onChange={(e) => onChnageDatePayment(e, "from")}
-                        style={{ width: "100%" }}
-                      />
-                    </Grid>
-                    <Grid item lg={3} xs={12} className={classes.datePicker}>
-                      <DatePicker
-                        autoOk
-                        name="date"
-                        label="تا تاریخ"
-                        inputVariant="outlined"
-                        okLabel="تأیید"
-                        cancelLabel="لغو"
-                        labelFunc={(date) =>
-                          date ? date.format("jYYYY/jMM/jDD") : ""
-                        }
-                        value={selectedToDatePayment}
-                        onChange={(e) => onChnageDatePayment(e, "to")}
-                        style={{ width: "100%" }}
-                      />
-                    </Grid>
-                  </>
-                )}
-                <div className={classes.mainChartHeaderLabels}>
-                  <div className={classes.mainChartHeaderLabel}>
-                    <Dot color="primary" />
-                    <Typography className={classes.mainChartLegentElement}>
-                      دریافتی
-                    </Typography>
+                      >
+                        <i class="material-icons-round">filter_alt</i>
+                      </IconButton>
+                    </MUIToolTip>
                   </div>
-                  <div className={classes.mainChartHeaderLabel}>
-                    <Dot color="secondary" />
-                    <Typography className={classes.mainChartLegentElement}>
-                      پرداختی
-                    </Typography>
-                  </div>
-                  <MUIToolTip title="فیلتر">
-                    <IconButton
-                      onClick={() =>
-                        setShowFilterBoxPayment(!showFilterBoxPayment)
-                      }
-                    >
-                      <i class="material-icons-round">filter_alt</i>
-                    </IconButton>
-                  </MUIToolTip>
                 </div>
-              </div>
-            }
-          >
-            <ResponsiveContainer width="100%" height={350}>
-              <LineChart
-                width={500}
-                height={300}
-                data={paymentChart}
-                margin={{
-                  top: 5,
-                  right: 30,
-                  left: 20,
-                  bottom: 5,
-                }}
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="date" />
-                <YAxis />
-                <Tooltip />
-                <Line
-                  type="monotone"
-                  dataKey="income"
-                  stroke={theme.palette.primary.main}
-                  activeDot={{ r: 8 }}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="outcome"
-                  stroke={theme.palette.secondary.main}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </Widget>
-        </Grid>
-
-        <Grid item xs={12}>
-          <Widget
-            bodyClass={classes.mainChartBody}
-            header={
-              <div className={classes.mainChartHeader}>
-                <Typography
-                  variant="h5"
-                  color="text"
-                  colorBrightness="secondary"
-                >
-                  مبلغ فاکتور ها
-                </Typography>
-                {showFilterBoxFactor && (
-                  <>
-                    <Grid item lg={3} xs={12} className={classes.datePicker}>
-                      <DatePicker
-                        autoOk
-                        name="date"
-                        label="از تاریخ"
-                        inputVariant="outlined"
-                        okLabel="تأیید"
-                        cancelLabel="لغو"
-                        labelFunc={(date) =>
-                          date ? date.format("jYYYY/jMM/jDD") : ""
-                        }
-                        value={selectedFromDateFactor}
-                        onChange={(e) => onChnageDateFactor(e, "from")}
-                        style={{ width: "100%" }}
-                      />
-                    </Grid>
-                    <Grid item lg={3} xs={12} className={classes.datePicker}>
-                      <DatePicker
-                        autoOk
-                        name="date"
-                        label="تا تاریخ"
-                        inputVariant="outlined"
-                        okLabel="تأیید"
-                        cancelLabel="لغو"
-                        labelFunc={(date) =>
-                          date ? date.format("jYYYY/jMM/jDD") : ""
-                        }
-                        value={selectedToDateFactor}
-                        onChange={(e) => onChnageDateFactor(e, "to")}
-                        style={{ width: "100%" }}
-                      />
-                    </Grid>
-                  </>
-                )}
-                <div className={classes.mainChartHeaderLabels}>
-                  <div className={classes.mainChartHeaderLabel}>
-                    <Dot color="primary" />
-                    <Typography className={classes.mainChartLegentElement}>
-                      فاکتور فروش
-                    </Typography>
+              }
+            >
+              {factorChart.length && (
+                <div style={{ width: "100%", height: "450px" }}>
+                  <div style={{ width: "100%", height: "100%" }}>
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart
+                        width={100}
+                        height={300}
+                        data={factorChart}
+                        margin={{
+                          top: 5,
+                          right: 30,
+                          left: 20,
+                          bottom: 5,
+                        }}
+                      >
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="date" />
+                        <YAxis />
+                        <Tooltip />
+                        <Bar dataKey="buy" fill="#3CD4A0" />
+                        <Bar dataKey="sell" fill="#FF5C93" />
+                      </BarChart>
+                    </ResponsiveContainer>
                   </div>
-                  <div className={classes.mainChartHeaderLabel}>
-                    <Dot color="secondary" />
-                    <Typography className={classes.mainChartLegentElement}>
-                      فاکتور خرید
-                    </Typography>
-                  </div>
-                  <MUIToolTip title="فیلتر">
-                    <IconButton
-                      onClick={() =>
-                        setShowFilterBoxFactor(!showFilterBoxFactor)
-                      }
-                    >
-                      <i class="material-icons-round">filter_alt</i>
-                    </IconButton>
-                  </MUIToolTip>
                 </div>
-              </div>
-            }
-          >
-            {factorChart.length && (
-              <div style={{ width: "100%", height: "450px" }}>
-                <div style={{ width: "100%", height: "100%" }}>
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart
-                      width={100}
-                      height={300}
-                      data={factorChart}
-                      margin={{
-                        top: 5,
-                        right: 30,
-                        left: 20,
-                        bottom: 5,
-                      }}
-                    >
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="date" />
-                      <YAxis />
-                      <Tooltip />
-                      <Bar dataKey="buy" fill="#3CD4A0" />
-                      <Bar dataKey="sell" fill="#FF5C93" />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-              </div>
-            )}
-          </Widget>
-        </Grid>
+              )}
+            </Widget>
+          </Grid>
+        )}
       </Grid>
     </>
   );

@@ -116,7 +116,7 @@ export default function MainList() {
         });
       },
       transaction: () => {
-        history.push(`/app/person-transaction?id=${id}`);
+        history.push(`/app/person-transaction?id=${id}&type=employee`);
       },
     };
     if (types[type]) {
@@ -146,7 +146,7 @@ export default function MainList() {
 
   return (
     <>
-      {hasPermission(Constant.ALL_PERMISSIONS.CASH_LIST) && (
+      {hasPermission(Constant.ALL_PERMISSIONS.DRIVER_SHOW) && (
         <Slide direction="down" in={true}>
           <div>
             {getDriverRequest.pending ? (
@@ -156,7 +156,10 @@ export default function MainList() {
                 <Paper className={classes.paper}>
                   <TableTop
                     title="لیست رانندگان"
-                    onAdd={onAdd}
+                    onAdd={
+                      hasPermission(Constant.ALL_PERMISSIONS.DRIVER_EDIT) &&
+                      onAdd
+                    }
                     FilterComponent={<FilterComponent onFilter={onFilter} />}
                     handleSearch={onSearch}
                     defaultSearch={search}
@@ -208,8 +211,20 @@ export default function MainList() {
                                 <TableRowMenu
                                   options={[
                                     { id: "transaction", title: "تراکنش ها" },
-                                    { id: "edit", title: "ویرایش" },
-                                    { id: "delete", title: "حذف" },
+                                    {
+                                      id: "edit",
+                                      title: "ویرایش",
+                                      hidden: !hasPermission(
+                                        Constant.ALL_PERMISSIONS.DRIVER_EDIT,
+                                      ),
+                                    },
+                                    {
+                                      id: "delete",
+                                      title: "حذف",
+                                      hidden: !hasPermission(
+                                        Constant.ALL_PERMISSIONS.DRIVER_DELETE,
+                                      ),
+                                    },
                                   ]}
                                   hadleAction={(type) =>
                                     handleAction(row.id, type)

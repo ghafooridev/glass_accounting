@@ -213,7 +213,7 @@ export default function MainList() {
 
   return (
     <>
-      {hasPermission(Constant.ALL_PERMISSIONS.CASH_LIST) && (
+      {hasPermission(Constant.ALL_PERMISSIONS.PRODUCT_SHOW) && (
         <Slide direction="down" in={true}>
           <div>
             {getProductRequest.pending ? (
@@ -223,7 +223,10 @@ export default function MainList() {
                 <Paper className={classes.paper}>
                   <TableTop
                     title="لیست کالا ها"
-                    onAdd={onAdd}
+                    onAdd={
+                      hasPermission(Constant.ALL_PERMISSIONS.PRODUCT_EDIT) &&
+                      onAdd
+                    }
                     handleSearch={onSearch}
                     defaultSearch={search}
                   />
@@ -271,8 +274,20 @@ export default function MainList() {
                                       id: "transfer",
                                       title: "انتقال بین انبار",
                                     },
-                                    { id: "edit", title: "ویرایش" },
-                                    { id: "delete", title: "حذف" },
+                                    {
+                                      id: "edit",
+                                      title: "ویرایش",
+                                      hidden: !hasPermission(
+                                        Constant.ALL_PERMISSIONS.PRODUCT_EDIT,
+                                      ),
+                                    },
+                                    {
+                                      id: "delete",
+                                      title: "حذف",
+                                      hidden: !hasPermission(
+                                        Constant.ALL_PERMISSIONS.PRODUCT_DELETE,
+                                      ),
+                                    },
                                   ]}
                                   hadleAction={(type) =>
                                     handleAction(row, type)

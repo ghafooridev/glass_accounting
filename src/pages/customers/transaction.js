@@ -49,6 +49,7 @@ const headCells = [
 
 const MainList = () => {
   const customerId = getQueryString("id");
+  const type = getQueryString("type");
   const classes = styles();
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("date");
@@ -80,7 +81,7 @@ const MainList = () => {
 
   const getPaymentRequest = useApi({
     method: "get",
-    url: `payment/person/customer?${convertParamsToQueryString({
+    url: `payment/person/${type}?${convertParamsToQueryString({
       page,
       order,
       orderBy,

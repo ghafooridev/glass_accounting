@@ -112,7 +112,7 @@ export default function MainList() {
         });
       },
       transaction: () => {
-        history.push(`/app/person-transaction?id=${row.id}`);
+        history.push(`/app/person-transaction?id=${row.id}&type=employee`);
       },
     };
     if (types[type]) {
@@ -142,7 +142,7 @@ export default function MainList() {
 
   return (
     <>
-      {hasPermission(Constant.ALL_PERMISSIONS.CASH_LIST) && (
+      {hasPermission(Constant.ALL_PERMISSIONS.CUSTOMER_SHOW) && (
         <Slide direction="down" in={true}>
           <div>
             {getCustomerRequest.pending ? (
@@ -152,10 +152,16 @@ export default function MainList() {
                 <Paper className={classes.paper}>
                   <TableTop
                     title="لیست مشتریان"
-                    onAdd={onAdd}
+                    onAdd={
+                      hasPermission(Constant.ALL_PERMISSIONS.CUSTOMER_EDIT) &&
+                      onAdd
+                    }
                     FilterComponent={<FilterComponent onFilter={onFilter} />}
                     handleSearch={onSearch}
                     defaultSearch={search}
+                    addPermission={hasPermission(
+                      Constant.ALL_PERMISSIONS.CUSTOMER_EDIT,
+                    )}
                   />
                   <TableContainer style={{ padding: "0 10px" }}>
                     <Table
@@ -212,8 +218,21 @@ export default function MainList() {
                                 <TableRowMenu
                                   options={[
                                     { id: "transaction", title: "تراکنش ها" },
-                                    { id: "edit", title: "ویرایش" },
-                                    { id: "delete", title: "حذف" },
+                                    {
+                                      id: "edit",
+                                      title: "ویرایش",
+                                      hidden: !hasPermission(
+                                        Constant.ALL_PERMISSIONS.CUSTOMER_EDIT,
+                                      ),
+                                    },
+                                    {
+                                      id: "delete",
+                                      title: "حذف",
+                                      hidden: !hasPermission(
+                                        Constant.ALL_PERMISSIONS
+                                          .CUSTOMER_DELETE,
+                                      ),
+                                    },
                                   ]}
                                   hadleAction={(type) =>
                                     handleAction(row, type)

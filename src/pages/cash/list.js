@@ -166,7 +166,7 @@ const MainList = () => {
 
   return (
     <>
-      {hasPermission(Constant.ALL_PERMISSIONS.CASH_LIST) && (
+      {hasPermission(Constant.ALL_PERMISSIONS.CASH_DESK_LIST) && (
         <Slide direction="down" in={true}>
           <div>
             {getCashRequest.pending ? (
@@ -176,7 +176,10 @@ const MainList = () => {
                 <Paper className={classes.paper}>
                   <TableTop
                     title="لیست صندوق ها"
-                    onAdd={onAdd}
+                    onAdd={
+                      hasPermission(Constant.ALL_PERMISSIONS.CASH_DESK_EDIT) &&
+                      onAdd
+                    }
                     handleSearch={onSearch}
                     defaultSearch={search}
                   />
@@ -227,8 +230,21 @@ const MainList = () => {
                                   options={[
                                     { id: "transaction", title: "تراکنش" },
                                     { id: "transfer", title: "انتقال" },
-                                    { id: "edit", title: "ویرایش" },
-                                    { id: "delete", title: "حذف" },
+                                    {
+                                      id: "edit",
+                                      title: "ویرایش",
+                                      hidden: !hasPermission(
+                                        Constant.ALL_PERMISSIONS.CASH_DESK_EDIT,
+                                      ),
+                                    },
+                                    {
+                                      id: "delete",
+                                      title: "حذف",
+                                      hidden: !hasPermission(
+                                        Constant.ALL_PERMISSIONS
+                                          .CASH_DESK_DELETE,
+                                      ),
+                                    },
                                   ]}
                                   hadleAction={(type) =>
                                     handleAction(row, type)

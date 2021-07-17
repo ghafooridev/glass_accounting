@@ -142,7 +142,7 @@ const MainList = () => {
 
   return (
     <>
-      {hasPermission(Constant.ALL_PERMISSIONS.CASH_LIST) && (
+      {hasPermission(Constant.ALL_PERMISSIONS.DEPOT_SHOW) && (
         <Slide direction="down" in={true}>
           <div>
             {getDepotRequest.pending ? (
@@ -152,7 +152,10 @@ const MainList = () => {
                 <Paper className={classes.paper}>
                   <TableTop
                     title="لیست انبار ها"
-                    onAdd={onAdd}
+                    onAdd={
+                      hasPermission(Constant.ALL_PERMISSIONS.DEPOT_EDIT) &&
+                      onAdd
+                    }
                     handleSearch={onSearch}
                     defaultSearch={search}
                   />
@@ -189,8 +192,20 @@ const MainList = () => {
                                 <TableRowMenu
                                   options={[
                                     { id: "amount", title: "موجودی" },
-                                    { id: "edit", title: "ویرایش" },
-                                    { id: "delete", title: "حذف" },
+                                    {
+                                      id: "edit",
+                                      title: "ویرایش",
+                                      hidden: !hasPermission(
+                                        Constant.ALL_PERMISSIONS.DEPOT_EDIT,
+                                      ),
+                                    },
+                                    {
+                                      id: "delete",
+                                      title: "حذف",
+                                      hidden: !hasPermission(
+                                        Constant.ALL_PERMISSIONS.DEPOT_DELETE,
+                                      ),
+                                    },
                                   ]}
                                   hadleAction={(type) =>
                                     handleAction(row, type)

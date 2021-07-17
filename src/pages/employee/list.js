@@ -124,7 +124,7 @@ export default function MainList() {
         );
       },
       transaction: () => {
-        history.push(`/app/person-transaction?id=${id}`);
+        history.push(`/app/person-transaction?id=${id}&type=employee`);
       },
     };
     if (types[type]) {
@@ -159,7 +159,7 @@ export default function MainList() {
 
   return (
     <>
-      {hasPermission(Constant.ALL_PERMISSIONS.CASH_LIST) && (
+      {hasPermission(Constant.ALL_PERMISSIONS.EMPLOYEE_SHOW) && (
         <Slide direction="down" in={true}>
           <div>
             {getEmployeeRequest.pending ? (
@@ -169,7 +169,10 @@ export default function MainList() {
                 <Paper className={classes.paper}>
                   <TableTop
                     title="لیست پرسنل"
-                    onAdd={onAdd}
+                    onAdd={
+                      hasPermission(Constant.ALL_PERMISSIONS.EMPLOYEE_EDIT) &&
+                      onAdd
+                    }
                     FilterComponent={<FilterComponent onFilter={onFilter} />}
                     handleSearch={onSearch}
                     defaultSearch={search}
@@ -237,8 +240,21 @@ export default function MainList() {
                                   options={[
                                     { id: "transaction", title: "تراکنش ها" },
                                     { id: "traffic", title: "گزارش تردد" },
-                                    { id: "edit", title: "ویرایش" },
-                                    { id: "delete", title: "حذف" },
+                                    {
+                                      id: "edit",
+                                      title: "ویرایش",
+                                      hidden: !hasPermission(
+                                        Constant.ALL_PERMISSIONS.EMPLOYEE_EDIT,
+                                      ),
+                                    },
+                                    {
+                                      id: "delete",
+                                      title: "حذف",
+                                      hidden: !hasPermission(
+                                        Constant.ALL_PERMISSIONS
+                                          .EMPLOYEE_DELETE,
+                                      ),
+                                    },
                                   ]}
                                   hadleAction={(type) =>
                                     handleAction(row, type)

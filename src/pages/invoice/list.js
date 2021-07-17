@@ -171,7 +171,7 @@ const MainList = () => {
 
   return (
     <>
-      {hasPermission(Constant.ALL_PERMISSIONS.CASH_LIST) && (
+      {hasPermission(Constant.ALL_PERMISSIONS.INVOICE_SHOW) && (
         <Slide direction="down" in={true}>
           <div>
             {getInvoiceRequest.pending ? (
@@ -297,10 +297,12 @@ const MainList = () => {
 
                               <TableCell padding="none">
                                 <TableRowMenu
-                                  options={[
-                                    // { id: "edit", title: "ویرایش" },
-                                    { id: "delete", title: "حذف" },
-                                  ]}
+                                  options={
+                                    [
+                                      // { id: "edit", title: "ویرایش" },
+                                      // { id: "delete", title: "حذف" },
+                                    ]
+                                  }
                                   hadleAction={(type) =>
                                     handleAction(row.id, type)
                                   }

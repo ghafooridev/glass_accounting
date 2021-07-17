@@ -31,9 +31,8 @@ export const useApi = (args) => {
       } else {
         response = await http({ ...args, data });
       }
-
       setResult(response);
-      return response.data;
+      return response?.data;
     } catch (e) {
       setResult(null);
       setError(e);

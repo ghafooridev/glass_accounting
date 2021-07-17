@@ -46,11 +46,14 @@ export default function TableRowMenu(props) {
           },
         }}
       >
-        {options.map((option) => (
-          <MenuItem key={option.id} onClick={() => handleSelect(option.id)}>
-            {option.title}
-          </MenuItem>
-        ))}
+        {options.map(
+          (option) =>
+            !option.hidden && (
+              <MenuItem key={option.id} onClick={() => handleSelect(option.id)}>
+                {option.title}
+              </MenuItem>
+            ),
+        )}
       </Menu>
     </div>
   );

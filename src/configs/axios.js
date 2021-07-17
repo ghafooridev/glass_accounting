@@ -32,15 +32,13 @@ http.interceptors.response.use(
   (result) => {
     // Do something before request is sent
     const { method, url } = result.config;
-    if (method === "POST" || method === "PUT") {
-      if (url !== "user/login") {
-        return AlertAction.show({
-          type: "success",
-          text: "اطلاعات با موفقیت ثبت شد",
-        });
-      }
+    if ((method === "post" || method === "put") && url !== "auth/login") {
+      return AlertAction.show({
+        type: "success",
+        text: "اطلاعات با موفقیت ثبت شد",
+      });
     }
-    if (method === "DELETE") {
+    if (method === "delete") {
       return AlertAction.show({
         type: "success",
         text: "اطلاعات با موفقیت حذف شد",

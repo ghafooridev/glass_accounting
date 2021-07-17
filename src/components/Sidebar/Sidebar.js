@@ -115,7 +115,7 @@ const structure = [
       {
         label: "کاربران",
         link: "/app/user-list",
-        permission: Constants.ALL_PERMISSIONS.FREE,
+        permission: Constants.ALL_PERMISSIONS.USER_SHOW,
       },
       {
         label: "مشتریان",
@@ -130,7 +130,7 @@ const structure = [
       {
         label: "رانندگان",
         link: "/app/driver-list",
-        permission: Constants.ALL_PERMISSIONS.DRIVER_EDIT,
+        permission: Constants.ALL_PERMISSIONS.DRIVER_SHOW,
       },
     ],
   },
