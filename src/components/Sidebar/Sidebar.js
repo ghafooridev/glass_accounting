@@ -141,7 +141,7 @@ const structure = [
     label: " حضور و غیاب",
     link: "/app/traffic",
     icon: <i className="material-icons-round">transfer_within_a_station</i>,
-    permission: Constants.ALL_PERMISSIONS.FREE,
+    permission: Constants.ALL_PERMISSIONS.ATTENDANCE_SHOW,
   },
 
   {

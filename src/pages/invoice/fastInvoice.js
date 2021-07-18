@@ -98,12 +98,12 @@ export default function MainDetail() {
     console.log(response, addInvoiceRequest);
     const invoicePayment = {
       ...paymentRef.current,
-      // invoiceId: response.id,
+      invoiceId: response.id,
       date: selectedDate._d,
       personId: 1,
       personType: "CUSTOMER",
       type: invoiceType === "SELL" ? "INCOME" : "OUTCOME",
-      // description: `بابت فاکتور به شماره  ${response.id}`,
+      description: `بابت فاکتور به شماره  ${response.id}`,
     };
     if (
       invoicePayment.cashes.length > 0 ||

@@ -32,17 +32,28 @@ http.interceptors.response.use(
   (result) => {
     // Do something before request is sent
     const { method, url } = result.config;
-    if ((method === "post" || method === "put") && url !== "auth/login") {
-      return AlertAction.show({
-        type: "success",
-        text: "اطلاعات با موفقیت ثبت شد",
-      });
-    }
-    if (method === "delete") {
-      return AlertAction.show({
-        type: "success",
-        text: "اطلاعات با موفقیت حذف شد",
-      });
+    // if ((method === "post" || method === "put") && url !== "auth/login") {
+    //   return AlertAction.show({
+    //     type: "success",
+    //     text: "اطلاعات با موفقیت ثبت شد",
+    //   });
+    // }
+    // if (method === "delete") {
+    //   return AlertAction.show({
+    //     type: "success",
+    //     text: "اطلاعات با موفقیت حذف شد",
+    //   });
+    // }
+    if (method !== "get") {
+      if (url !== "user/login") {
+        AlertAction.show({
+          type: "success",
+          text:
+            method === "delete"
+              ? "اطلاعات با موفقیت ثبت شد"
+              : "اطلاعات با موفقیت حذف شد",
+        });
+      }
     }
     return result;
   },

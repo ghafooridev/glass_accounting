@@ -310,100 +310,106 @@ export default function Dashboard(props) {
             </Paper>
           </Grid>
         )}
-        <Grid item lg={6} xs={12}>
-          <Paper
-            icon="transfer_within_a_station"
-            onClick={() => {
-              onClickPaper("traffic");
-            }}
-          >
-            <div
-              className={classes.paperTitle}
-              style={{ flexDirection: "row", justifyContent: "space-between" }}
+        {hasPermission(Constant.ALL_PERMISSIONS.ATTENDANCE_EDIT) && (
+          <Grid item lg={6} xs={12}>
+            <Paper
+              icon="transfer_within_a_station"
+              onClick={() => {
+                onClickPaper("traffic");
+              }}
             >
-              <div>
-                <Typography color="text-s" variant="h3">
-                  حضور و غیاب
-                </Typography>
-                <div
-                  className={classes.performanceLegendWrapper}
-                  style={{ marginTop: 20 }}
-                >
-                  <div className={classes.legendElement}>
-                    <Dot color="secondary" />
-                    <Typography
-                      color="text"
-                      colorBrightness="secondary"
-                      className={classes.legendElementText}
-                    >
-                      غائبین
-                    </Typography>
-                  </div>
-                  <div className={classes.legendElement}>
-                    <Dot color="primary" />
-                    <Typography
-                      color="text"
-                      colorBrightness="secondary"
-                      className={classes.legendElementText}
-                    >
-                      حاضرین
-                    </Typography>
+              <div
+                className={classes.paperTitle}
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                }}
+              >
+                <div>
+                  <Typography color="text-s" variant="h3">
+                    حضور و غیاب
+                  </Typography>
+                  <div
+                    className={classes.performanceLegendWrapper}
+                    style={{ marginTop: 20 }}
+                  >
+                    <div className={classes.legendElement}>
+                      <Dot color="secondary" />
+                      <Typography
+                        color="text"
+                        colorBrightness="secondary"
+                        className={classes.legendElementText}
+                      >
+                        غائبین
+                      </Typography>
+                    </div>
+                    <div className={classes.legendElement}>
+                      <Dot color="primary" />
+                      <Typography
+                        color="text"
+                        colorBrightness="secondary"
+                        className={classes.legendElementText}
+                      >
+                        حاضرین
+                      </Typography>
+                    </div>
                   </div>
                 </div>
+                <PieChart width={250} height={100}>
+                  <Pie
+                    data={trafficDayliChart}
+                    cx={120}
+                    cy={100}
+                    startAngle={180}
+                    endAngle={0}
+                    innerRadius={60}
+                    outerRadius={80}
+                    fill="#8884d8"
+                    paddingAngle={5}
+                    dataKey="value"
+                  >
+                    {trafficDayliChart.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                </PieChart>
               </div>
-              <PieChart width={250} height={100}>
-                <Pie
-                  data={trafficDayliChart}
-                  cx={120}
-                  cy={100}
-                  startAngle={180}
-                  endAngle={0}
-                  innerRadius={60}
-                  outerRadius={80}
-                  fill="#8884d8"
-                  paddingAngle={5}
-                  dataKey="value"
-                >
-                  {trafficDayliChart.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Pie>
-                <Tooltip />
-              </PieChart>
-            </div>
-          </Paper>
-        </Grid>
+            </Paper>
+          </Grid>
+        )}{" "}
       </Grid>
       <Grid container spacing={4} style={{ marginBottom: 20 }}>
-        <Grid style={{ height: 500 }} item lg={6} xs={12}>
-          <Widget
-            title="میزان حضور پرسنل"
-            upperTitle
-            bodyClass={classes.fullHeightBody}
-            className={classes.card}
-          >
-            <ResponsiveContainer width="100%" height="100%">
-              <RadarChart
-                cx="50%"
-                cy="50%"
-                outerRadius="80%"
-                data={empoyeeTrafficChart}
-              >
-                <PolarGrid />
-                <PolarAngleAxis dataKey="subject" />
-                <PolarRadiusAxis />
-                <Radar
-                  name="Mike"
-                  dataKey="A"
-                  stroke="#8884d8"
-                  fill="#8884d8"
-                  fillOpacity={0.6}
-                />
-              </RadarChart>
-            </ResponsiveContainer>
-          </Widget>
-        </Grid>
-
+        {hasPermission(Constant.ALL_PERMISSIONS.ATTENDANCE_SHOW) && (
+          <Grid style={{ height: 500 }} item lg={6} xs={12}>
+            <Widget
+              title="میزان حضور پرسنل"
+              upperTitle
+              bodyClass={classes.fullHeightBody}
+              className={classes.card}
+            >
+              <ResponsiveContainer width="100%" height="100%">
+                <RadarChart
+                  cx="50%"
+                  cy="50%"
+                  outerRadius="80%"
+                  data={empoyeeTrafficChart}
+                >
+                  <PolarGrid />
+                  <PolarAngleAxis dataKey="subject" />
+                  <PolarRadiusAxis />
+                  <Radar
+                    name="Mike"
+                    dataKey="A"
+                    stroke="#8884d8"
+                    fill="#8884d8"
+                    fillOpacity={0.6}
+                  />
+                </RadarChart>
+              </ResponsiveContainer>
+            </Widget>
+          </Grid>
+        )}
         {hasPermission(Constant.ALL_PERMISSIONS.CASH_DESK_SHOW) && (
           <Grid item lg={6} xs={12}>
             <Widget title="موجودی صندوق ها" upperTitle className={classes.card}>

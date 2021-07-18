@@ -52,6 +52,7 @@ const Constant = {
   MESSAGES: {},
   ERROR_MESSAGE: {
     BAD_CREDENTIAL: "نام کاربری یا رمز عبور اشتباه است",
+    ACCESS_DENIED: "شما دسترسی لازم برای تغییر با نمایش این قسمت را ندارید",
   },
   PERSON_STATUS: {
     DEBTOR: "بدهکار",
@@ -68,6 +69,8 @@ const Constant = {
     BUY: "خرید",
   },
   ALL_PERMISSIONS: {
+    ATTENDANCE_SHOW: "ATTENDANCE_SHOW",
+    ATTENDANCE_EDIT: "ATTENDANCE_EDIT",
     USER_SHOW: "USER_SHOW",
     USER_EDIT: "USER_EDIT",
     USER_DELETE: "USER_DELETE",
@@ -101,6 +104,8 @@ const Constant = {
     CHEQUE_DELETE: "CHEQUE_DELETE",
   },
   PERMISSIONS: [
+    { value: "ATTENDANCE_SHOW", label: "لیست حضور و غیاب ها ها" },
+    { value: "ATTENDANCE_EDIT", label: "ویرایش حضور و غیاب ها" },
     { value: "PAYMENT_SHOW", label: "لیست پرداختی و دریافتی" },
     { value: "PAYMENT_EDIT", label: "ویرایش پرداختی و دریافتی " },
     { value: "INVOICE_SHOW", label: "لیست فاکتور ها" },

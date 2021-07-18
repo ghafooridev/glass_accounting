@@ -15,12 +15,18 @@ import {
 } from "@material-ui/core";
 import { TimePicker } from "@material-ui/pickers";
 import { useApi } from "../../hooks/useApi";
-import { getQueryString, persianNumber } from "../../helpers/utils";
+import {
+  getQueryString,
+  hasPermission,
+  persianNumber,
+} from "../../helpers/utils";
 import TableHeader from "../../components/Table/TableHead";
 import { convertParamsToQueryString } from "../../helpers/utils";
 import { DatePicker } from "@material-ui/pickers";
 import moment from "moment";
 import clsx from "clsx";
+import Constant from "../../helpers/constant";
+import AlertAction from "../../redux/actions/AlertAction";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -137,19 +143,33 @@ export default function MainDetail() {
   });
 
   const onSubmit = async (row, type) => {
-    if (!checkToday()) {
-      await registerRequest.execute({ employeeId: row.id, type });
-      getData();
+    if (hasPermission(Constant.ALL_PERMISSIONS.ATTENDANCE_EDIT)) {
+      if (!checkToday()) {
+        await registerRequest.execute({ employeeId: row.id, type });
+        getData();
+      }
+    } else {
+      AlertAction.show({
+        type: "error",
+        text: Constant.MESSAGES.ERROR_MESSAGE.ACCESS_DENIED,
+      });
     }
   };
 
   const onEdit = async (date) => {
-    const tzOffset = new Date().getTimezoneOffset() * 60000;
-    await editTrafficRequest.execute({
-      id: editTime.id,
-      date: new Date(new Date(date) - tzOffset),
-    });
-    getData();
+    if (hasPermission(Constant.ALL_PERMISSIONS.ATTENDANCE_EDIT)) {
+      const tzOffset = new Date().getTimezoneOffset() * 60000;
+      await editTrafficRequest.execute({
+        id: editTime.id,
+        date: new Date(new Date(date) - tzOffset),
+      });
+      getData();
+    } else {
+      AlertAction.show({
+        type: "error",
+        text: Constant.MESSAGES.ERROR_MESSAGE.ACCESS_DENIED,
+      });
+    }
   };
 
   const onChangeSearch = (e) => {
@@ -444,25 +464,27 @@ export default function MainDetail() {
   }, [search, selectedDate]);
 
   return (
-    <Grid container spacing={3} style={{ alignItems: "baseline" }}>
-      <Grid item lg={3} sm={12} className={classes.dateTime}>
-        <DatePicker
-          autoOk
-          orientation="portrait"
-          variant="static"
-          openTo="date"
-          name="date"
-          label="تاریخ شروع قرارداد"
-          inputVariant="outlined"
-          okLabel="تأیید"
-          cancelLabel="لغو"
-          labelFunc={(date) => (date ? date.format("jYYYY/jMM/jDD") : "")}
-          value={selectedDate}
-          onChange={handleDateChange}
-          style={{ width: "100%" }}
-        />
+    <>
+      {hasPermission(Constant.ALL_PERMISSIONS.ATTENDANCE_LIST) && (
+        <Grid container spacing={3} style={{ alignItems: "baseline" }}>
+          <Grid item lg={3} sm={12} className={classes.dateTime}>
+            <DatePicker
+              autoOk
+              orientation="portrait"
+              variant="static"
+              openTo="date"
+              name="date"
+              label="تاریخ شروع قرارداد"
+              inputVariant="outlined"
+              okLabel="تأیید"
+              cancelLabel="لغو"
+              labelFunc={(date) => (date ? date.format("jYYYY/jMM/jDD") : "")}
+              value={selectedDate}
+              onChange={handleDateChange}
+              style={{ width: "100%" }}
+            />
 
-        {/* {isEditTime && (
+            {/* {isEditTime && (
           <TimePicker
             autoOk={false}
             variant="static"
@@ -472,69 +494,74 @@ export default function MainDetail() {
             onChange={setSelectedTime}
           />
         )} */}
-      </Grid>
-      <Grid item lg={8} sm={12} className={classes.root}>
-        <Paper className={classes.paper}>
-          <Typography
-            className={classes.title}
-            variant="h6"
-            id="tableTitle"
-            component="div"
-          >
-            ثبت حضور و غیاب
-          </Typography>
-
-          <Grid container spacing={3}>
-            <Grid item lg={12} xs={12}>
-              <TextField
-                variant="outlined"
-                label=" جستجوی پرسنل"
-                onChange={onChangeSearch}
-                value={search}
-                fullWidth
-                size="small"
-              />
-            </Grid>
           </Grid>
-        </Paper>
-        <div className={classes.root}>
-          <Paper className={classes.paper}>
-            <TableContainer style={{ padding: "0 10px" }}>
-              <Table
-                className={classes.table}
-                size={"medium"}
-                style={{ paddingRight: 10 }}
+          <Grid item lg={8} sm={12} className={classes.root}>
+            <Paper className={classes.paper}>
+              <Typography
+                className={classes.title}
+                variant="h6"
+                id="tableTitle"
+                component="div"
               >
-                <TableHeader classes={classes} headCells={headCells} />
-                <TableBody>
-                  {list.map((row) => {
-                    return (
-                      <TableRow
-                        hover
-                        tabIndex={-1}
-                        key={row.id}
-                        style={{ paddingRight: 10 }}
-                      >
-                        <TableCell padding="none">{row.employee}</TableCell>
-                        {getTimesElement(row)}
-                      </TableRow>
-                    );
-                  })}
-                  {!list.length && !getTrafficRequest.pending && (
-                    <TableRow style={{ height: 53 }}>
-                      <TableCell colSpan={6} style={{ textAlign: "center" }}>
-                        <Typography variant="h6">
-                          داده ای برای نمایش وجود ندارد
-                        </Typography>
-                      </TableCell>
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Paper>
-        </div>
-      </Grid>
-    </Grid>
+                ثبت حضور و غیاب
+              </Typography>
+
+              <Grid container spacing={3}>
+                <Grid item lg={12} xs={12}>
+                  <TextField
+                    variant="outlined"
+                    label=" جستجوی پرسنل"
+                    onChange={onChangeSearch}
+                    value={search}
+                    fullWidth
+                    size="small"
+                  />
+                </Grid>
+              </Grid>
+            </Paper>
+            <div className={classes.root}>
+              <Paper className={classes.paper}>
+                <TableContainer style={{ padding: "0 10px" }}>
+                  <Table
+                    className={classes.table}
+                    size={"medium"}
+                    style={{ paddingRight: 10 }}
+                  >
+                    <TableHeader classes={classes} headCells={headCells} />
+                    <TableBody>
+                      {list.map((row) => {
+                        return (
+                          <TableRow
+                            hover
+                            tabIndex={-1}
+                            key={row.id}
+                            style={{ paddingRight: 10 }}
+                          >
+                            <TableCell padding="none">{row.employee}</TableCell>
+                            {getTimesElement(row)}
+                          </TableRow>
+                        );
+                      })}
+                      {!list.length && !getTrafficRequest.pending && (
+                        <TableRow style={{ height: 53 }}>
+                          <TableCell
+                            colSpan={6}
+                            style={{ textAlign: "center" }}
+                          >
+                            <Typography variant="h6">
+                              داده ای برای نمایش وجود ندارد
+                            </Typography>
+                          </TableCell>
+                        </TableRow>
+                      )}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </Paper>
+            </div>
+          </Grid>
+        </Grid>
+      )}
+    </>
   );
 }

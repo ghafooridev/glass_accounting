@@ -295,7 +295,7 @@ const MainList = () => {
                                 />
                               </TableCell>
 
-                              <TableCell padding="none">
+                              {/* <TableCell padding="none">
                                 <TableRowMenu
                                   options={
                                     [
@@ -307,7 +307,7 @@ const MainList = () => {
                                     handleAction(row.id, type)
                                   }
                                 />
-                              </TableCell>
+                              </TableCell> */}
                             </TableRow>
                           );
                         })}

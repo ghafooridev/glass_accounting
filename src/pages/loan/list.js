@@ -39,7 +39,7 @@ const headCells = [
     label: "مانده وام",
   },
   { id: "personType", label: "نوع شخص" },
-  { id: "action" },
+  // { id: "action" },
 ];
 const PERSON_TYPE = {
   EMPLOYEE: "پرسنل",
@@ -177,7 +177,7 @@ const MainList = () => {
                                 {PERSON_TYPE[row.personType]}
                               </TableCell>
 
-                              <TableCell padding="none">
+                              {/* <TableCell padding="none">
                                 <i
                                   className="material-icons-round"
                                   style={{ cursor: "pointer" }}
@@ -185,7 +185,7 @@ const MainList = () => {
                                 >
                                   link
                                 </i>
-                              </TableCell>
+                              </TableCell> */}
                             </TableRow>
                           );
                         })}
