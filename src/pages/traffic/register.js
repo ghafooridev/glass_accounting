@@ -147,6 +147,7 @@ export default function MainDetail() {
       if (!checkToday()) {
         await registerRequest.execute({ employeeId: row.id, type });
         getData();
+      } else {
       }
     } else {
       AlertAction.show({
@@ -157,7 +158,7 @@ export default function MainDetail() {
   };
 
   const onEdit = async (date) => {
-    if (hasPermission(Constant.ALL_PERMISSIONS.ATTENDANCE_EDIT)) {
+    if (hasPermission(Constant.ALL_PERMISSIONS.ATTENDANCE_ADMIN)) {
       const tzOffset = new Date().getTimezoneOffset() * 60000;
       await editTrafficRequest.execute({
         id: editTime.id,
@@ -193,9 +194,16 @@ export default function MainDetail() {
   };
 
   const onEditTime = (time) => {
+    if (!checkIsAdmin()) {
+      return;
+    }
     setSelectedTime(time.dateTime);
     setIsEditTime(true);
     setEditTime({ id: time.id });
+  };
+
+  const checkIsAdmin = () => {
+    return hasPermission(Constant.ALL_PERMISSIONS.ATTENDANCE_ADMIN);
   };
 
   const checkToday = () => {
@@ -207,14 +215,25 @@ export default function MainDetail() {
       return (
         <>
           <TableCell padding="none">
-            <Chip
-              label={"ثبت ورود"}
-              className={clsx(
-                classes.enter,
-                checkToday() && classes.logedEnter,
-              )}
-              onClick={() => onSubmit(row, "ENTER")}
-            />
+            {isEditTime && row.times[0].id === editTime.id ? (
+              <TimePicker
+                style={{ width: 50 }}
+                ampm={false}
+                value={selectedTime}
+                onChange={handleTimeChange}
+                okLabel="تایید"
+                cancelLabel="انصراف"
+              />
+            ) : (
+              <Chip
+                label={"ثبت ورود"}
+                className={clsx(
+                  classes.enter,
+                  checkToday() && classes.logedEnter,
+                )}
+                onClick={() => onSubmit(row, "ENTER")}
+              />
+            )}
           </TableCell>
           <TableCell padding="none"></TableCell>
           <TableCell padding="none"></TableCell>

@@ -45,13 +45,13 @@ http.interceptors.response.use(
     //   });
     // }
     if (method !== "get") {
-      if (url !== "user/login") {
+      if (url !== "auth/login") {
         AlertAction.show({
           type: "success",
           text:
             method === "delete"
-              ? "اطلاعات با موفقیت ثبت شد"
-              : "اطلاعات با موفقیت حذف شد",
+              ? "اطلاعات با موفقیت حذف شد"
+              : "اطلاعات با موفقیت ثبت شد",
         });
       }
     }

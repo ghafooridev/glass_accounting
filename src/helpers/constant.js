@@ -71,6 +71,7 @@ const Constant = {
   ALL_PERMISSIONS: {
     ATTENDANCE_SHOW: "ATTENDANCE_SHOW",
     ATTENDANCE_EDIT: "ATTENDANCE_EDIT",
+    ATTENDANCE_ADMIN: "ATTENDANCE_ADMIN",
     USER_SHOW: "USER_SHOW",
     USER_EDIT: "USER_EDIT",
     USER_DELETE: "USER_DELETE",
@@ -104,8 +105,9 @@ const Constant = {
     CHEQUE_DELETE: "CHEQUE_DELETE",
   },
   PERMISSIONS: [
-    { value: "ATTENDANCE_SHOW", label: "لیست حضور و غیاب ها ها" },
-    { value: "ATTENDANCE_EDIT", label: "ویرایش حضور و غیاب ها" },
+    { value: "ATTENDANCE_ADMIN", label: "ویرایش حضور و غیاب" },
+    { value: "ATTENDANCE_SHOW", label: "لیست حضور و غیاب  " },
+    { value: "ATTENDANCE_EDIT", label: "ثبت حضور و غیاب " },
     { value: "PAYMENT_SHOW", label: "لیست پرداختی و دریافتی" },
     { value: "PAYMENT_EDIT", label: "ویرایش پرداختی و دریافتی " },
     { value: "INVOICE_SHOW", label: "لیست فاکتور ها" },
