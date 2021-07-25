@@ -151,13 +151,35 @@ const structure = [
     icon: <i className="material-icons-round">category</i>,
     permission: Constants.ALL_PERMISSIONS.FREE,
   },
-  // {
-  //   id: 15,
-  //   label: "تنظیمات ",
-  //   link: "/app/Settings",
-  //   icon: <i className="material-icons-round">settings</i>,
-  //   permission: Constants.ALL_PERMISSIONS.FREE,
-  // },
+  { id: 13, type: "divider", permission: Constants.ALL_PERMISSIONS.FREE },
+  {
+    id: 15,
+    label: "گزارشات ",
+    icon: <i className="material-icons-round">stacked_bar_chart</i>,
+    permission: Constants.ALL_PERMISSIONS.FREE,
+    children: [
+      {
+        label: "مشتریان",
+        link: "/app/report?type=customer",
+        permission: Constants.ALL_PERMISSIONS.FREE,
+      },
+      {
+        label: "پرسنل",
+        link: "/app/report?type=employee",
+        permission: Constants.ALL_PERMISSIONS.FREE,
+      },
+      {
+        label: "خرید و فروش",
+        link: "/app/report?type=invoice",
+        permission: Constants.ALL_PERMISSIONS.FREE,
+      },
+      {
+        label: "صندوق",
+        link: "/app/report?type=cash",
+        permission: Constants.ALL_PERMISSIONS.FREE,
+      },
+    ],
+  },
 ];
 
 function Sidebar({ location }) {
