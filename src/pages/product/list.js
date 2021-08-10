@@ -23,6 +23,7 @@ import { Slide } from "@material-ui/core";
 import TableSkeleton from "../../components/Skeleton";
 import Transform from "./transfer";
 import unitAction from "../../redux/actions/unitAction";
+import FilterComponent from "./filter";
 
 const headCells = [
   {
@@ -49,9 +50,11 @@ export default function MainList() {
   const [orderBy, setOrderBy] = useState("name");
   const [search, setSearch] = useState();
   const [page, setPage] = useState(0);
-  const [pageSize, setPageSize] = useState(Constant.TABLE_PAGE_SIZE);
+  const [pageSize, setPageSize] = useState(10000);
   const [list, setList] = useState([]);
   const [total, setTotal] = useState(0);
+  const [category, setCategory] = useState([]);
+  const [filter, setFilter] = useState();
   const history = useHistory();
 
   const handleRequestSort = (event, property) => {
@@ -75,13 +78,21 @@ export default function MainList() {
 
   const getProductRequest = useApi({
     method: "get",
-    url: `product?${convertParamsToQueryString({
-      page,
-      order,
-      orderBy,
-      pageSize,
-      search,
-    })}`,
+    url: decodeURIComponent(
+      `product?${convertParamsToQueryString({
+        page,
+        order,
+        orderBy,
+        pageSize,
+        search,
+        filter,
+      })}`,
+    ),
+  });
+
+  const getCategoryRequest = useApi({
+    method: "get",
+    url: `product/category`,
   });
 
   const deleteUseRequest = useApi({
@@ -201,15 +212,29 @@ export default function MainList() {
     }
   };
 
+  const onFilter = (data) => {
+    setFilter(`{category:${data.category}}`);
+  };
+
   const getData = async () => {
     const productList = await getProductRequest.execute();
     setList(productList.data);
     setTotal(productList.total);
   };
 
+  const getCategory = async () => {
+    const categoryData = await getCategoryRequest.execute();
+    setCategory(categoryData.data);
+  };
+
   useEffect(() => {
     getData();
-  }, [page, order, pageSize, search]);
+    getCategory();
+  }, [page, order, pageSize, search, filter]);
+
+  useEffect(() => {
+    getCategory();
+  }, []);
 
   return (
     <>
@@ -226,6 +251,12 @@ export default function MainList() {
                     onAdd={
                       hasPermission(Constant.ALL_PERMISSIONS.PRODUCT_EDIT) &&
                       onAdd
+                    }
+                    FilterComponent={
+                      <FilterComponent
+                        onFilter={onFilter}
+                        category={category}
+                      />
                     }
                     handleSearch={onSearch}
                     defaultSearch={search}
@@ -312,13 +343,13 @@ export default function MainList() {
                       </TableBody>
                     </Table>
                   </TableContainer>
-                  <TablePaging
+                  {/* <TablePaging
                     count={total}
                     handleChangePage={handleChangePage}
                     handleChangeRowsPerPage={handleChangeRowsPerPage}
                     page={page}
                     rowsPerPage={pageSize}
-                  />
+                  /> */}
                 </Paper>
               </div>
             )}

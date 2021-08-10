@@ -288,12 +288,7 @@ export default function MainDetail() {
                       دسته بندی
                     </InputLabel>
                     <Select
-                      multiple
                       label="  دسته بندی"
-                      inputProps={{
-                        name: "age",
-                        id: "outlined-age-native-simple",
-                      }}
                       value={selectedCategory}
                       onChange={onChangeCategory}
                     >

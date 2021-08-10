@@ -82,15 +82,17 @@ export default function MainList() {
 
   const getEmployeeRequest = useApi({
     method: "get",
-    url: `employee?${convertParamsToQueryString({
-      page,
-      order,
-      orderBy,
-      pageSize,
-      search,
-      filter,
-      type,
-    })}`,
+    url: decodeURIComponent(
+      `employee?${convertParamsToQueryString({
+        page,
+        order,
+        orderBy,
+        pageSize,
+        search,
+        filter,
+        type,
+      })}`,
+    ),
   });
 
   const deleteUseRequest = useApi({
@@ -138,7 +140,9 @@ export default function MainList() {
   };
 
   const onFilter = (data) => {
-    setFilter(data);
+    console.log(data);
+    const properData = `{name:${data.name},status:${data.status}}`;
+    setFilter(properData);
     setPage(0);
   };
 
