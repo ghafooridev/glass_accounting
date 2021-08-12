@@ -12,6 +12,8 @@ import {
   Grid,
   TextField,
   Chip,
+  Tab,
+  Tabs,
 } from "@material-ui/core";
 import { TimePicker } from "@material-ui/pickers";
 import { useApi } from "../../hooks/useApi";
@@ -92,6 +94,9 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     display: "flex",
   },
+  tab: {
+    borderBottom: `1px solid ${theme.palette.gray.main}`,
+  },
 }));
 
 const headCells = [
@@ -121,6 +126,7 @@ export default function MainDetail() {
   const [selectedTime, setSelectedTime] = useState(moment());
   const [isEditTime, setIsEditTime] = useState(false);
   const [editTime, setEditTime] = useState();
+  const [type, setType] = useState("ALL");
 
   const registerRequest = useApi({
     method: "post",
@@ -133,6 +139,7 @@ export default function MainDetail() {
       `attendance?${convertParamsToQueryString({
         search,
         filter: `{date:${selectedDate._d.toISOString()}}`,
+        type,
       })}`,
     ),
   });
@@ -474,13 +481,17 @@ export default function MainDetail() {
     }
   };
 
+  const onChangeType = (e, value) => {
+    setType(value);
+  };
+
   // useEffect(() => {
   //   console.log(new Date(selectedTime._d).getHours());
   // }, [selectedTime]);
 
   useEffect(() => {
     getData();
-  }, [search, selectedDate]);
+  }, [search, selectedDate, type]);
 
   return (
     <>
@@ -493,7 +504,7 @@ export default function MainDetail() {
               variant="static"
               openTo="date"
               name="date"
-              label="تاریخ شروع قرارداد"
+              // label="تاریخ شروع قرارداد"
               inputVariant="outlined"
               okLabel="تأیید"
               cancelLabel="لغو"
@@ -540,6 +551,20 @@ export default function MainDetail() {
             </Paper>
             <div className={classes.root}>
               <Paper className={classes.paper}>
+                <div className={classes.tab}>
+                  <Tabs
+                    value={type}
+                    onChange={onChangeType}
+                    indicatorColor="primary"
+                    textColor="primary"
+                    centered
+                    variant="fullWidth"
+                  >
+                    <Tab label="کل پرسنل" value="ALL" />
+                    <Tab label="پرسنل کارخانه" value="FACTORY" />
+                    <Tab label="پرسنل انبار" value="DEPOT" />
+                  </Tabs>
+                </div>
                 <TableContainer style={{ padding: "0 10px" }}>
                   <Table
                     className={classes.table}

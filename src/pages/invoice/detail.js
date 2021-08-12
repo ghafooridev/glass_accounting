@@ -493,7 +493,7 @@ export default function MainDetail({ defaultValues }) {
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       {!detailInvoiceRequest.pending ? (
-        <Grid item lg={8} sm={12} className={classes.root}>
+        <Grid item lg={10} sm={12} className={classes.root}>
           <Paper className={classes.paper}>
             <Typography
               className={classes.title}

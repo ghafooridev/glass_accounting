@@ -202,7 +202,7 @@ export default function MainDetail() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <Grid item lg={8} sm={12} className={classes.root}>
+      <Grid item lg={10} sm={12} className={classes.root}>
         <Paper className={classes.paper}>
           <Typography
             className={classes.title}
