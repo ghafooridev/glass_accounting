@@ -140,7 +140,6 @@ export default function MainList() {
   };
 
   const onFilter = (data) => {
-    console.log(data);
     const properData = `{name:${data.name},status:${data.status}}`;
     setFilter(properData);
     setPage(0);

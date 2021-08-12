@@ -77,14 +77,16 @@ export default function MainList() {
 
   const getCustomerRequest = useApi({
     method: "get",
-    url: `customer?${convertParamsToQueryString({
-      page,
-      order,
-      orderBy,
-      pageSize,
-      search,
-      filter,
-    })}`,
+    url: decodeURIComponent(
+      `customer?${convertParamsToQueryString({
+        page,
+        order,
+        orderBy,
+        pageSize,
+        search,
+        filter,
+      })}`,
+    ),
   });
 
   const deleteUseRequest = useApi({
@@ -126,7 +128,8 @@ export default function MainList() {
   };
 
   const onFilter = (data) => {
-    setFilter(data);
+    const properData = `{name:${data.name},status:${data.status}}`;
+    setFilter(properData);
     setPage(0);
   };
 

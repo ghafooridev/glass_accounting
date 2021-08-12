@@ -27,7 +27,7 @@ const Filter = ({ onFilter }) => {
 
   const onSubmit = () => {
     if (typeof onFilter === "function") {
-      onFilter(`{ name: ${filterData}, category: ${driverCategory} }`);
+      onFilter(`{name:${filterData},category:${driverCategory} }`);
     }
   };
 
