@@ -1,7 +1,7 @@
 const Constant = {
   // API_ADDRESS: "http://185.204.197.95:5000/",
   API_ADDRESS: "http://account.toosbloor.ir",
-  TABLE_PAGE_SIZE: 10,
+  TABLE_PAGE_SIZE: 100,
   EMPLOYEE_CONTACRT: [
     { value: "FACTORY", label: "کارخانه" },
     { value: "DEPOT", label: "انبار" },

@@ -13,7 +13,7 @@ function TablePaging(props) {
   return (
     <TablePagination
       style={{ display: "flex" }}
-      rowsPerPageOptions={[10, 25, 50]}
+      rowsPerPageOptions={[100, 200, 300]}
       component="div"
       count={count}
       rowsPerPage={rowsPerPage}

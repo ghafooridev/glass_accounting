@@ -121,6 +121,18 @@ const MainList = () => {
     setTotal(userList.total);
   };
 
+  const onClicKRow = (e, row) => {
+    console.log(e.target.tagName);
+    if (
+      e.target.tagName === "BUTTON" ||
+      e.target.tagName == "LI" ||
+      e.target.tagName == "svg"
+    ) {
+      return;
+    }
+    handleAction(row.id, "edit");
+  };
+
   useEffect(() => {
     getData();
   }, [page, order, search, pageSize]);
@@ -166,6 +178,7 @@ const MainList = () => {
                                 tabIndex={-1}
                                 key={row.id}
                                 style={{ paddingRight: 10 }}
+                                onClick={(e) => onClicKRow(e, row)}
                               >
                                 <TableCell padding="none">
                                   {row.username}
