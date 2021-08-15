@@ -18,6 +18,7 @@ import { useApi } from "../../hooks/useApi";
 import { convertParamsToQueryString } from "../../helpers/utils";
 import styles from "./style";
 import Constant from "../../helpers/constant";
+import { Reorder } from "@material-ui/icons";
 
 const headCells = [
   {
@@ -92,12 +93,23 @@ export default function MainList({ onSelect, onDismiss }) {
     setList(driverList.data);
   };
 
+  const onClicKRow = (e, row) => {
+    if (e.target.tagName === "TD") {
+      const index = selectedDrivers.findIndex((item) => item.id === row.id);
+      if (index >= 0) {
+        onDeselectDriver(row);
+      } else {
+        onSelectDriver(row);
+      }
+    }
+  };
+
   useEffect(() => {
     getData();
   }, [page, order, search, pageSize]);
 
   return (
-    <div style={{ marginTop: -20 }}>
+    <div style={{ marginTop: -20, maxHeight: 300 }}>
       <TableTop handleSearch={onSearch} />
       <TableContainer>
         <Table className={classes.table} size={"medium"}>
@@ -118,6 +130,7 @@ export default function MainList({ onSelect, onDismiss }) {
                   tabIndex={-1}
                   key={row.id}
                   style={{ paddingRight: 10 }}
+                  onClick={(e) => onClicKRow(e, row)}
                 >
                   <TableCell padding="none">{row.firstName}</TableCell>
                   <TableCell padding="none">{row.lastName}</TableCell>
@@ -127,21 +140,15 @@ export default function MainList({ onSelect, onDismiss }) {
                   <TableCell padding="none">
                     {selectedDrivers.includes(row) ? (
                       <Button
+                        disabled
                         variant="contained"
                         className={classes.selectedButton}
-                        onClick={() => onDeselectDriver(row)}
                         endIcon={<i className="material-icons-round">done</i>}
                       >
                         انتخاب شده
                       </Button>
                     ) : (
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={() => onSelectDriver(row)}
-                      >
-                        انتخاب راننده
-                      </Button>
+                      <div></div>
                     )}
                   </TableCell>
                 </TableRow>

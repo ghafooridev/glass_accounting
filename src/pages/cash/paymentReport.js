@@ -118,6 +118,12 @@ const PaymentReport = () => {
     });
   };
 
+  const onClicKRow = (e, row) => {
+    if (e.target.tagName === "TD") {
+      handleDetail(row);
+    }
+  };
+
   const getData = async () => {
     const paymentList = await getPaymentByCashRequest.execute(null, cashId);
     setList(paymentList.data);
@@ -184,6 +190,7 @@ const PaymentReport = () => {
                               tabIndex={-1}
                               key={row.id}
                               style={{ paddingRight: 10 }}
+                              onClick={(e) => onClicKRow(e, row)}
                             >
                               <TableCell padding="none">
                                 {persianNumber(

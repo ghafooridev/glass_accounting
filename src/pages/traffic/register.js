@@ -121,12 +121,13 @@ export default function MainDetail() {
   const classes = useStyles();
   const history = useHistory();
   const [search, setSearch] = useState();
+  const place = getQueryString("type");
   const [list, setList] = useState([]);
   const [selectedDate, setSelectedDate] = useState(moment());
   const [selectedTime, setSelectedTime] = useState(moment());
   const [isEditTime, setIsEditTime] = useState(false);
   const [editTime, setEditTime] = useState();
-  const [type, setType] = useState("ALL");
+  const [type, setType] = useState(place);
 
   const registerRequest = useApi({
     method: "post",
@@ -140,6 +141,7 @@ export default function MainDetail() {
         search,
         filter: `{date:${selectedDate._d.toISOString()}}`,
         type,
+        place,
       })}`,
     ),
   });
@@ -149,10 +151,18 @@ export default function MainDetail() {
     url: `attendance`,
   });
 
-  const onSubmit = async (row, type) => {
-    if (hasPermission(Constant.ALL_PERMISSIONS.ATTENDANCE_EDIT)) {
+  const onSubmit = async (row, sort) => {
+    if (
+      hasPermission(
+        type === "FACTORY1"
+          ? Constant.ALL_PERMISSIONS.ATTENDANCE_FACTORY1_EDIT
+          : type === "FACTORY2"
+          ? Constant.ALL_PERMISSIONS.ATTENDANCE_FACTORY2_EDIT
+          : Constant.ALL_PERMISSIONS.ATTENDANCE_DEPOT_EDIT,
+      )
+    ) {
       if (!checkToday()) {
-        await registerRequest.execute({ employeeId: row.id, type });
+        await registerRequest.execute({ employeeId: row.id, sort });
         getData();
       } else {
       }
@@ -481,10 +491,6 @@ export default function MainDetail() {
     }
   };
 
-  const onChangeType = (e, value) => {
-    setType(value);
-  };
-
   // useEffect(() => {
   //   console.log(new Date(selectedTime._d).getHours());
   // }, [selectedTime]);
@@ -493,9 +499,19 @@ export default function MainDetail() {
     getData();
   }, [search, selectedDate, type]);
 
+  useEffect(() => {
+    setType(place);
+  }, [place]);
+
   return (
     <>
-      {hasPermission(Constant.ALL_PERMISSIONS.ATTENDANCE_LIST) && (
+      {hasPermission(
+        type === "FACTORY1"
+          ? Constant.ALL_PERMISSIONS.ATTENDANCE_FACTORY1_SHOW
+          : type === "FACTORY2"
+          ? Constant.ALL_PERMISSIONS.ATTENDANCE_FACTORY2_SHOW
+          : Constant.ALL_PERMISSIONS.ATTENDANCE_DEPOT_SHOW,
+      ) && (
         <Grid container spacing={3} style={{ alignItems: "baseline" }}>
           <Grid item lg={3} sm={12} className={classes.dateTime}>
             <DatePicker
@@ -551,20 +567,6 @@ export default function MainDetail() {
             </Paper>
             <div className={classes.root}>
               <Paper className={classes.paper}>
-                <div className={classes.tab}>
-                  <Tabs
-                    value={type}
-                    onChange={onChangeType}
-                    indicatorColor="primary"
-                    textColor="primary"
-                    centered
-                    variant="fullWidth"
-                  >
-                    <Tab label="کل پرسنل" value="ALL" />
-                    <Tab label="پرسنل کارخانه" value="FACTORY" />
-                    <Tab label="پرسنل انبار" value="DEPOT" />
-                  </Tabs>
-                </div>
                 <TableContainer style={{ padding: "0 10px" }}>
                   <Table
                     className={classes.table}

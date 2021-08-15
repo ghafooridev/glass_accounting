@@ -10,6 +10,8 @@ import moment from "moment";
 import dialogAction from "../../redux/actions/dialogAction";
 import PrePayment from "../payment/prePayment";
 import Product from "./productFastInvoice";
+import Constant from "../../helpers/constant";
+import PersonSelector from "../payment/personSelector";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -45,6 +47,8 @@ export default function MainDetail() {
   const [selectedDate, handleDateChange] = useState(moment());
   const [products, setProducts] = useState([]);
   const [invoicePerson, setInvoicePerson] = useState(" ");
+  const [selectedPerson, setSelectedPerson] = useState();
+
   const [payments, setPayments] = useState({
     cashes: [],
     banks: [],
@@ -188,6 +192,33 @@ export default function MainDetail() {
 
   const onChangeInvoicePerson = (e) => {
     setInvoicePerson(e.target.value);
+    setSelectedPerson();
+  };
+
+  const onSelectPerson = (person) => {
+    setSelectedPerson(person);
+    setInvoicePerson(true ? `${person.firstName} ${person.lastName}` : "");
+    onDismissPerson();
+  };
+
+  const onDismissPerson = () => {
+    dialogAction.hide({ name: "person" });
+  };
+
+  const onShowDialog = () => {
+    dialogAction.show({
+      component: (
+        <PersonSelector
+          onSelect={onSelectPerson}
+          onDismiss={onDismissPerson}
+          filter={Constant.PERSON_TYPE.CUSTOMER}
+        />
+      ),
+      name: "person",
+      size: "8",
+      confirm: false,
+      disableCloseButton: false,
+    });
   };
 
   useEffect(() => {
@@ -216,6 +247,25 @@ export default function MainDetail() {
           <Grid container spacing={3}>
             <Fragment>
               <Grid item lg={6} xs={12} style={{ display: "flex" }}>
+                <Button
+                  style={{ marginLeft: 10, width: "30%" }}
+                  variant="contained"
+                  color="primary"
+                  onClick={onShowDialog}
+                >
+                  انتخاب مشتری
+                </Button>
+
+                <TextField
+                  variant="outlined"
+                  name={"personName"}
+                  onChange={onChangeInvoicePerson}
+                  value={invoicePerson}
+                  style={{ width: "70%" }}
+                  size="small"
+                />
+              </Grid>
+              {/* <Grid item lg={6} xs={12} style={{ display: "flex" }}>
                 <TextField
                   label="نام مشتری"
                   variant="outlined"
@@ -225,7 +275,7 @@ export default function MainDetail() {
                   fullWidth
                   size="small"
                 />
-              </Grid>
+              </Grid> */}
               <Grid item lg={6} xs={12} className={classes.datePicker}>
                 <DatePicker
                   autoOk

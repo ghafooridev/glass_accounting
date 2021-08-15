@@ -11,8 +11,12 @@ const personType = [
   { label: "طلبکار", value: Constant.PERSON_STATUS.CREDITOR },
 ];
 
-const Filter = ({ onFilter }) => {
-  const [filterData, setFilterData] = useState({ name: "", status: "" });
+const Filter = ({ onFilter, category }) => {
+  const [filterData, setFilterData] = useState({
+    name: "",
+    status: "",
+    category: "",
+  });
 
   const handleChange = (prop) => (event) => {
     setFilterData({ ...filterData, [prop]: event.target.value });
@@ -47,6 +51,23 @@ const Filter = ({ onFilter }) => {
           size="small"
         >
           {personType.map((option) => (
+            <MenuItem key={option.value} value={option.value}>
+              {option.label}
+            </MenuItem>
+          ))}
+        </TextField>
+      </Grid>
+      <Grid item lg={3} xs={12}>
+        <TextField
+          select
+          label="دسته بندی"
+          onChange={handleChange("category")}
+          value={filterData.category}
+          variant="outlined"
+          fullWidth
+          size="small"
+        >
+          {category.map((option) => (
             <MenuItem key={option.value} value={option.value}>
               {option.label}
             </MenuItem>

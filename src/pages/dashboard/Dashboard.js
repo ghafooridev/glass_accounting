@@ -279,23 +279,6 @@ export default function Dashboard(props) {
         {hasPermission(Constant.ALL_PERMISSIONS.INVOICE_EDIT) && (
           <Grid item md={3} xs={6}>
             <Paper
-              style={{ backgroundColor: "#b8e4c4" }}
-              icon="bolt"
-              onClick={() => {
-                onClickPaper("fast_invoice?type=SELL");
-              }}
-            >
-              <div className={classes.paperTitle}>
-                <Typography variant="h3" style={{ color: "#137333" }}>
-                  فاکتور فروش سریع
-                </Typography>
-              </div>
-            </Paper>
-          </Grid>
-        )}
-        {hasPermission(Constant.ALL_PERMISSIONS.INVOICE_EDIT) && (
-          <Grid item md={3} xs={6}>
-            <Paper
               style={{ backgroundColor: "#f9d5d1" }}
               icon="bolt"
               onClick={() => {

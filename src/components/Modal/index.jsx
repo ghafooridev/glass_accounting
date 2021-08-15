@@ -9,7 +9,12 @@ const Modal = function () {
   const { names } = useSelector((state) => state.dialog);
 
   const onClose = function (item) {
-    dialogAction.hide({ name: "delete" });
+    console.log(item);
+    if (item) {
+      dialogAction.hide({ name: item.name });
+    } else {
+      dialogAction.hide({ name: "delete" });
+    }
   };
 
   return (
@@ -42,15 +47,15 @@ const Modal = function () {
           >
             <Grid item xs={12} className={classes.title}>
               <Typography variant="h6">{item.title}</Typography>
-              {/* {!item.disableCloseButton && (
-              <i
-                className="material-icons"
-                onClick={() => onClose(item)}
-                style={{ cursor: "pointer" }}
-              >
-                clear
-              </i>
-            )} */}
+              {!item.disableCloseButton && (
+                <i
+                  className="material-icons"
+                  onClick={() => onClose(item)}
+                  style={{ cursor: "pointer" }}
+                >
+                  clear
+                </i>
+              )}
             </Grid>
             {!item.confirm && (
               <Grid item xs={12} className={classes.container}>

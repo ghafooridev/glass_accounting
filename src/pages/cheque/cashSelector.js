@@ -78,6 +78,12 @@ export default function CashSelector({ onSelect, onDismiss, chequeId }) {
     onSelect(id, chequeId);
   };
 
+  const onClicKRow = (e, row) => {
+    if (e.target.tagName === "TD") {
+      handleAction(row.id);
+    }
+  };
+
   const getData = async () => {
     const cashList = await getCashRequest.execute();
     setList(cashList.data);
@@ -113,6 +119,7 @@ export default function CashSelector({ onSelect, onDismiss, chequeId }) {
                   tabIndex={-1}
                   key={row.id}
                   style={{ paddingRight: 10 }}
+                  onClick={(e) => onClicKRow(e, row)}
                 >
                   <TableCell padding="none">{row.name}</TableCell>
 

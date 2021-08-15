@@ -50,7 +50,7 @@ const TableTop = (props) => {
     defaultSearch,
   } = props;
   const [showSearchText, setShowSearchText] = useState(!!defaultSearch);
-  const [showFilterBox, setShowFilterBox] = useState(false);
+  const [showFilterBox, setShowFilterBox] = useState(true);
   const [searchText, setSearchText] = useState(defaultSearch);
 
   const onChangeSearch = (event) => {

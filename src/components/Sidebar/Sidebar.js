@@ -139,9 +139,28 @@ const structure = [
   {
     id: 14,
     label: " حضور و غیاب",
-    link: "/app/traffic",
     icon: <i className="material-icons-round">transfer_within_a_station</i>,
-    permission: Constants.ALL_PERMISSIONS.ATTENDANCE_SHOW,
+    permission:
+      Constants.ALL_PERMISSIONS.ATTENDANCE_FACTORY1_SHOW ||
+      Constants.ALL_PERMISSIONS.ATTENDANCE_FACTORY2_SHOW ||
+      Constants.ALL_PERMISSIONS.ATTENDANCE_DEPOT_SHOW,
+    children: [
+      {
+        label: "1کارخانه",
+        link: "/app/traffic?type=FACTORY1",
+        permission: Constants.ALL_PERMISSIONS.ATTENDANCE_FACTORY1_SHOW,
+      },
+      {
+        label: "2کارخانه",
+        link: "/app/traffic?type=FACTORY2",
+        permission: Constants.ALL_PERMISSIONS.ATTENDANCE_FACTORY2_SHOW,
+      },
+      {
+        label: "انبار",
+        link: "/app/traffic?type=DEPOT",
+        permission: Constants.ALL_PERMISSIONS.PAYMENT_SHOW,
+      },
+    ],
   },
 
   {

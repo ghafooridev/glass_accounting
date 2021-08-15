@@ -212,6 +212,12 @@ export default function MainList() {
     }
   };
 
+  const onClicKRow = (e, row) => {
+    if (e.target.tagName === "TD") {
+      handleAction(row, "edit");
+    }
+  };
+
   const onFilter = (data) => {
     setFilter(`{category:${data.category}}`);
   };
@@ -283,6 +289,7 @@ export default function MainList() {
                               tabIndex={-1}
                               key={row.id}
                               style={{ paddingRight: 10 }}
+                              onClick={(e) => onClicKRow(e, row)}
                             >
                               <TableCell padding="none">{row.name}</TableCell>
                               <TableCell padding="none">

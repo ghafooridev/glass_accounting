@@ -104,6 +104,12 @@ const AccountsNumber = () => {
     });
   };
 
+  const onClicKRow = (e, row) => {
+    if (e.target.tagName === "TD") {
+      handleDetail(row);
+    }
+  };
+
   const getData = async () => {
     const cardList = await getCardRequest.execute();
     setList(cardList.data);
@@ -171,6 +177,7 @@ const AccountsNumber = () => {
                               tabIndex={-1}
                               key={row.id}
                               style={{ paddingRight: 10 }}
+                              onClick={(e) => onClicKRow(e, row)}
                             >
                               <TableCell padding="none">
                                 {row.personName}

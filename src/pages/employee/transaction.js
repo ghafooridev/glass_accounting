@@ -119,6 +119,12 @@ const MainList = () => {
     }
   };
 
+  const onClicKRow = (e, row) => {
+    if (e.target.tagName === "TD") {
+      handleAction(row, "edit");
+    }
+  };
+
   const getTableTitle = () => {
     if (list.length)
       return (
@@ -181,6 +187,7 @@ const MainList = () => {
                                     ? "#ffe8e8"
                                     : "#b1eed9",
                               }}
+                              onClick={(e) => onClicKRow(e, row)}
                             >
                               <TableCell padding="none">
                                 {persianNumber(

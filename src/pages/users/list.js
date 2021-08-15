@@ -122,15 +122,9 @@ const MainList = () => {
   };
 
   const onClicKRow = (e, row) => {
-    console.log(e.target.tagName);
-    if (
-      e.target.tagName === "BUTTON" ||
-      e.target.tagName == "LI" ||
-      e.target.tagName == "svg"
-    ) {
-      return;
+    if (e.target.tagName === "TD") {
+      handleAction(row.id, "edit");
     }
-    handleAction(row.id, "edit");
   };
 
   useEffect(() => {

@@ -69,8 +69,14 @@ const Constant = {
     BUY: "خرید",
   },
   ALL_PERMISSIONS: {
-    ATTENDANCE_SHOW: "ATTENDANCE_SHOW",
-    ATTENDANCE_EDIT: "ATTENDANCE_EDIT",
+    ATTENDANCE_DEPOT_SHOW: "ATTENDANCE_DEPOT_SHOW",
+    ATTENDANCE_FACTORY1_SHOW: "ATTENDANCE_FACTORY1_SHOW",
+    ATTENDANCE_FACTORY2_SHOW: "ATTENDANCE_FACTORY2_SHOW",
+
+    ATTENDANCE_DEPOT_EDIT: "ATTENDANCE_DEPOT_EDIT",
+    ATTENDANCE_FACTORY1_EDIT: "ATTENDANCE_FACTORY1_EDIT",
+    ATTENDANCE_FACTORY2_EDIT: "ATTENDANCE_FACTORY2_EDIT",
+
     ATTENDANCE_ADMIN: "ATTENDANCE_ADMIN",
     USER_SHOW: "USER_SHOW",
     USER_EDIT: "USER_EDIT",
@@ -106,8 +112,16 @@ const Constant = {
   },
   PERMISSIONS: [
     { value: "ATTENDANCE_ADMIN", label: "ویرایش حضور و غیاب" },
-    { value: "ATTENDANCE_SHOW", label: "لیست حضور و غیاب  " },
-    { value: "ATTENDANCE_EDIT", label: "ثبت حضور و غیاب " },
+
+    { value: "ATTENDANCE_FACTORY1_EDIT", label: "1 ثبت حضور و غیاب کارخانه " },
+    {
+      value: "ATTENDANCE_FACTORY1_SHOW",
+      label: "1 لیست حضور و غیاب کارخانه  ",
+    },
+    { value: "ATTENDANCE_FACTORY2_EDIT", label: "2 ثبت حضور و غیاب کارخانه " },
+    { value: "ATTENDANCE_FACTORY2_SHOW", label: "2لیست حضور و غیاب کارخانه  " },
+    { value: "ATTENDANCE_DEPOT_SHOW", label: "لیست حضور و غیاب  انبار" },
+    { value: "ATTENDANCE_DEPOT_EDIT", label: "ثبت حضور و غیاب انبار " },
     { value: "PAYMENT_SHOW", label: "لیست پرداختی و دریافتی" },
     { value: "PAYMENT_EDIT", label: "ویرایش پرداختی و دریافتی " },
     { value: "INVOICE_SHOW", label: "لیست فاکتور ها" },

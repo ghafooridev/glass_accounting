@@ -52,6 +52,7 @@ export default function MainList() {
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(Constant.TABLE_PAGE_SIZE);
   const [list, setList] = useState([]);
+  const [category, setCategory] = useState([]);
   const [filter, setFilter] = useState();
   const history = useHistory();
   const [total, setTotal] = useState(0);
@@ -94,6 +95,11 @@ export default function MainList() {
     url: `customer`,
   });
 
+  const GetCustomerCategoryRequest = useApi({
+    method: "get",
+    url: "customer/category",
+  });
+
   const handleAction = (row, type) => {
     const types = {
       edit: () => {
@@ -122,13 +128,19 @@ export default function MainList() {
     }
   };
 
+  const onClicKRow = (e, row) => {
+    if (e.target.tagName === "TD") {
+      handleAction(row, "edit");
+    }
+  };
+
   const onSearch = (value) => {
     setSearch(value);
     setPage(0);
   };
 
   const onFilter = (data) => {
-    const properData = `{name:${data.name},status:${data.status}}`;
+    const properData = `{name:${data.name},status:${data.status},category:${data.category}}`;
     setFilter(properData);
     setPage(0);
   };
@@ -139,9 +151,18 @@ export default function MainList() {
     setTotal(customerList.total);
   };
 
+  const getCategory = async () => {
+    const categories = await GetCustomerCategoryRequest.execute();
+    setCategory(categories.data);
+  };
+
   useEffect(() => {
     getData();
   }, [page, order, search, pageSize, filter]);
+
+  useEffect(() => {
+    getCategory();
+  }, []);
 
   return (
     <>
@@ -159,7 +180,12 @@ export default function MainList() {
                       hasPermission(Constant.ALL_PERMISSIONS.CUSTOMER_EDIT) &&
                       onAdd
                     }
-                    FilterComponent={<FilterComponent onFilter={onFilter} />}
+                    FilterComponent={
+                      <FilterComponent
+                        onFilter={onFilter}
+                        category={category}
+                      />
+                    }
                     handleSearch={onSearch}
                     defaultSearch={search}
                     addPermission={hasPermission(
@@ -189,6 +215,7 @@ export default function MainList() {
                               tabIndex={-1}
                               key={row.id}
                               style={{ paddingRight: 10 }}
+                              onClick={(e) => onClicKRow(e, row)}
                             >
                               <TableCell padding="none">
                                 {row.firstName}

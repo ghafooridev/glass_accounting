@@ -9,6 +9,7 @@ import {
   Chip,
   Button,
   Grid,
+  TextField,
 } from "@material-ui/core";
 import clsx from "clsx";
 import TableTop from "../../components/Table/TableTop";
@@ -27,13 +28,10 @@ const headCellsCustomer = [
   { id: "lastName", label: "نام خانوادگی" },
 
   { id: "status", label: "وضعیت" },
-  { id: "action" },
 ];
 const headCellsPerson = [
   { id: "lastName", label: "نام و نام خانوادگی" },
   { id: "type", label: "نوع شخص" },
-
-  { id: "action" },
 ];
 
 const PERSON_TYPE = {
@@ -66,10 +64,6 @@ export default function MainList({ onSelect, onDismiss, filter }) {
     setPage(0);
   };
 
-  const onSelectPerson = (data) => {
-    onSelect(data);
-  };
-
   const getCustomerRequest = useApi({
     method: "get",
     url: `${filter}?${convertParamsToQueryString({
@@ -81,8 +75,8 @@ export default function MainList({ onSelect, onDismiss, filter }) {
     })}`,
   });
 
-  const onSearch = (value) => {
-    setSearch(value);
+  const onChangeSearch = (e) => {
+    setSearch(e.target.value);
   };
 
   const getData = async () => {
@@ -90,13 +84,36 @@ export default function MainList({ onSelect, onDismiss, filter }) {
     setList(customerList.data);
   };
 
+  const onClicKRow = (e, row) => {
+    if (e.target.tagName === "TD") {
+      onSelect(row);
+    }
+  };
+
   useEffect(() => {
     getData();
   }, [page, order, search, pageSize]);
 
   return (
-    <div style={{ marginTop: -20 }}>
-      <TableTop handleSearch={onSearch} />
+    <div style={{ marginTop: -20, maxHeight: 300 }}>
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <Typography
+          className={classes.title}
+          variant="h6"
+          id="tableTitle"
+          component="div"
+        >
+          لیست افراد
+        </Typography>
+
+        <TextField
+          variant="outlined"
+          label=" جستجو"
+          onChange={onChangeSearch}
+          value={search}
+          size="small"
+        />
+      </div>
       <TableContainer>
         <Table className={classes.table} size={"medium"}>
           <TableHeader
@@ -118,6 +135,7 @@ export default function MainList({ onSelect, onDismiss, filter }) {
                   tabIndex={-1}
                   key={filter === "customer" ? row.id : row.value}
                   style={{ paddingRight: 10 }}
+                  onClick={(e) => onClicKRow(e, row)}
                 >
                   {filter === "person" && (
                     <TableCell padding="none">{row.label}</TableCell>
@@ -143,16 +161,6 @@ export default function MainList({ onSelect, onDismiss, filter }) {
                       />
                     </TableCell>
                   )}
-
-                  <TableCell padding="none">
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={() => onSelectPerson(row)}
-                    >
-                      انتخاب شخص
-                    </Button>
-                  </TableCell>
                 </TableRow>
               );
             })}
@@ -175,16 +183,6 @@ export default function MainList({ onSelect, onDismiss, filter }) {
         page={page}
         rowsPerPage={pageSize}
       />
-
-      <Grid
-        item
-        xs={12}
-        style={{ display: "flex", justifyContent: "flex-end" }}
-      >
-        <Button variant="contained" color="secondary" onClick={onDismiss}>
-          انصراف
-        </Button>
-      </Grid>
     </div>
   );
 }

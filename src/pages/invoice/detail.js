@@ -178,7 +178,6 @@ export default function MainDetail({ defaultValues }) {
 
   const onShowDialog = () => {
     dialogAction.show({
-      title: "انتخاب شخص",
       component: (
         <PersonSelector
           onSelect={onSelectPerson}

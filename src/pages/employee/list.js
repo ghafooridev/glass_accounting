@@ -134,6 +134,12 @@ export default function MainList() {
     }
   };
 
+  const onClicKRow = (e, row) => {
+    if (e.target.tagName === "TD") {
+      handleAction(row, "edit");
+    }
+  };
+
   const onSearch = (value) => {
     setSearch(value);
     setPage(0);
@@ -217,6 +223,7 @@ export default function MainList() {
                               tabIndex={-1}
                               key={row.id}
                               style={{ paddingRight: 10 }}
+                              onClick={(e) => onClicKRow(e, row)}
                             >
                               <TableCell padding="none">
                                 {row.firstName}
