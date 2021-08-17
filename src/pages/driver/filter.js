@@ -3,7 +3,7 @@ import { Grid, TextField, MenuItem, Button, Divider } from "@material-ui/core";
 import { useApi } from "../../hooks/useApi";
 
 const Filter = ({ onFilter }) => {
-  const [filterData, setFilterData] = useState();
+  const [filterData, setFilterData] = useState("");
   const [category, setCategory] = useState([]);
   const [driverCategory, setDriverCategory] = useState(1);
 
@@ -27,7 +27,7 @@ const Filter = ({ onFilter }) => {
 
   const onSubmit = () => {
     if (typeof onFilter === "function") {
-      onFilter(`{name:${filterData},category:${driverCategory} }`);
+      onFilter(`{name:${filterData},category:${driverCategory}}`);
     }
   };
 

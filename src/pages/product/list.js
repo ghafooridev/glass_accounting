@@ -350,13 +350,13 @@ export default function MainList() {
                       </TableBody>
                     </Table>
                   </TableContainer>
-                  {/* <TablePaging
+                  <TablePaging
                     count={total}
                     handleChangePage={handleChangePage}
                     handleChangeRowsPerPage={handleChangeRowsPerPage}
                     page={page}
                     rowsPerPage={pageSize}
-                  /> */}
+                  />
                 </Paper>
               </div>
             )}
