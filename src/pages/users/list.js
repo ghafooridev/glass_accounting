@@ -122,7 +122,6 @@ const MainList = () => {
   };
 
   const onClicKRow = (e, row) => {
-    console.log(e.target.tagName);
     if (
       e.target.tagName === "BUTTON" ||
       e.target.tagName == "LI" ||
