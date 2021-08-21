@@ -55,6 +55,9 @@ const Filter = ({ onFilter, category }) => {
               {option.label}
             </MenuItem>
           ))}
+          <MenuItem key={"ALL"} value={"ALL"}>
+            همه وضعیت ها
+          </MenuItem>
         </TextField>
       </Grid>
       <Grid item lg={3} xs={12}>
@@ -72,6 +75,9 @@ const Filter = ({ onFilter, category }) => {
               {option.label}
             </MenuItem>
           ))}
+          <MenuItem key={"ALL"} value={"ALL"}>
+            همه دسته بندی ها
+          </MenuItem>
         </TextField>
       </Grid>
       <Grid item lg={3} xs={12}>

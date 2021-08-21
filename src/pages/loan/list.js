@@ -69,7 +69,7 @@ const MainList = () => {
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setPageSize(parseInt(event.target.value, Constant.TABLE_PAGE_SIZE));
+    setPageSize(event.target.value);
     setPage(0);
   };
 
@@ -131,7 +131,7 @@ const MainList = () => {
                   <TableTop
                     title="لیست وام ها"
                     onAdd={onAdd}
-                    handleSearch={onSearch}
+                    // handleSearch={onSearch}
                     defaultSearch={search}
                   />
 

@@ -55,10 +55,9 @@ export default function CashSelector({ onSelect, onDismiss, chequeId }) {
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setPageSize(parseInt(event.target.value, Constant.TABLE_PAGE_SIZE));
+    setPageSize(event.target.value);
     setPage(0);
   };
-
   const onSearch = (value) => {
     setSearch(value);
   };
@@ -96,7 +95,9 @@ export default function CashSelector({ onSelect, onDismiss, chequeId }) {
 
   return (
     <div style={{ marginTop: -50 }}>
-      <TableTop handleSearch={onSearch} />
+      <TableTop
+      // handleSearch={onSearch}
+      />
       <TableContainer style={{ padding: "0 10px" }}>
         <Table
           className={classes.table}

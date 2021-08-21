@@ -38,7 +38,7 @@ const headCells = [
     id: "mobile",
     label: "موبایل",
   },
-  { id: "phone", label: "تلفن" },
+  { id: "cardNumber", label: "شماره کارت" },
   { id: "remaining", label: "مانده حساب" },
   { id: "status", label: "وضعیت" },
   { id: "action" },
@@ -68,7 +68,7 @@ export default function MainList() {
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setPageSize(parseInt(event.target.value, Constant.TABLE_PAGE_SIZE));
+    setPageSize(event.target.value);
     setPage(0);
   };
 
@@ -186,7 +186,7 @@ export default function MainList() {
                         category={category}
                       />
                     }
-                    handleSearch={onSearch}
+                    // handleSearch={onSearch}
                     defaultSearch={search}
                     addPermission={hasPermission(
                       Constant.ALL_PERMISSIONS.CUSTOMER_EDIT,
@@ -227,7 +227,7 @@ export default function MainList() {
                                 {persianNumber(row.mobile)}
                               </TableCell>
                               <TableCell padding="none">
-                                {persianNumber(row.phone)}
+                                {persianNumber(row.accountCardNumber)}
                               </TableCell>
                               <TableCell padding="none">
                                 {persianNumber(row.accountRemaining)?.replace(

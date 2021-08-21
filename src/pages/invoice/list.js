@@ -79,7 +79,7 @@ const MainList = () => {
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setPageSize(parseInt(event.target.value, Constant.TABLE_PAGE_SIZE));
+    setPageSize(event.target.value);
     setPage(0);
   };
 
@@ -182,7 +182,7 @@ const MainList = () => {
                   <TableTop
                     title={getTableTitle()}
                     onAdd={type !== "ALL" && onAdd}
-                    handleSearch={onSearch}
+                    // handleSearch={onSearch}
                     defaultSearch={search}
                     FilterComponent={<FilterComponent onFilter={onFilter} />}
                   />

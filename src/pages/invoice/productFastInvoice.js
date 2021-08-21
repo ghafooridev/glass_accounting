@@ -125,7 +125,7 @@ const ProductList = React.forwardRef((props, ref) => {
         </Grid>
       </Grid>
 
-      <TableContainer style={{ height: 200, overflow: "auto" }}>
+      <TableContainer style={{ height: 600, overflow: "auto" }}>
         <Table className={classes.table} size={"medium"}>
           <TableHeader classes={classes} headCells={headCells} />
 

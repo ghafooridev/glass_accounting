@@ -68,7 +68,7 @@ const AccountsNumber = () => {
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setPageSize(parseInt(event.target.value, Constant.TABLE_PAGE_SIZE));
+    setPageSize(event.target.value);
     setPage(0);
   };
 
@@ -136,7 +136,7 @@ const AccountsNumber = () => {
                 <Paper className={classes.paper}>
                   <TableTop
                     title="لیست حساب های بانکی"
-                    handleSearch={onSearch}
+                    // handleSearch={onSearch}
                     defaultSearch={search}
                   />
                   <div className={classes.tab}>

@@ -63,7 +63,7 @@ export default function MainList({ onDismiss }) {
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setPageSize(parseInt(event.target.value, Constant.TABLE_PAGE_SIZE));
+    setPageSize(event.target.value);
     setPage(0);
   };
 
@@ -93,7 +93,9 @@ export default function MainList({ onDismiss }) {
 
   return (
     <div style={{ marginTop: -50 }}>
-      <TableTop handleSearch={onSearch} />
+      <TableTop
+      // handleSearch={onSearch}
+      />
       <TableContainer>
         <Table className={classes.table} size={"medium"}>
           <TableHeader

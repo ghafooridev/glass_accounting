@@ -80,7 +80,7 @@ export default function ProductList({
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setPageSize(parseInt(event.target.value, Constant.TABLE_PAGE_SIZE));
+    setPageSize(event.target.value);
     setPage(0);
   };
 
@@ -148,6 +148,12 @@ export default function ProductList({
     return [];
   };
 
+  const onClicKRow = (e, row) => {
+    if (e.target.tagName === "TD") {
+      onSelectProduct(row);
+    }
+  };
+
   const onSelectProduct = async (data) => {
     setSelectedProduct(data);
     if (customerId === 1) {
@@ -211,7 +217,7 @@ export default function ProductList({
   }, []);
 
   return (
-    <>
+    <div style={{ marginTop: -20, maxHeight: 500 }}>
       <form>
         <Grid container spacing={3}>
           <Grid item lg={6} xs={12}>
@@ -318,7 +324,10 @@ export default function ProductList({
         </Grid>
       </Grid>
       <TableContainer>
-        <TableTop handleSearch={onSearch} defaultSearch={search} />
+        <TableTop
+          // handleSearch={onSearch}
+          defaultSearch={search}
+        />
 
         <Table className={classes.table} size={"medium"}>
           <TableHeader
@@ -338,6 +347,7 @@ export default function ProductList({
                   tabIndex={-1}
                   key={row.id}
                   style={{ paddingRight: 10 }}
+                  onClick={(e) => onClicKRow(e, row)}
                 >
                   <TableCell padding="none">{row.name}</TableCell>
                   <TableCell padding="none">
@@ -399,6 +409,6 @@ export default function ProductList({
           انصراف
         </Button>
       </Grid>
-    </>
+    </div>
   );
 }

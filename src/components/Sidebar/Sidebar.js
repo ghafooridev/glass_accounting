@@ -146,19 +146,19 @@ const structure = [
       Constants.ALL_PERMISSIONS.ATTENDANCE_DEPOT_SHOW,
     children: [
       {
-        label: "1کارخانه",
+        label: "کارخانه یک",
         link: "/app/traffic?type=FACTORY1",
         permission: Constants.ALL_PERMISSIONS.ATTENDANCE_FACTORY1_SHOW,
       },
       {
-        label: "2کارخانه",
+        label: "کارخانه دو",
         link: "/app/traffic?type=FACTORY2",
         permission: Constants.ALL_PERMISSIONS.ATTENDANCE_FACTORY2_SHOW,
       },
       {
         label: "انبار",
         link: "/app/traffic?type=DEPOT",
-        permission: Constants.ALL_PERMISSIONS.PAYMENT_SHOW,
+        permission: Constants.ALL_PERMISSIONS.ATTENDANCE_DEPOT_SHOW,
       },
     ],
   },

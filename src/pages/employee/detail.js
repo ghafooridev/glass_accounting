@@ -75,7 +75,7 @@ export default function MainDetail() {
   const [detail, setDetail] = useState({});
   const [accounts, setAccounts] = useState([]);
   const [selectedGender, setSelectedGender] = useState("M");
-  const [selectedContract, setSelectedContract] = useState("FACTORY");
+  const [selectedContract, setSelectedContract] = useState("FACTORY1");
   const { control, handleSubmit, errors, reset } = useForm();
 
   const addEmployeeRequest = useApi({

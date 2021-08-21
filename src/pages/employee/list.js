@@ -47,7 +47,8 @@ const headCells = [
 export default function MainList() {
   const CONTERACT_TYPE = {
     DEPOT: "انبار",
-    FACTORY: "کارخانه",
+    FACTORY1: "کارخانه یک",
+    FACTORY2: "کارخانه دو",
   };
   const classes = styles();
   const [order, setOrder] = useState("asc");
@@ -72,7 +73,7 @@ export default function MainList() {
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setPageSize(parseInt(event.target.value, Constant.TABLE_PAGE_SIZE));
+    setPageSize(event.target.value);
     setPage(0);
   };
 
@@ -183,7 +184,7 @@ export default function MainList() {
                       onAdd
                     }
                     FilterComponent={<FilterComponent onFilter={onFilter} />}
-                    handleSearch={onSearch}
+                    // handleSearch={onSearch}
                     defaultSearch={search}
                   />
                   <div className={classes.tab}>
@@ -196,7 +197,9 @@ export default function MainList() {
                       variant="fullWidth"
                     >
                       <Tab label="کل پرسنل" value="ALL" />
-                      <Tab label="پرسنل کارخانه" value="FACTORY" />
+
+                      <Tab label="پرسنل کارخانه یک" value="FACTORY1" />
+                      <Tab label="پرسنل کارخانه دو" value="FACTORY2" />
                       <Tab label="پرسنل انبار" value="DEPOT" />
                     </Tabs>
                   </div>

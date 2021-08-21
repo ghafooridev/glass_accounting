@@ -51,6 +51,9 @@ const Filter = ({ onFilter }) => {
               {option.label}
             </MenuItem>
           ))}
+          <MenuItem key={"ALL"} value={"ALL"}>
+            همه وضعیت ها
+          </MenuItem>
         </TextField>
       </Grid>
       <Grid item lg={3} xs={12}>

@@ -141,7 +141,6 @@ export default function MainDetail() {
         search,
         filter: `{date:${selectedDate._d.toISOString()}}`,
         type,
-        place,
       })}`,
     ),
   });

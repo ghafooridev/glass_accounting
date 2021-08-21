@@ -63,6 +63,9 @@ const Filter = ({ onFilter }) => {
                 {option.label}
               </MenuItem>
             ))}
+            <MenuItem key={"ALL"} value={"ALL"}>
+              همه دسته بندی ها
+            </MenuItem>
           </TextField>
         )}
       </Grid>

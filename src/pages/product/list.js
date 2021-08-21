@@ -68,7 +68,7 @@ export default function MainList() {
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setPageSize(parseInt(event.target.value, Constant.TABLE_PAGE_SIZE));
+    setPageSize(event.target.value);
     setPage(0);
   };
 
@@ -264,7 +264,7 @@ export default function MainList() {
                         category={category}
                       />
                     }
-                    handleSearch={onSearch}
+                    // handleSearch={onSearch}
                     defaultSearch={search}
                   />
                   <TableContainer style={{ padding: "0 10px" }}>

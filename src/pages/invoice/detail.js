@@ -339,7 +339,7 @@ export default function MainDetail({ defaultValues }) {
       name: "pay",
       size: "6",
       confirm: false,
-      disableCloseButton: true,
+      disableCloseButton: false,
     });
   };
 
@@ -356,7 +356,7 @@ export default function MainDetail({ defaultValues }) {
       name: "driver",
       size: "8",
       confirm: false,
-      disableCloseButton: true,
+      disableCloseButton: false,
     });
   };
 
@@ -399,7 +399,7 @@ export default function MainDetail({ defaultValues }) {
       name: "product",
       size: "6",
       confirm: false,
-      disableCloseButton: true,
+      disableCloseButton: false,
     });
   };
 

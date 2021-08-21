@@ -81,7 +81,7 @@ export default function MainList() {
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setPageSize(parseInt(event.target.value, 10));
+    setPageSize(event.target.value);
     setPage(0);
   };
 

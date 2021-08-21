@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Grid, TextField, MenuItem, Button, Divider } from "@material-ui/core";
 
 const Filter = ({ onFilter, category }) => {
@@ -32,6 +32,9 @@ const Filter = ({ onFilter, category }) => {
               {option.label}
             </MenuItem>
           ))}
+          <MenuItem key={"ALL"} value={"ALL"}>
+            همه دسته بندی ها
+          </MenuItem>
         </TextField>
       </Grid>
       <Grid item lg={3} xs={12}>
