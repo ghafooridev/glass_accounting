@@ -9,6 +9,7 @@ import {
   Paper,
   Typography,
   Chip,
+  Button,
 } from "@material-ui/core";
 import clsx from "clsx";
 import TableRowMenu from "../../components/Table/TableRowMenu";
@@ -94,33 +95,35 @@ export default function MainList() {
     url: `customer`,
   });
 
-  const handleAction = (row, type) => {
-    const types = {
-      edit: () => {
-        history.push(`/app/customer-detail?id=${row.id}`);
-      },
-      delete: () => {
-        DialogActions.show({
-          confirm: true,
-          title: "ایا از حذف این رکورد مطمئن هستید ؟",
-          onAction: async () => {
-            await deleteUseRequest.execute(null, row.id);
-            setList(list.filter((item) => item.id !== row.id));
-            DialogActions.hide({ name: "delete" });
-          },
-          name: "delete",
-          size: "6",
-          disableCloseButton: false,
-        });
-      },
-      transaction: () => {
-        history.push(`/app/person-transaction?id=${row.id}&type=employee`);
-      },
-    };
-    if (types[type]) {
-      types[type]();
-    }
+  const onEditRow = (row) => {
+    history.push(`/app/customer-detail?id=${row.id}`);
   };
+
+  // const handleAction = (row, type) => {
+  //   const types = {
+  //     edit: () => {},
+  //     delete: () => {
+  //       DialogActions.show({
+  //         confirm: true,
+  //         title: "ایا از حذف این رکورد مطمئن هستید ؟",
+  //         onAction: async () => {
+  //           await deleteUseRequest.execute(null, row.id);
+  //           setList(list.filter((item) => item.id !== row.id));
+  //           DialogActions.hide({ name: "delete" });
+  //         },
+  //         name: "delete",
+  //         size: "6",
+  //         disableCloseButton: false,
+  //       });
+  //     },
+  //     transaction: () => {
+  //       history.push(`/app/person-transaction?id=${row.id}&type=employee`);
+  //     },
+  //   };
+  //   if (types[type]) {
+  //     types[type]();
+  //   }
+  // };
 
   const onSearch = (value) => {
     setSearch(value);
@@ -137,6 +140,12 @@ export default function MainList() {
     const customerList = await getCustomerRequest.execute();
     setList(customerList.data);
     setTotal(customerList.total);
+  };
+
+  const onClickRow = (e, row) => {
+    if (e.target.tagName === "TD") {
+      history.push(`/app/person-transaction?id=${row.id}&type=employee`);
+    }
   };
 
   useEffect(() => {
@@ -185,6 +194,7 @@ export default function MainList() {
                         {list.map((row) => {
                           return (
                             <TableRow
+                              onClick={(e) => onClickRow(e, row)}
                               hover
                               tabIndex={-1}
                               key={row.id}
@@ -218,29 +228,13 @@ export default function MainList() {
                                 />
                               </TableCell>
                               <TableCell padding="none">
-                                <TableRowMenu
-                                  options={[
-                                    { id: "transaction", title: "تراکنش ها" },
-                                    {
-                                      id: "edit",
-                                      title: "ویرایش",
-                                      hidden: !hasPermission(
-                                        Constant.ALL_PERMISSIONS.CUSTOMER_EDIT,
-                                      ),
-                                    },
-                                    {
-                                      id: "delete",
-                                      title: "حذف",
-                                      hidden: !hasPermission(
-                                        Constant.ALL_PERMISSIONS
-                                          .CUSTOMER_DELETE,
-                                      ),
-                                    },
-                                  ]}
-                                  hadleAction={(type) =>
-                                    handleAction(row, type)
-                                  }
-                                />
+                                <Button
+                                  variant={"contained"}
+                                  color={"primary"}
+                                  onClick={() => onEditRow(row)}
+                                >
+                                  {"ویرایش"}
+                                </Button>
                               </TableCell>
                             </TableRow>
                           );

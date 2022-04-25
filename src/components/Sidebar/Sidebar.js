@@ -28,13 +28,13 @@ const structure = [
     icon: <i className="material-icons-round">inventory_2</i>,
     permission: Constants.ALL_PERMISSIONS.PRODUCT_SHOW,
   },
-  {
-    id: 2,
-    label: "انبار ها",
-    link: "/app/depot-list",
-    icon: <i className="material-icons-round">storefront</i>,
-    permission: Constants.ALL_PERMISSIONS.DEPOT_SHOW,
-  },
+  // {
+  //   id: 2,
+  //   label: "انبار ها",
+  //   link: "/app/depot-list",
+  //   icon: <i className="material-icons-round">storefront</i>,
+  //   permission: Constants.ALL_PERMISSIONS.DEPOT_SHOW,
+  // },
   {
     id: 3,
     label: "صندوق ها",
@@ -65,34 +65,72 @@ const structure = [
       Constants.ALL_PERMISSIONS.PAYMENT_SHOW ||
       Constants.ALL_PERMISSIONS.CHEQUE_SHOW,
   },
+
   {
     id: 7,
-    label: "گزارشات مالی",
-    icon: <i className="material-icons-round">monetization_on</i>,
-    permission:
-      Constants.ALL_PERMISSIONS.PAYMENT_SHOW ||
-      Constants.ALL_PERMISSIONS.CHEQUE_SHOW,
-    children: [
-      { label: "گردش کل", link: "/app/payment-list?type=ALL" },
-      { label: "لیست دریافتی ها", link: "/app/payment-list?type=INCOME" },
-      { label: "لیست پرداختی ها", link: "/app/payment-list?type=OUTCOME" },
-      {
-        label: "لیست چک ها",
-        link: "/app/cheque-list",
-        permission: Constants.ALL_PERMISSIONS.PAYMENT_SHOW,
-      },
-      {
-        label: "لیست شماره حساب ها",
-        link: "/app/accountNumber",
-        permission: Constants.ALL_PERMISSIONS.FREE,
-      },
-      {
-        label: "لیست وام ها",
-        link: "/app/loan-list",
-        permission: Constants.ALL_PERMISSIONS.FREE,
-      },
-    ],
+    label: "گردش مالی",
+    link: "/app/payment-list?type=ALL",
+    icon: <i className="material-icons-round">account_balance_wallet</i>,
+    permission: Constants.ALL_PERMISSIONS.PAYMENT_SHOW,
   },
+  {
+    id: 8,
+    label: "لیست دریافتی ها",
+    link: "/app/payment-list?type=INCOME",
+    icon: <i className="material-icons-round">account_balance_wallet</i>,
+    permission: Constants.ALL_PERMISSIONS.PAYMENT_SHOW,
+  },
+  {
+    id: 9,
+    label: "لیست پرداختی ها",
+    link: "/app/payment-list?type=OUTCOME",
+    icon: <i className="material-icons-round">account_balance_wallet</i>,
+    permission: Constants.ALL_PERMISSIONS.PAYMENT_SHOW,
+  },
+
+  {
+    id: 10,
+    label: "لیست چک ها",
+    link: "/app/cheque-list",
+    permission: Constants.ALL_PERMISSIONS.PAYMENT_SHOW,
+    icon: <i className="material-icons-round">account_balance_wallet</i>,
+  },
+  {
+    id: 11,
+    label: "لیست شماره حساب ها",
+    link: "/app/accountNumber",
+    permission: Constants.ALL_PERMISSIONS.FREE,
+    icon: <i className="material-icons-round">account_balance_wallet</i>,
+  },
+
+  // {
+  //   id: 7,
+  //   label: "گزارشات مالی",
+  //   icon: <i className="material-icons-round">monetization_on</i>,
+  //   permission:
+  //     Constants.ALL_PERMISSIONS.PAYMENT_SHOW ||
+  //     Constants.ALL_PERMISSIONS.CHEQUE_SHOW,
+  //   children: [
+  //     { label: "گردش کل", link: "/app/payment-list?type=ALL" },
+  //     { label: "لیست دریافتی ها", link: "/app/payment-list?type=INCOME" },
+  //     { label: "لیست پرداختی ها", link: "/app/payment-list?type=OUTCOME" },
+  //     {
+  //       label: "لیست چک ها",
+  //       link: "/app/cheque-list",
+  //       permission: Constants.ALL_PERMISSIONS.PAYMENT_SHOW,
+  //     },
+  //     {
+  //       label: "لیست شماره حساب ها",
+  //       link: "/app/accountNumber",
+  //       permission: Constants.ALL_PERMISSIONS.FREE,
+  //     },
+  //     // {
+  //     //   label: "لیست وام ها",
+  //     //   link: "/app/loan-list",
+  //     //   permission: Constants.ALL_PERMISSIONS.FREE,
+  //     // },
+  //   ],
+  // },
   {
     id: 8,
     type: "divider",
@@ -122,11 +160,11 @@ const structure = [
         link: "/app/customer-list",
         permission: Constants.ALL_PERMISSIONS.CUSTOMER_SHOW,
       },
-      {
-        label: "پرسنل",
-        link: "/app/employee-list",
-        permission: Constants.ALL_PERMISSIONS.EMPLOYEE_SHOW,
-      },
+      // {
+      //   label: "پرسنل",
+      //   link: "/app/employee-list",
+      //   permission: Constants.ALL_PERMISSIONS.EMPLOYEE_SHOW,
+      // },
       {
         label: "رانندگان",
         link: "/app/driver-list",
@@ -135,14 +173,14 @@ const structure = [
     ],
   },
 
-  { id: 13, type: "divider", permission: Constants.ALL_PERMISSIONS.FREE },
-  {
-    id: 14,
-    label: " حضور و غیاب",
-    link: "/app/traffic",
-    icon: <i className="material-icons-round">transfer_within_a_station</i>,
-    permission: Constants.ALL_PERMISSIONS.ATTENDANCE_SHOW,
-  },
+  // { id: 13, type: "divider", permission: Constants.ALL_PERMISSIONS.FREE },
+  // {
+  //   id: 14,
+  //   label: " حضور و غیاب",
+  //   link: "/app/traffic",
+  //   icon: <i className="material-icons-round">transfer_within_a_station</i>,
+  //   permission: Constants.ALL_PERMISSIONS.ATTENDANCE_SHOW,
+  // },
 
   {
     id: 14,
