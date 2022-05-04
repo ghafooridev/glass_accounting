@@ -23,15 +23,12 @@ const headCells = [
     id: "name",
     label: "نام کالا",
   },
-  {
-    id: "amount",
-    label: "موجودی کل",
-  },
-
-  { id: "amount", label: "مقدار" },
-  { id: "unit", label: " واحد شمارشی" },
-
   { id: "amount", label: "فی" },
+  { id: "amount", label: "مقدار" },
+  {
+    id: "total",
+    label: "جمع کل",
+  },
 ];
 
 const ProductList = React.forwardRef((props, ref) => {
@@ -42,47 +39,35 @@ const ProductList = React.forwardRef((props, ref) => {
     defaultValues ? !!defaultValues.perUnit : false,
   );
   const units = unitAction.getProductUnit();
-  const [depotPicker, setDepotPicker] = useState([]);
-  const [selectedDepot, setSelectedDepot] = useState(1);
+  const [categoryPicker, setCategoryPicker] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState(1);
 
   useImperativeHandle(ref, () => {
     return list;
   });
 
-  const getDepotProductRequest = useApi({
+  const getCategoryProductRequest = useApi({
     method: "get",
-    url: `product/depot?${convertParamsToQueryString({})}`,
+    url: `product?filter={category:${selectedCategory}}`,
   });
 
-  const getDepotRequest = useApi({
+  const getCategoryRequest = useApi({
     method: "get",
-    url: `depot/picker`,
+    url: `product/category`,
   });
 
   const getData = async () => {
-    const productList = await getDepotProductRequest.execute(
-      null,
-      selectedDepot,
-    );
+    const productList = await getCategoryProductRequest.execute();
     setList(productList.data);
   };
 
-  const getProductUnitPicker = (row) => {
-    const allUnits = units.filter((item) => item.value === row.unitBaseId)[0];
-
-    if (allUnits) {
-      return allUnits.children;
-    }
-    return [];
+  const getCategoryPicker = async () => {
+    const result = await getCategoryRequest.execute();
+    setCategoryPicker(result.data);
   };
 
-  const getDepotPicker = async () => {
-    const result = await getDepotRequest.execute();
-    setDepotPicker(result.data);
-  };
-
-  const onChangeDepot = (e) => {
-    setSelectedDepot(e.target.value);
+  const onChangeCategory = (e) => {
+    setSelectedCategory(e.target.value);
   };
 
   const onChangeProductValue = (e, data) => {
@@ -91,15 +76,16 @@ const ProductList = React.forwardRef((props, ref) => {
     const index = list.findIndex((item) => item.id === data.id);
     selectedCurrentProduct[e.target.name] = e.target.value;
     newList[index] = selectedCurrentProduct;
+
     setList(newList);
   };
 
   useEffect(() => {
     getData();
-  }, [selectedDepot]);
+  }, [selectedCategory]);
 
   useEffect(() => {
-    getDepotPicker();
+    getCategoryPicker();
   }, []);
 
   return (
@@ -108,15 +94,15 @@ const ProductList = React.forwardRef((props, ref) => {
         <Grid item lg={12} xs={12} style={{ marginBottom: 20 }}>
           <TextField
             select
-            label="انبار"
-            value={selectedDepot}
-            onChange={onChangeDepot}
+            label="دسته بندی"
+            value={selectedCategory}
+            onChange={onChangeCategory}
             variant="outlined"
-            name="depot"
+            name="category"
             fullWidth
             size="small"
           >
-            {depotPicker.map((option) => (
+            {categoryPicker.map((option) => (
               <MenuItem key={option.value} value={option.value}>
                 {option.label}
               </MenuItem>
@@ -125,7 +111,7 @@ const ProductList = React.forwardRef((props, ref) => {
         </Grid>
       </Grid>
 
-      <TableContainer style={{ height: 200, overflow: "auto" }}>
+      <TableContainer style={{ overflow: "auto" }}>
         <Table className={classes.table} size={"medium"}>
           <TableHeader classes={classes} headCells={headCells} />
 
@@ -140,8 +126,17 @@ const ProductList = React.forwardRef((props, ref) => {
                 >
                   <TableCell padding="none">{row.name}</TableCell>
                   <TableCell padding="none">
-                    {persianNumber(row.totalStock)}
+                    <TextField
+                      type="number"
+                      variant="outlined"
+                      name="fee"
+                      style={{ width: "70%" }}
+                      size="small"
+                      value={row.fee}
+                      onChange={(e) => onChangeProductValue(e, row)}
+                    />
                   </TableCell>
+
                   <TableCell padding="none">
                     <TextField
                       type="number"
@@ -155,36 +150,19 @@ const ProductList = React.forwardRef((props, ref) => {
                   </TableCell>
                   <TableCell padding="none">
                     <TextField
-                      select
-                      value={row.unit}
-                      onChange={(e) => onChangeProductValue(e, row)}
-                      variant="outlined"
-                      name="unit"
-                      style={{ width: "70%" }}
-                      size="small"
-                    >
-                      {getProductUnitPicker(row).map((option) => (
-                        <MenuItem key={option.value} value={option.value}>
-                          {option.label}
-                        </MenuItem>
-                      ))}
-                    </TextField>
-                  </TableCell>
-                  <TableCell padding="none">
-                    <TextField
                       type="number"
                       variant="outlined"
-                      name="fee"
+                      name="total"
                       style={{ width: "70%" }}
                       size="small"
-                      value={row.fee}
-                      onChange={(e) => onChangeProductValue(e, row)}
+                      value={row.amount * row.fee}
+                      disabled
                     />
                   </TableCell>
                 </TableRow>
               );
             })}
-            {!list.length && !getDepotProductRequest.pending && (
+            {!list.length && !getCategoryProductRequest.pending && (
               <TableRow style={{ height: 53 }}>
                 <TableCell colSpan={6} style={{ textAlign: "center" }}>
                   <Typography variant="h6">

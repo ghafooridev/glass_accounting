@@ -15,14 +15,20 @@ import {
   TableCell,
   TableRow,
   IconButton,
+  TextField,
+  MenuItem,
 } from "@material-ui/core";
+import { useForm, Controller } from "react-hook-form";
 import TableHeader from "../../components/Table/TableHead";
 import { DeleteIcon, EditIcon } from "../../components/icons";
 import { getQueryString, persianNumber } from "../../helpers/utils";
 import dialogAction from "../../redux/actions/dialogAction";
 import Payment from "./paymnet";
 import update from "immutability-helper";
-
+import Constant from "../../helpers/constant";
+import { useApi } from "../../hooks/useApi";
+import moment from "moment";
+import { DatePicker } from "@material-ui/pickers";
 const useStyles = makeStyles((theme) => ({
   root: {
     margin: "0 auto",
@@ -90,185 +96,88 @@ const checkPayHeadCells = [
 ];
 
 const PrePayment = React.forwardRef((props, ref) => {
+  const { control, handleSubmit, errors, reset } = useForm();
+
   const { defaultValues } = props;
   const classes = useStyles();
   const paymentType = getQueryString("type");
   const [payments, setPayments] = useState();
+  const [banks, setBanks] = useState([]);
+  const [chequeDueDate, handleChequeDueDateChange] = useState(moment());
 
   useImperativeHandle(ref, () => {
-    return payments;
+    return { payments: { cashe: naghd, bank: card, cheque } };
   });
 
-  const onSubmitPaymentActions = (value, type, isEdit) => {
-    if (isEdit) {
-      return handleSubmitEditPayment(value, type);
-    }
-    return handleSubmitAddPayment(value, type);
-  };
+  // const onSubmitPaymentActions = (value, type, isEdit) => {
+  //   if (isEdit) {
+  //     return handleSubmitEditPayment(value, type);
+  //   }
+  //   return handleSubmitAddPayment(value, type);
+  // };
 
-  const handleSubmitAddPayment = (value, type) => {
-    let newPayments;
-    const types = {
-      NAGHD: () => {
-        newPayments = update(payments, {
-          cashes: { $push: [value] },
-        });
-      },
-      CARD: () => {
-        newPayments = update(payments, {
-          banks: { $push: [value] },
-        });
-      },
-      CHECK: () => {
-        newPayments = update(payments, {
-          cheques: { $push: [value] },
-        });
-      },
-    };
-    if (types[type]) {
-      types[type]();
-      setPayments(newPayments);
-      dialogAction.hide({ name: "prePayment" });
-    }
-  };
+  // const handleSubmitAddPayment = (value, type) => {
+  //   let newPayments;
+  //   const types = {
+  //     NAGHD: () => {
+  //       newPayments = update(payments, {
+  //         cashes: { $push: [value] },
+  //       });
+  //     },
+  //     CARD: () => {
+  //       newPayments = update(payments, {
+  //         banks: { $push: [value] },
+  //       });
+  //     },
+  //     CHECK: () => {
+  //       newPayments = update(payments, {
+  //         cheques: { $push: [value] },
+  //       });
+  //     },
+  //   };
+  //   if (types[type]) {
+  //     types[type]();
+  //     setPayments(newPayments);
+  //     dialogAction.hide({ name: "prePayment" });
+  //   }
+  // };
 
-  const handleSubmitEditPayment = (value, type) => {
-    let newPayments;
-    const types = {
-      NAGHD: () => {
-        const index = payments.cashes.findIndex((item) => item.id === value.id);
-        newPayments = update(payments, {
-          cashes: {
-            [index]: { $set: value },
-          },
-        });
-      },
-      CARD: () => {
-        const index = payments.banks.findIndex((item) => item.id === value.id);
-        newPayments = update(payments, {
-          banks: {
-            [index]: { $set: value },
-          },
-        });
-      },
-      CHECK: () => {
-        const index = payments.cheques.findIndex(
-          (item) => item.id === value.id,
-        );
-        newPayments = update(payments, {
-          cheques: {
-            [index]: { $set: value },
-          },
-        });
-      },
-    };
-    if (types[type]) {
-      types[type]();
-      setPayments(newPayments);
-      dialogAction.hide({ name: "prePayment" });
-    }
-  };
-
-  const handleDeletePayment = (value, type) => {
-    dialogAction.show({
-      confirm: true,
-      title: "ایا از حذف این رکورد مطمئن هستید ؟",
-      onAction: () => {
-        let newPayments;
-        const types = {
-          NAGHD: () => {
-            const index = payments.cashes.findIndex(
-              (item) => item.id === value.id,
-            );
-            newPayments = update(payments, {
-              cashes: { $splice: [[index, 1]] },
-            });
-          },
-          CARD: () => {
-            const index = payments.banks.findIndex(
-              (item) => item.id === value.id,
-            );
-            newPayments = update(payments, {
-              banks: { $splice: [[index, 1]] },
-            });
-          },
-          CHECK: () => {
-            const index = payments.cheques.findIndex(
-              (item) => item.id === value.id,
-            );
-            newPayments = update(payments, {
-              cheques: { $splice: [[index, 1]] },
-            });
-          },
-        };
-        if (types[type]) {
-          types[type]();
-          setPayments(newPayments);
-          dialogAction.hide({ name: "delete" });
-        }
-      },
-      name: "delete",
-      size: "6",
-      disableCloseButton: false,
-    });
-  };
-
-  const onDismissPayment = () => {
-    dialogAction.hide({ name: "prePayment" });
-  };
-
-  const onClickPayment = (type, data) => {
-    dialogAction.show({
-      title: `${paymentType === "INCOME" ? "دریافت" : "پرداخت"} ${
-        type === "NAGHD" ? "نقدی" : type === "CARD" ? "کارتی" : "چکی"
-      }`,
-      component: (
-        <Payment
-          onSubmit={onSubmitPaymentActions}
-          onDismiss={onDismissPayment}
-          defaultValues={data}
-          paymentType={paymentType}
-          type={type}
-        />
-      ),
-      name: "prePayment",
-      size: "4",
-      confirm: false,
-      disableCloseButton: true,
-    });
-  };
-
-  const getButtonTitle = (type) => {
-    const types = {
-      NAGHD: () => {
-        return (
-          <Typography variant="button">
-            {paymentType === "INCOME" ? "دریافت نقدی" : "پرداخت نقدی"}(
-            {payments?.cashes.length})
-          </Typography>
-        );
-      },
-      CARD: () => {
-        return (
-          <Typography variant="button">
-            {paymentType === "INCOME" ? "دریافت کارتی" : "پرداخت کارتی"}(
-            {payments?.banks.length})
-          </Typography>
-        );
-      },
-      CHECK: () => {
-        return (
-          <Typography variant="button">
-            {paymentType === "INCOME" ? "دریافت چکی" : "پرداخت چکی"}(
-            {payments?.cheques.length})
-          </Typography>
-        );
-      },
-    };
-    if (types[type]) {
-      return types[type]();
-    }
-  };
+  // const handleSubmitEditPayment = (value, type) => {
+  //   let newPayments;
+  //   const types = {
+  //     NAGHD: () => {
+  //       const index = payments.cashes.findIndex((item) => item.id === value.id);
+  //       newPayments = update(payments, {
+  //         cashes: {
+  //           [index]: { $set: value },
+  //         },
+  //       });
+  //     },
+  //     CARD: () => {
+  //       const index = payments.banks.findIndex((item) => item.id === value.id);
+  //       newPayments = update(payments, {
+  //         banks: {
+  //           [index]: { $set: value },
+  //         },
+  //       });
+  //     },
+  //     CHECK: () => {
+  //       const index = payments.cheques.findIndex(
+  //         (item) => item.id === value.id,
+  //       );
+  //       newPayments = update(payments, {
+  //         cheques: {
+  //           [index]: { $set: value },
+  //         },
+  //       });
+  //     },
+  //   };
+  //   if (types[type]) {
+  //     types[type]();
+  //     setPayments(newPayments);
+  //     dialogAction.hide({ name: "prePayment" });
+  //   }
+  // };
 
   useEffect(() => {
     setPayments(defaultValues);
@@ -280,36 +189,145 @@ const PrePayment = React.forwardRef((props, ref) => {
     }
   }, [payments]);
 
+  const getBankRequest = useApi({
+    method: "get",
+    url: `bank`,
+  });
+
+  const getBanks = async () => {
+    const result = await getBankRequest.execute();
+    setBanks(result.data);
+  };
+
+  const [selectedTransaction, setSelectedTransaction] = useState(
+    defaultValues?.transactionType,
+  );
+  const [selectedChequeBank, setSelectedChequeBank] = useState(
+    defaultValues?.bankId || 1,
+  );
+  const [selectedCardBank, setSelectedCardBank] = useState(
+    defaultValues?.bankId || 1,
+  );
+  const onChangeBank = (e, type) => {
+    if (type === "C") {
+      return setSelectedChequeBank(e.target.value);
+    }
+    setSelectedCardBank(e.target.value);
+  };
+  const onChangeTransaction = (e) => {
+    setSelectedTransaction(e.target.value);
+  };
+
+  const [naghd, setNaghd] = useState({});
+  const [card, setCard] = useState({});
+  const [cheque, setCheque] = useState({});
+
+  const onChange = (type, field, value) => {
+    if (type === "N") {
+      setNaghd({ price: value });
+    }
+    if (type === "B") {
+      if (field === "price") {
+        setCard({
+          ...card,
+          transactionType: selectedTransaction,
+          bank: selectedCardBank,
+          price: value,
+        });
+      }
+      if (field === "cardNO") {
+        setCard({
+          ...card,
+          transactionType: selectedTransaction,
+          bank: selectedCardBank,
+          cardNumber: value,
+        });
+      }
+    }
+
+    if (type === "C") {
+      if (field === "price") {
+        setCheque({
+          ...cheque,
+          chequeDueDate: chequeDueDate._d,
+          bank: selectedChequeBank,
+          price: value,
+        });
+      }
+      if (field === "chequeNO") {
+        setCheque({
+          ...cheque,
+          chequeDueDate: chequeDueDate._d,
+          bank: selectedChequeBank,
+          chequeNO: value,
+        });
+      }
+      if (field === "branch") {
+        setCheque({
+          ...cheque,
+          chequeDueDate: chequeDueDate._d,
+          bank: selectedChequeBank,
+          branch: value,
+        });
+      }
+      if (field === "vajeh") {
+        setCheque({
+          ...cheque,
+          chequeDueDate: chequeDueDate._d,
+          bank: selectedChequeBank,
+          vajeh: value,
+        });
+      }
+    }
+    // let newPayments;
+    // const types = {
+    //   NAGHD: () => {
+    //     const data = { price: value };
+    //     const index = payments.cashes.findIndex((item) => item.id === value.id);
+    //     newPayments = update(payments, {
+    //       cashes: {
+    //         [index]: { $set: data },
+    //       },
+    //     });
+    //   },
+    //   CARD: () => {
+    //     const data = { price: value };
+    //     const index = payments.banks.findIndex((item) => item.id === value.id);
+    //     newPayments = update(payments, {
+    //       banks: {
+    //         [index]: { $set: value },
+    //       },
+    //     });
+    //   },
+    //   CHECK: () => {
+    //     const index = payments.cheques.findIndex(
+    //       (item) => item.id === value.id,
+    //     );
+    //     newPayments = update(payments, {
+    //       cheques: {
+    //         [index]: { $set: value },
+    //       },
+    //     });
+    //   },
+    // };
+
+    // if (types[type]) {
+    //   types[type]();
+    //   setPayments(newPayments);
+    // }
+  };
+
+  useEffect(() => {
+    getBanks();
+  }, []);
+
   return (
     <>
-      <Grid item xs={12} style={{ display: "flex", justifyContent: "center" }}>
-        <ButtonGroup color="primary">
-          <Button
-            startIcon={<i className="material-icons-round">local_atm</i>}
-            onClick={() => onClickPayment("NAGHD")}
-          >
-            {getButtonTitle("NAGHD")}
-          </Button>
-          <Button
-            startIcon={<i className="material-icons-round">payment</i>}
-            onClick={() => onClickPayment("CARD")}
-          >
-            {getButtonTitle("CARD")}
-          </Button>
-          <Button
-            startIcon={<i className="material-icons-round">payments</i>}
-            onClick={() => onClickPayment("CHECK")}
-          >
-            {getButtonTitle("CHECK")}
-          </Button>
-        </ButtonGroup>
-      </Grid>
-
       <Grid container spacing={3}>
         <Grid item xs={12}>
           <Accordion
-            expanded={payments?.cashes.length}
-            disabled={!payments?.cashes.length}
+            expanded={true}
+            style={{ boxShadow: "0 3px 10px rgb(0 0 0 / 0.2)" }}
           >
             <AccordionSummary
               className={classes.accordionSummary}
@@ -317,77 +335,29 @@ const PrePayment = React.forwardRef((props, ref) => {
               aria-controls="panel1a-content"
               id="panel1a-header"
             >
-              <Typography className={classes.heading}>نقدی ها</Typography>
+              <Typography className={classes.heading}>نقدی </Typography>
             </AccordionSummary>
-            {!!payments?.cashes.length && (
-              <AccordionDetails>
-                <Grid item xs={12}>
-                  <Paper>
-                    <TableContainer style={{ padding: "0 10px" }}>
-                      <Table
-                        className={classes.table}
-                        size={"medium"}
-                        style={{ paddingRight: 10 }}
-                      >
-                        <TableHeader headCells={naghdPayHeadCells} />
 
-                        <TableBody>
-                          {payments?.cashes.map((row) => {
-                            return (
-                              <TableRow
-                                hover
-                                tabIndex={-1}
-                                key={row.id}
-                                style={{ paddingRight: 10 }}
-                              >
-                                <TableCell padding="none">
-                                  <div
-                                    style={{
-                                      display: "flex",
-                                      alignItems: "center",
-                                    }}
-                                  >
-                                    {row.cashDesk?.label}
-                                  </div>
-                                </TableCell>
-                                <TableCell padding="none">
-                                  {persianNumber(
-                                    Number(row.price).toLocaleString(),
-                                  )}
-                                </TableCell>
-
-                                <TableCell
-                                  padding="none"
-                                  style={{ textAlign: "left" }}
-                                >
-                                  <IconButton
-                                    onClick={() => onClickPayment("NAGHD", row)}
-                                  >
-                                    <EditIcon />
-                                  </IconButton>
-
-                                  <IconButton
-                                    onClick={() =>
-                                      handleDeletePayment(row, "NAGHD")
-                                    }
-                                  >
-                                    <DeleteIcon />
-                                  </IconButton>
-                                </TableCell>
-                              </TableRow>
-                            );
-                          })}
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
-                  </Paper>
+            <AccordionDetails>
+              <Grid item xs={12}>
+                <Grid container spacing={3}>
+                  <Grid item xs={6}>
+                    <TextField
+                      variant="outlined"
+                      label="مبلغ نقدی"
+                      type="number"
+                      onChange={(e) => onChange("N", "price", e.target.value)}
+                      fullWidth
+                      size="small"
+                    />
+                  </Grid>
                 </Grid>
-              </AccordionDetails>
-            )}
+              </Grid>
+            </AccordionDetails>
           </Accordion>
           <Accordion
-            expanded={payments?.banks.length}
-            disabled={!payments?.banks.length}
+            expanded={true}
+            style={{ boxShadow: "0 3px 10px rgb(0 0 0 / 0.2)" }}
           >
             <AccordionSummary
               className={classes.accordionSummary}
@@ -395,86 +365,87 @@ const PrePayment = React.forwardRef((props, ref) => {
               aria-controls="panel2a-content"
               id="panel2a-header"
             >
-              <Typography className={classes.heading}>کارتی ها</Typography>
+              <Typography className={classes.heading}>کارتی </Typography>
             </AccordionSummary>
-            {!!payments?.banks.length && (
-              <AccordionDetails>
-                <Grid item xs={12}>
-                  <Paper>
-                    <TableContainer style={{ padding: "0 10px" }}>
-                      <Table
-                        className={classes.table}
-                        size={"medium"}
-                        style={{ paddingRight: 10 }}
-                      >
-                        <TableHeader headCells={cardPayHeadCells} />
-
-                        <TableBody>
-                          {payments?.banks.map((row) => {
-                            return (
-                              <TableRow
-                                hover
-                                tabIndex={-1}
-                                key={row.id}
-                                style={{ paddingRight: 10 }}
-                              >
-                                <TableCell padding="none">
-                                  <div
-                                    style={{
-                                      display: "flex",
-                                      alignItems: "center",
-                                    }}
-                                  >
-                                    {row.cashDesk?.label}
-                                  </div>
-                                </TableCell>
-                                <TableCell padding="none">
-                                  {persianNumber(
-                                    Number(row.price).toLocaleString(),
-                                  )}
-                                </TableCell>
-                                <TableCell padding="none">
-                                  {row.transactionType}
-                                </TableCell>
-                                <TableCell padding="none">
-                                  {row.bank?.label}
-                                </TableCell>
-                                <TableCell padding="none">
-                                  {row.trackingCode}
-                                </TableCell>
-
-                                <TableCell
-                                  padding="none"
-                                  style={{ textAlign: "left" }}
-                                >
-                                  <IconButton
-                                    onClick={() => onClickPayment("CARD", row)}
-                                  >
-                                    <EditIcon />
-                                  </IconButton>
-
-                                  <IconButton
-                                    onClick={() =>
-                                      handleDeletePayment(row, "CARD")
-                                    }
-                                  >
-                                    <DeleteIcon />
-                                  </IconButton>
-                                </TableCell>
-                              </TableRow>
-                            );
-                          })}
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
-                  </Paper>
+            <AccordionDetails>
+              <Grid container spacing={3}>
+                <Grid item xs={6}>
+                  <TextField
+                    select
+                    label="نوع تراکنش"
+                    onChange={onChangeTransaction}
+                    value={selectedTransaction}
+                    variant="outlined"
+                    fullWidth
+                    size="small"
+                    name="cash"
+                  >
+                    {Constant.BANK_TRANSACTION_TYPE.map((option) => (
+                      <MenuItem key={option.value} value={option.value}>
+                        {option.label}
+                      </MenuItem>
+                    ))}
+                  </TextField>
                 </Grid>
-              </AccordionDetails>
-            )}
+                <Grid item xs={6}>
+                  <TextField
+                    variant="outlined"
+                    label="مبلغ "
+                    type="number"
+                    onChange={(e) => onChange("B", "price", e.target.value)}
+                    fullWidth
+                    size="small"
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <TextField
+                    variant="outlined"
+                    label="شماره کارت/شبا"
+                    number
+                    onChange={(e) => onChange("B", "cardNO", e.target.value)}
+                    fullWidth
+                    size="small"
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <TextField
+                    select
+                    label="بانک"
+                    onChange={onChangeBank}
+                    value={selectedCardBank}
+                    variant="outlined"
+                    fullWidth
+                    size="small"
+                    name="bank"
+                    SelectProps={{
+                      classes: {
+                        select: classes.rootSelect,
+                      },
+                    }}
+                  >
+                    {banks.map((option) => (
+                      <MenuItem key={option.value} value={option.value}>
+                        <img
+                          src={`${Constant.API_ADDRESS}/${option.logo}`}
+                          alt={option.label}
+                          style={{
+                            width: 25,
+                            height: 25,
+                            borderRadius: "50%",
+                            marginLeft: 10,
+                          }}
+                        />
+                        {option.label}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                </Grid>
+              </Grid>
+            </AccordionDetails>
           </Accordion>
           <Accordion
-            expanded={payments?.cheques.length}
-            disabled={!payments?.cheques.length}
+            expanded={true}
+            style={{ boxShadow: "0 3px 10px rgb(0 0 0 / 0.2)" }}
           >
             <AccordionSummary
               className={classes.accordionSummary}
@@ -482,80 +453,100 @@ const PrePayment = React.forwardRef((props, ref) => {
               aria-controls="panel3a-content"
               id="panel3a-header"
             >
-              <Typography className={classes.heading}>چک ها</Typography>
+              <Typography className={classes.heading}>چک </Typography>
             </AccordionSummary>
             <AccordionDetails>
-              {!!payments?.cheques.length && (
-                <Grid item xs={12}>
-                  <Paper>
-                    <TableContainer style={{ padding: "0 10px" }}>
-                      <Table
-                        className={classes.table}
-                        size={"medium"}
-                        style={{ paddingRight: 10 }}
-                      >
-                        <TableHeader headCells={checkPayHeadCells} />
-
-                        <TableBody>
-                          {payments?.cheques.map((row) => {
-                            return (
-                              <TableRow
-                                hover
-                                tabIndex={-1}
-                                key={row.id}
-                                style={{ paddingRight: 10 }}
-                              >
-                                <TableCell padding="none">
-                                  <div
-                                    style={{
-                                      display: "flex",
-                                      alignItems: "center",
-                                    }}
-                                  >
-                                    {row.cashDesk?.label}
-                                  </div>
-                                </TableCell>
-                                <TableCell padding="none">
-                                  {persianNumber(
-                                    Number(row.price).toLocaleString(),
-                                  )}
-                                </TableCell>
-
-                                <TableCell padding="none">
-                                  {row.chequeDueDate.toLocaleDateString(
-                                    "fa-IR",
-                                  )}
-                                </TableCell>
-                                <TableCell padding="none">
-                                  {row.bank?.label}
-                                </TableCell>
-                                <TableCell
-                                  padding="none"
-                                  style={{ textAlign: "left" }}
-                                >
-                                  <IconButton
-                                    onClick={() => onClickPayment("CHECK", row)}
-                                  >
-                                    <EditIcon />
-                                  </IconButton>
-
-                                  <IconButton
-                                    onClick={() =>
-                                      handleDeletePayment(row, "CHECK")
-                                    }
-                                  >
-                                    <DeleteIcon />
-                                  </IconButton>
-                                </TableCell>
-                              </TableRow>
-                            );
-                          })}
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
-                  </Paper>
+              <Grid container spacing={3}>
+                <Grid item xs={4}>
+                  <TextField
+                    variant="outlined"
+                    label="مبلغ چک"
+                    type="number"
+                    onChange={(e) => onChange("C", "price", e.target.value)}
+                    helperText={errors.price ? errors.price.message : ""}
+                    fullWidth
+                    size="small"
+                  />
                 </Grid>
-              )}
+                <Grid item xs={4}>
+                  <TextField
+                    variant="outlined"
+                    label="شماره چک"
+                    number
+                    onChange={(e) => onChange("C", "chequeNO", e.target.value)}
+                    fullWidth
+                    size="small"
+                  />
+                </Grid>
+                <Grid item xs={4}>
+                  <TextField
+                    select
+                    label="بانک"
+                    onChange={onChangeBank}
+                    value={selectedChequeBank}
+                    variant="outlined"
+                    fullWidth
+                    size="small"
+                    name="bank"
+                    SelectProps={{
+                      classes: {
+                        select: classes.rootSelect,
+                      },
+                    }}
+                  >
+                    {banks.map((option) => (
+                      <MenuItem key={option.value} value={option.value}>
+                        <img
+                          src={`${Constant.API_ADDRESS}/${option.logo}`}
+                          alt={option.label}
+                          style={{
+                            width: 25,
+                            height: 25,
+                            borderRadius: "50%",
+                            marginLeft: 10,
+                          }}
+                        />
+                        {option.label}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                </Grid>
+                <Grid item xs={4}>
+                  <TextField
+                    variant="outlined"
+                    label="شعبه"
+                    number
+                    onChange={(e) => onChange("C", "branch", e.target.value)}
+                    fullWidth
+                    size="small"
+                  />
+                </Grid>
+                <Grid item xs={4} className={classes.datePicker}>
+                  <DatePicker
+                    name="date"
+                    label="تاریخ سررسید"
+                    inputVariant="outlined"
+                    okLabel="تأیید"
+                    cancelLabel="لغو"
+                    labelFunc={(date) =>
+                      date ? date.format("jYYYY/jMM/jDD") : ""
+                    }
+                    value={chequeDueDate}
+                    onChange={handleChequeDueDateChange}
+                    style={{ width: "100%" }}
+                  />
+                </Grid>
+                <Grid item xs={4}>
+                  <TextField
+                    variant="outlined"
+                    label="در وجه"
+                    number
+                    onChange={(e) => onChange("C", "vajeh", e.target.value)}
+                    fullWidth
+                    size="small"
+                  />
+                </Grid>
+              </Grid>
             </AccordionDetails>
           </Accordion>
         </Grid>

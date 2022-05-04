@@ -35,13 +35,13 @@ const structure = [
   //   icon: <i className="material-icons-round">storefront</i>,
   //   permission: Constants.ALL_PERMISSIONS.DEPOT_SHOW,
   // },
-  {
-    id: 3,
-    label: "صندوق ها",
-    link: "/app/cash-list",
-    icon: <i className="material-icons-round">account_balance_wallet</i>,
-    permission: Constants.ALL_PERMISSIONS.CASH_DESK_SHOW,
-  },
+  // {
+  //   id: 3,
+  //   label: "صندوق ها",
+  //   link: "/app/cash-list",
+  //   icon: <i className="material-icons-round">account_balance_wallet</i>,
+  //   permission: Constants.ALL_PERMISSIONS.CASH_DESK_SHOW,
+  // },
   {
     id: 4,
     type: "divider",
@@ -94,6 +94,13 @@ const structure = [
     link: "/app/cheque-list",
     permission: Constants.ALL_PERMISSIONS.PAYMENT_SHOW,
     icon: <i className="material-icons-round">account_balance_wallet</i>,
+  },
+  {
+    id: 8,
+    label: "لیست انتقالات کارت",
+    link: "/app/card-interaction",
+    icon: <i className="material-icons-round">account_balance_wallet</i>,
+    permission: Constants.ALL_PERMISSIONS.PAYMENT_SHOW,
   },
   {
     id: 11,

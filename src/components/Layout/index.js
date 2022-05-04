@@ -39,6 +39,7 @@ import CashPaymentReport from "../../pages/cash/paymentReport";
 import LoanList from "../../pages/loan";
 import LoanDetail from "../../pages/loan/detail";
 import ProductTransfer from "../../pages/product/transfer";
+import CardInteraction from "../../pages/payment/cardInteraction";
 
 function Layout(props) {
   var classes = useStyles();
@@ -82,6 +83,7 @@ function Layout(props) {
 
             <Route path="/app/cheque-list" component={ChequeList} />
             <Route path="/app/cheque-detail" component={ChequeDetail} />
+            <Route path="/app/card-interaction" component={CardInteraction} />
 
             <Route path="/app/cheque-list" component={ChequeList} />
             <Route path="/app/cheque-detail" component={ChequeDetail} />

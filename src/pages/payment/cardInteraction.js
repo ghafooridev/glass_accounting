@@ -8,8 +8,7 @@ import {
   TableRow,
   Paper,
   Typography,
-  Tabs,
-  Tab,
+  Button,
   Chip,
 } from "@material-ui/core";
 import TableRowMenu from "../../components/Table/TableRowMenu";
@@ -32,10 +31,10 @@ import TableSkeleton from "../../components/Skeleton";
 import FilterComponent from "./filter";
 
 const headCells = [
-  { id: "id", label: "شماره فاکتور" },
+  { id: "personType" },
   {
     id: "person",
-    label: "مشتری",
+    label: "نام شخص",
   },
   {
     id: "date",
@@ -43,11 +42,7 @@ const headCells = [
   },
   { id: "price", label: "مبلغ" },
   {
-    id: "category",
-    label: "دسته بندی",
-  },
-  {
-    id: "type",
+    id: "typr",
     label: "نوع",
   },
 
@@ -55,7 +50,7 @@ const headCells = [
 ];
 
 const MainList = () => {
-  const invoiceType = getQueryString("type");
+  const paymentType = getQueryString("type");
   const classes = styles();
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("date");
@@ -63,9 +58,9 @@ const MainList = () => {
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(Constant.TABLE_PAGE_SIZE);
   const [list, setList] = useState([]);
-  const [filter, setFilter] = useState();
   const [total, setTotal] = useState(0);
-  const [type, setType] = useState(invoiceType);
+  const [type, setType] = useState(paymentType);
+  const [filter, setFilter] = useState();
   const history = useHistory();
 
   const handleRequestSort = (event, property) => {
@@ -83,19 +78,10 @@ const MainList = () => {
     setPage(0);
   };
 
-  const onAdd = () => {
-    history.push(`/app/fast_invoice?type=${type}`);
-  };
-
-  const onSearch = (value) => {
-    setSearch(value);
-    setPage(0);
-  };
-
-  const getInvoiceRequest = useApi({
+  const getPaymentRequest = useApi({
     method: "get",
     url: decodeURIComponent(
-      `invoice?${convertParamsToQueryString({
+      `payment?${convertParamsToQueryString({
         page,
         order,
         orderBy,
@@ -109,136 +95,51 @@ const MainList = () => {
 
   const deleteUseRequest = useApi({
     method: "delete",
-    url: `invoice`,
+    url: `payment`,
   });
 
-  const handleAction = (id, type) => {
-    const types = {
-      edit: () => {
-        history.push(`/app/fast_invoice?type=${type}&id=${id}`);
+  const onDeleteRow = (row) => {
+    DialogActions.show({
+      confirm: true,
+      title: "ایا از حذف این رکورد مطمئن هستید ؟",
+      onAction: async () => {
+        await deleteUseRequest.execute(null, row.id);
+        setList(list.filter((item) => item.id !== row.id));
+        DialogActions.hide();
       },
-      delete: () => {
-        DialogActions.show({
-          confirm: true,
-          title: "ایا از حذف این رکورد مطمئن هستید ؟",
-          onAction: async () => {
-            await deleteUseRequest.execute(null, id);
-            setList(list.filter((item) => item.id !== id));
-            DialogActions.hide({ name: "delete" });
-          },
-          name: "delete",
-          size: "6",
-          disableCloseButton: false,
-        });
-      },
-    };
-    if (types[type]) {
-      types[type]();
-    }
-  };
-
-  const onChangeType = (e, value) => {
-    setType(value);
-  };
-
-  const getTableTitle = () => {
-    if (type === "SELL") {
-      return "لیست فاکتورهای فروش ";
-    } else if (type === "BUY") {
-      return "لیست فاکتورهای خرید";
-    }
-    return "لیست تمامی فاکتور ها";
+      size: "6",
+      disableCloseButton: false,
+    });
   };
 
   const getData = async () => {
-    const invoiceList = await getInvoiceRequest.execute();
-    setList(invoiceList.data);
-    setTotal(invoiceList.total);
-  };
-
-  const onFilter = (data) => {
-    setFilter(data);
-    setPage(0);
+    const paymentList = await getPaymentRequest.execute();
+    setList(paymentList.data);
+    setTotal(paymentList.total);
   };
 
   useEffect(() => {
     getData();
-  }, [page, order, search, pageSize, type, filter]);
-
-  useEffect(() => {
-    setType(invoiceType);
-  }, [invoiceType]);
+  }, [page, order, pageSize]);
 
   return (
     <>
-      {hasPermission(Constant.ALL_PERMISSIONS.INVOICE_SHOW) && (
+      {hasPermission(Constant.ALL_PERMISSIONS.PAYMENT_SHOW) && (
         <Slide direction="down" in={true}>
           <div>
-            {getInvoiceRequest.pending ? (
+            {getPaymentRequest.pending ? (
               <TableSkeleton headCount={headCells} />
             ) : (
               <div className={classes.root}>
                 <Paper className={classes.paper}>
                   <TableTop
-                    title={getTableTitle()}
-                    onAdd={type !== "ALL" && onAdd}
-                    handleSearch={onSearch}
-                    defaultSearch={search}
-                    FilterComponent={<FilterComponent onFilter={onFilter} />}
+                    title="انتقالات کارت"
+                    // onAdd={type !== "ALL" && onAdd}
+                    // handleSearch={onSearch}
+                    // defaultSearch={search}
+                    // FilterComponent={<FilterComponent onFilter={onFilter} />}
                   />
-                  <div className={classes.tab}>
-                    <Tabs
-                      variant="fullWidth"
-                      value={type}
-                      onChange={onChangeType}
-                      indicatorColor="primary"
-                      textColor="primary"
-                      centered
-                    >
-                      <Tab
-                        icon={
-                          <i
-                            className={clsx(
-                              "material-icons-round",
-                              classes.allIcon,
-                            )}
-                          >
-                            sync
-                          </i>
-                        }
-                        label="کل تراکنش ها"
-                        value="ALL"
-                      />
-                      <Tab
-                        icon={
-                          <i
-                            className={clsx(
-                              "material-icons-round",
-                              classes.incomeIcon,
-                            )}
-                          >
-                            sell
-                          </i>
-                        }
-                        label="فاکتور های فروش"
-                        value="SELL"
-                      />
-                      <Tab
-                        icon={
-                          <i
-                            className={clsx(
-                              "material-icons-round",
-                              classes.outgoIcon,
-                            )}
-                          >
-                            shopping_basket
-                          </i>
-                        }
-                        label="فاکتور های خرید"
-                        value="BUY"
-                      />
-                    </Tabs>
-                  </div>
+
                   <TableContainer style={{ padding: "0 10px" }}>
                     <Table
                       className={classes.table}
@@ -263,13 +164,9 @@ const MainList = () => {
                               style={{ paddingRight: 10 }}
                             >
                               <TableCell padding="none">
-                                {persianNumber(row.id)}
+                                {row.paymentname}
                               </TableCell>
-                              <TableCell padding="none">
-                                {row.globalCustomer
-                                  ? `${row.globalCustomer}(${row.customer})`
-                                  : row.customer}
-                              </TableCell>
+                              <TableCell padding="none">{row.person}</TableCell>
                               <TableCell padding="none">
                                 {persianNumber(
                                   new Date(row.date).toLocaleDateString(
@@ -283,35 +180,27 @@ const MainList = () => {
                                 )}
                               </TableCell>
                               <TableCell padding="none">
-                                {row.category}
-                              </TableCell>
-                              <TableCell padding="none">
                                 <Chip
-                                  label={Constant.INVOICE_TYPE[row.type]}
+                                  label={Constant.PAYMENT_TYPE[row.type]}
                                   className={clsx(
                                     classes.type,
                                     classes[row.type],
                                   )}
                                 />
                               </TableCell>
-
-                              {/* <TableCell padding="none">
-                                <TableRowMenu
-                                  options={
-                                    [
-                                      // { id: "edit", title: "ویرایش" },
-                                      // { id: "delete", title: "حذف" },
-                                    ]
-                                  }
-                                  hadleAction={(type) =>
-                                    handleAction(row.id, type)
-                                  }
-                                />
-                              </TableCell> */}
+                              <TableCell padding="none">
+                                <Button
+                                  variant={"contained"}
+                                  color={"primary"}
+                                  onClick={() => onDeleteRow(row)}
+                                >
+                                  {"انجام شد"}
+                                </Button>
+                              </TableCell>
                             </TableRow>
                           );
                         })}
-                        {!list.length && !getInvoiceRequest.pending && (
+                        {!list.length && !getPaymentRequest.pending && (
                           <TableRow style={{ height: 53 }}>
                             <TableCell
                               colSpan={6}

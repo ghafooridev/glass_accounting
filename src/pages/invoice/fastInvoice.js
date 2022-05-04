@@ -10,6 +10,7 @@ import moment from "moment";
 import dialogAction from "../../redux/actions/dialogAction";
 import PrePayment from "../payment/prePayment";
 import Product from "./productFastInvoice";
+import Autocomplete from "@material-ui/lab/Autocomplete";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -51,10 +52,12 @@ export default function MainDetail() {
     cheques: [],
   });
   const [totalFee, setTotalFee] = useState(0);
+  const [allCustomers, setAllCustomers] = useState([]);
   const [totalPayment, setTotalPayment] = useState(0);
   const [discount, setDiscount] = useState(0);
   const [pureFee, setPureFee] = useState(0);
   const [totalRemaining, setTotalRemaining] = useState(0);
+  const [allDrivers, setAllDrivers] = useState([]);
 
   const addInvoiceRequest = useApi({
     method: "post",
@@ -74,10 +77,8 @@ export default function MainDetail() {
     const newProducts = [];
     productsRef.current.map((item) => {
       item.productId = item.id;
-      delete item.id;
-      delete item.stocks;
-      delete item.categories;
-      if (item.fee && item.unit && item.amount) {
+
+      if (item.fee && item.amount) {
         return newProducts.push(item);
       }
     });
@@ -94,28 +95,30 @@ export default function MainDetail() {
       categoryId: [1],
       globalCustomer: invoicePerson.trim(),
     };
-    const response = await addInvoiceRequest.execute(value);
-    console.log(response, addInvoiceRequest);
-    const invoicePayment = {
-      ...paymentRef.current,
-      invoiceId: response.id,
-      date: selectedDate._d,
-      personId: 1,
-      personType: "CUSTOMER",
-      type: invoiceType === "SELL" ? "INCOME" : "OUTCOME",
-      description: `بابت فاکتور به شماره  ${response.id}`,
-    };
-    if (
-      invoicePayment.cashes.length > 0 ||
-      invoicePayment.cheques.length > 0 ||
-      invoicePayment.banks.length > 0
-    ) {
-      await addInvoicePaymentRequest.execute(invoicePayment);
-    }
+    console.log(paymentRef.current);
+    // const response = await addInvoiceRequest.execute(value);
 
-    setTimeout(() => {
-      onReject();
-    }, 1000);
+    // const invoicePayment = {
+    //   ...paymentRef.current,
+    //   invoiceId: response.id,
+    //   date: selectedDate._d,
+    //   personId: 1,
+    //   personType: "CUSTOMER",
+    //   type: invoiceType === "SELL" ? "INCOME" : "OUTCOME",
+    //   // description: `بابت فاکتور به شماره  ${response.id}`,
+    // };
+
+    // if (
+    //   invoicePayment.cashes.length > 0 ||
+    //   invoicePayment.cheques.length > 0 ||
+    //   invoicePayment.banks.length > 0
+    // ) {
+    //   await addInvoicePaymentRequest.execute(invoicePayment);
+    // }
+
+    // setTimeout(() => {
+    //   onReject();
+    // }, 1000);
   };
 
   const onReject = () => {
@@ -182,6 +185,26 @@ export default function MainDetail() {
     }
   };
 
+  const getCustomerRequest = useApi({
+    method: "get",
+    url: "customer",
+  });
+
+  const getDriverRequest = useApi({
+    method: "get",
+    url: `driver`,
+  });
+
+  const getAllCustomers = async () => {
+    const customerList = await getCustomerRequest.execute();
+    setAllCustomers(customerList.data);
+  };
+
+  const getAllDrivers = async () => {
+    const driverList = await getDriverRequest.execute();
+    setAllDrivers(driverList.data);
+  };
+
   const onDiscountChange = (e) => {
     setDiscount(e.target.value);
   };
@@ -193,6 +216,11 @@ export default function MainDetail() {
   useEffect(() => {
     setTotalFee(products.reduce((n, { totalFee }) => n + totalFee, 0));
   }, [products]);
+
+  useEffect(() => {
+    getAllCustomers();
+    getAllDrivers();
+  }, []);
 
   useEffect(() => {
     const factorPay = totalFee - (Number(discount) + totalPayment);
@@ -216,7 +244,26 @@ export default function MainDetail() {
           <Grid container spacing={3}>
             <Fragment>
               <Grid item lg={6} xs={12} style={{ display: "flex" }}>
-                <TextField
+                <Autocomplete
+                  id="combo-box-demo"
+                  options={allCustomers}
+                  getOptionLabel={(option) =>
+                    `${option.firstName} - ${option.lastName}`
+                  }
+                  style={{ width: "100%", height: 50 }}
+                  renderInput={(params) => (
+                    <TextField
+                      style={{
+                        width: "100%",
+                        height: 50,
+                      }}
+                      {...params}
+                      label="مشتریان"
+                      variant="outlined"
+                    />
+                  )}
+                />
+                {/* <TextField
                   label="نام مشتری"
                   variant="outlined"
                   name={"personName"}
@@ -224,9 +271,9 @@ export default function MainDetail() {
                   value={invoicePerson}
                   fullWidth
                   size="small"
-                />
+                /> */}
               </Grid>
-              <Grid item lg={6} xs={12} className={classes.datePicker}>
+              <Grid item lg={6} xs={12}>
                 <DatePicker
                   autoOk
                   name="date"
@@ -243,7 +290,7 @@ export default function MainDetail() {
                 />
               </Grid>
 
-              <Grid item xs={12}>
+              <Grid container style={{ margin: "20px 10px" }}>
                 <Product
                   onSubmit={onSubmitProduct}
                   onDismiss={onDismissProduct}
@@ -259,6 +306,51 @@ export default function MainDetail() {
                 onSubmit={onSubmitPayment}
               />
               <Grid container spacing={3} style={{ marginTop: 20 }}>
+                <Grid item lg={6} xs={12}>
+                  <Autocomplete
+                    id="combo-box-demo"
+                    options={allDrivers}
+                    getOptionLabel={(option) =>
+                      `${option.firstName} - ${option.lastName}`
+                    }
+                    style={{ width: "100%", height: 50, marginBottom: 50 }}
+                    renderInput={(params) => (
+                      <TextField
+                        style={{
+                          width: "100%",
+                          height: 50,
+                        }}
+                        {...params}
+                        label="راننده"
+                        variant="outlined"
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item lg={3} xs={6}>
+                  <TextField
+                    label="کرایه تنی"
+                    variant="outlined"
+                    name={"personName"}
+                    onChange={onChangeInvoicePerson}
+                    value={invoicePerson}
+                    fullWidth
+                    type="number"
+                  />
+                </Grid>
+                <Grid item lg={3} xs={6}>
+                  <TextField
+                    label="کرایه کلی"
+                    variant="outlined"
+                    name={"personName"}
+                    onChange={onChangeInvoicePerson}
+                    value={invoicePerson}
+                    fullWidth
+                    type="number"
+                  />
+                </Grid>
+              </Grid>
+              <Grid container spacing={3} style={{ margin: "20px 5px" }}>
                 <Grid item lg={3} xs={6}>
                   <TextField
                     disabled
@@ -312,6 +404,30 @@ export default function MainDetail() {
                     size="small"
                   />
                 </Grid>
+              </Grid>
+              <Grid item xs={12}>
+                <Controller
+                  control={control}
+                  render={({ onChange, value, name }) => {
+                    return (
+                      <TextField
+                        variant="outlined"
+                        label="توضیحات"
+                        name={name}
+                        onChange={onChange}
+                        value={value || " "}
+                        error={!!errors.description}
+                        helperText={
+                          errors.description ? errors.description.message : ""
+                        }
+                        fullWidth
+                        multiline
+                        size="small"
+                      />
+                    );
+                  }}
+                  name="description"
+                />
               </Grid>
               <Grid
                 item
